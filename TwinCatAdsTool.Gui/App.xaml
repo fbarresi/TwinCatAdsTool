@@ -1,0 +1,12 @@
+﻿<Application x:Class="TwinCatAdsTool.Gui.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:gui="clr-namespace:TwinCatAdsTool.Gui">
+    <Application.Resources>
+        <ResourceDictionary>
+            <gui:ViewModelLocator x:Key="Locator" />
+        </ResourceDictionary>
+
+    </Application.Resources>
+</Application>
