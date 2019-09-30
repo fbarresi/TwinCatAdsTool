@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using TwinCAT.Ads;
 
 namespace TwinCatAdsTool.Interfaces.Services
 {
     public interface IPersistentVariableService
     {
-        JObject ReadPersistentVariables(TcAdsClient client);
+        Task<JObject> ReadPersistentVariables(TcAdsClient client);
     }
 }

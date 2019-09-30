@@ -8,6 +8,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
+             xmlns:views="clr-namespace:TwinCatAdsTool.Gui.Views"
              DataContext="{Binding MainWindowViewModel, Source={StaticResource Locator}}"
              mc:Ignorable="d" 
              Title="TwinCAT ADS Tool"
@@ -18,6 +19,13 @@
     <Window.Resources>
         
     </Window.Resources>
-
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <views:ConnectionCabView DataContext="{Binding ConnectionCabViewModel}" Grid.Row="0"/>
+        <views:TabsView DataContext="{Binding TabsViewModel}" Grid.Row="1"/>
+    </Grid>
     
 </Window>

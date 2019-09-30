@@ -10,13 +10,13 @@ using Microsoft.Win32;
 using ReactiveUI;
 using TwinCatAdsTool.Gui.Extensions;
 using TwinCatAdsTool.Interfaces.Commons;
+using TwinCatAdsTool.Interfaces.Extensions;
 
 namespace TwinCatAdsTool.Gui.ViewModels
 {
 	public class MainWindowViewModel : ViewModelBase
 	{
 		private readonly IViewModelFactory viewModelFactory;
-		private ViewModelBase selectedView;
 		private string version;
 
 		public MainWindowViewModel(IViewModelFactory viewModelFactory)
@@ -24,35 +24,21 @@ namespace TwinCatAdsTool.Gui.ViewModels
 			this.viewModelFactory = viewModelFactory;
 		}
 
-		public ReactiveCommand<Unit, Unit> OpenFileCommand { get; set; }
-
-
-		public ObservableCollection<ViewModelBase> Views { get; } = new ObservableCollection<ViewModelBase>();
-
-		public ViewModelBase SelectedView
-		{
-			get => selectedView;
-			set
-			{
-				if (Equals(value, selectedView)) return;
-				selectedView = value;
-				raisePropertyChanged();
-			}
-		}
-
-		public ReactiveCommand<object, Unit> DropCommand { get; set; }
-
-
 		public override void Init()
 		{
 			Logger.Debug("Initialize main window view model");
 
 			
-
 			var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 			Version = $"v.{version.Major}.{version.Minor}";
 
-		}
+            ConnectionCabViewModel = viewModelFactory.CreateViewModel<ConnectionCabViewModel>();
+            ConnectionCabViewModel.AddDisposableTo(Disposables);
+
+            TabsViewModel = viewModelFactory.CreateViewModel<TabsViewModel>();
+            TabsViewModel.AddDisposableTo(Disposables);
+
+        }
 
 		public string Version
 		{
@@ -65,8 +51,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
 			}
 		}
 
-		
-
+        public ConnectionCabViewModel ConnectionCabViewModel { get; set; }
+        public TabsViewModel TabsViewModel { get; set; }
 		
 	}
 }
