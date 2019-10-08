@@ -33,7 +33,14 @@ namespace TwinCatAdsTool.Logic.Services
                         var globalName = symbol.InstancePath.GetVaribleNameFromFullPath();
                         if (!variables.ContainsKey(globalName))
                             variables.Add(globalName, new List<JObject>());
-                        variables[globalName].Add(await client.ReadJson(symbol.InstancePath, force:true));
+                        try
+                        {
+                            variables[globalName].Add(await client.ReadJson(symbol.InstancePath, force:true));
+                        }
+                        catch (Exception e)
+                        {
+                            logger.Error($"Error during reding variable {symbol.InstancePath} in json format", e);
+                        }
 
                     }
 
