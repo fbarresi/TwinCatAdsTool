@@ -13,7 +13,10 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Command="{Binding Read}">Read</Button>
+            <Button Command="{Binding Save}">Save</Button>
         </StackPanel>
-        <TextBlock Grid.Row="1" Text="{Binding BackupText}"/>
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+            <TextBlock Text="{Binding BackupText}"/>
+        </ScrollViewer>
     </Grid>
 </UserControl>
