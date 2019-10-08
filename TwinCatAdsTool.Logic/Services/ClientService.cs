@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using Ninject;
 using TwinCAT;
 using TwinCAT.Ads;
@@ -18,6 +20,16 @@ namespace TwinCatAdsTool.Logic.Services
         {
             Client = new TcAdsClient();
         }
+
+        public Task Connect(string amsNetId, int port = 851)
+        {
+            if (!Client.IsConnected)
+            {
+                Client.Connect(amsNetId, port);
+            }
+            return Task.FromResult(Unit.Default);
+        }
+
         public TcAdsClient Client { get; }
         public IObservable<ConnectionState> ConnectionState => connectionStateSubject.AsObservable();
 
@@ -34,6 +46,8 @@ namespace TwinCatAdsTool.Logic.Services
 
         public void Dispose()
         {
+            Client.Disconnect();
+            connectionStateSubject.OnNext(TwinCAT.ConnectionState.Disconnected);
             Client?.Dispose();
             disposables?.Dispose();
         }
