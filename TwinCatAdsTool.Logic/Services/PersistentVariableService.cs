@@ -30,7 +30,7 @@ namespace TwinCatAdsTool.Logic.Services
                     var variables = new Dictionary<string, List<JObject>>();
                     foreach (var symbol in iterator)
                     {
-                        var globalName = symbol.InstancePath.GetVaribleNameFromFullPath();
+                        var globalName = symbol.InstancePath.Split('.').First();
                         if (!variables.ContainsKey(globalName))
                             variables.Add(globalName, new List<JObject>());
                         try
