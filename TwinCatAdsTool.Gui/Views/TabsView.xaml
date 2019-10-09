@@ -11,7 +11,9 @@
             <local:BackupView DataContext="{Binding BackupViewModel}"/>
         </TabItem>
             <TabItem Header="Restore"></TabItem>
-            <TabItem Header="Compare"></TabItem>
+            <TabItem Header="Compare">
+                <local:CompareView DataContext="{Binding CompareViewModel}"/>
+            </TabItem>
             <TabItem Header="Explore"></TabItem>
     </TabControl>
 </UserControl>

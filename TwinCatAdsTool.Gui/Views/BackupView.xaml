@@ -16,7 +16,7 @@
             <Button Command="{Binding Save}">Save</Button>
         </StackPanel>
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
-            <TextBlock Text="{Binding BackupText}"/>
+            <TextBlock Text="{Binding BackupText}" FontFamily="Courier"/>
         </ScrollViewer>
     </Grid>
 </UserControl>
