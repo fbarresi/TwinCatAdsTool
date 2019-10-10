@@ -19,7 +19,6 @@ using ReactiveUI;
 using TwinCAT;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
-using TextBox = System.Web.UI.WebControls.TextBox;
 
 namespace TwinCatAdsTool.Gui.ViewModels
 {
@@ -31,7 +30,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private string backupText;
         private IClientService clientService;
         private IPersistentVariableService persistentVariableService;
-        private IProcessingService processingService;
         private SideBySideDiffBuilder comparisonBuilder = new SideBySideDiffBuilder(new Differ());
         private SideBySideDiffModel comparisonModel = new SideBySideDiffModel();
         private readonly FontInfo currentFont;
@@ -46,11 +44,10 @@ namespace TwinCatAdsTool.Gui.ViewModels
         public double? LinePaddingOverride { private get; set; }
         public double? TopOffsetOverride { private get; set; }
 
-        public CompareViewModel(IClientService clientService, IPersistentVariableService persistentVariableService, IProcessingService processingService)
+        public CompareViewModel(IClientService clientService, IPersistentVariableService persistentVariableService)
         {
             this.clientService = clientService;
             this.persistentVariableService = persistentVariableService;
-            this.processingService = processingService;
         }
 
 
@@ -212,10 +209,10 @@ namespace TwinCatAdsTool.Gui.ViewModels
             return Unit.Empty;
         }
 
-        private async Task<Unit> LoadJson()
+        private Task<Unit> LoadJson()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Text files (*.txt)|*.txt|Jason files (*.json)|*.json|All files (*.*)|*.*";
+            openFileDialog.Filter = "Json files (*.json)|*.json";
             openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (openFileDialog.ShowDialog() == true)
             {
@@ -224,7 +221,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 
             }
 
-            return Unit.Empty;
+            return Task.FromResult(Unit.Empty);
         }
 
     }

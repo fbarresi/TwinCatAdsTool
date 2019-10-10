@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using TwinCAT;
@@ -16,21 +18,20 @@ namespace TwinCatAdsTool.Gui.ViewModels
     {
         private readonly IClientService clientService;
         private readonly IPersistentVariableService persistentVariableService;
-        private readonly IProcessingService processingService;
         private string backupText;
-        private readonly Subject<JObject> variableSubject = new Subject<JObject>();
+        private readonly BehaviorSubject<JObject> variableSubject = new BehaviorSubject<JObject>(new JObject());
 
-        public BackupViewModel(IClientService clientService, IPersistentVariableService persistentVariableService, IProcessingService processingService)
+        public BackupViewModel(IClientService clientService, IPersistentVariableService persistentVariableService)
         {
             this.clientService = clientService;
             this.persistentVariableService = persistentVariableService;
-            this.processingService = processingService;
         }
 
         public override void Init()
         {
-            variableSubject.ObserveOnDispatcher()
-                .Do(o => BackupText = o.ToString())
+            variableSubject
+                .ObserveOnDispatcher()
+                .Do(o => BackupText = o.ToString(Formatting.Indented))
                 .Retry()
                 .Subscribe()
                 .AddDisposableTo(Disposables)
@@ -39,7 +40,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
             Read = ReactiveCommand.CreateFromTask(ReadVariables, canExecute:clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
 
-            Save = ReactiveCommand.CreateFromTask(SaveVariables, clientService.ConnectionState.Select(state => state == ConnectionState.Connected)).AddDisposableTo(Disposables);
+            Save = ReactiveCommand.CreateFromTask(SaveVariables, clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
+                .AddDisposableTo(Disposables);
         }
 
         private async Task<Unit> ReadVariables()
@@ -49,18 +51,18 @@ namespace TwinCatAdsTool.Gui.ViewModels
             return Unit.Default;
         }
 
-        private async Task<Unit> SaveVariables()
+        private Task<Unit> SaveVariables()
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "Json|*.json";
-            saveFileDialog1.Title = "Save an Json File";
+            saveFileDialog1.Title = "Save in a json file";
+            saveFileDialog1.FileName = $"Backup_{DateTime.Now:yyy-MM-dd-HHmmss}.json";
             var result = saveFileDialog1.ShowDialog();
             if (result == DialogResult.OK || result == DialogResult.Yes)
             {
-                //await processingService.Connect(PlcAddress, 851);
-                await processingService.Process(saveFileDialog1.FileName);
+                File.WriteAllText(saveFileDialog1.FileName, variableSubject.Value.ToString(Formatting.Indented));
             }
-            return Unit.Default;
+            return Task.FromResult(Unit.Default);
         }
 
         public string BackupText
