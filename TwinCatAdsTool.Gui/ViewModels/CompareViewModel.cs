@@ -1,7 +1,9 @@
 ﻿
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -27,20 +29,13 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private readonly Subject<JObject> leftTextSubject = new Subject<JObject>();
         private readonly Subject<JObject> rightTextSubject = new Subject<JObject>();
-        private string backupText;
         private IClientService clientService;
         private IPersistentVariableService persistentVariableService;
         private SideBySideDiffBuilder comparisonBuilder = new SideBySideDiffBuilder(new Differ());
         private SideBySideDiffModel comparisonModel = new SideBySideDiffModel();
-        private readonly FontInfo currentFont;
-        private Grid leftGrid = new Grid();
-        private Grid rightGrid = new Grid();
-        private string leftBox;
-        private string rightBox;
+        private IEnumerable<ListBoxItem> leftBoxText;
+        private IEnumerable<ListBoxItem> rightBoxText;
 
-        public bool ShowVisualAids { private get; set; }
-        public double? CharacterWidthOverride { private get; set; }
-        public double? LeftOffsetOverride { private get; set; }
         public double? LinePaddingOverride { private get; set; }
         public double? TopOffsetOverride { private get; set; }
 
@@ -79,125 +74,75 @@ namespace TwinCatAdsTool.Gui.ViewModels
             var diffModel = comparisonBuilder.BuildDiffModel(left.ToString(), right.ToString());
 
 
-            LeftBox = left.ToString();
-            RightBox = right.ToString();
+            var leftBox = diffModel.OldText.Lines;
+            var rightBox = diffModel.NewText.Lines;
 
-            RenderDiffLines(LeftGrid, diffModel.OldText);
-            RenderDiffLines(RightGrid, diffModel.NewText);
+            LeftBoxText = leftBox.Select(x => new ListBoxItem() { Content = x.Text, Background = GetBGColor(x)});
+            RightBoxText = rightBox.Select(x => new ListBoxItem() { Content = x.Text, Background = GetBGColor(x) });
+
             return diffModel;
         }
 
         // https://github.com/SciGit/scigit-client/blob/master/DiffPlex/SilverlightDiffer/TextBoxDiffRenderer.cs
-        private void RenderDiffLines(Grid grid, DiffPaneModel diffModel)
+        private SolidColorBrush GetBGColor(DiffPiece diffPiece)
         {
-            var lineNumber = 0;
-            foreach (var line in diffModel.Lines)
-            {
+      
                 var fillColor = new SolidColorBrush(Colors.Transparent);
-                if (line.Type == ChangeType.Deleted)
+                if (diffPiece.Type == ChangeType.Deleted)
                     fillColor = new SolidColorBrush(Color.FromArgb(255, 255, 200, 100));
-                else if (line.Type == ChangeType.Inserted)
+                else if (diffPiece.Type == ChangeType.Inserted)
                     fillColor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 0));
-                else if (line.Type == ChangeType.Unchanged)
+                else if (diffPiece.Type == ChangeType.Unchanged)
                     fillColor = new SolidColorBrush(Colors.White);
-                else if (line.Type == ChangeType.Modified)
+                else if (diffPiece.Type == ChangeType.Modified)
                 {
-                    /*
-                    if (currentFont.IsMonoSpaced)
-                        RenderDiffWords(grid, textBox, line, lineNumber);
-                        */
                     fillColor = new SolidColorBrush(Color.FromArgb(255, 220, 220, 255));
                 }
-                else if (line.Type == ChangeType.Imaginary)
+                else if (diffPiece.Type == ChangeType.Imaginary)
                 {
                     fillColor = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
-
-                    //AddImaginaryLine(textBox, lineNumber);
                 }
 
-                /*
-                if (ShowVisualAids)
-                {
-                    if (lineNumber % 2 == 0)
-                        fillColor = new SolidColorBrush(Colors.Cyan);
-                    else
-                    {
-                        fillColor = new SolidColorBrush(Colors.Gray);
-                    }
-                }
-                */
-
-                PlaceRectangleInGrid(grid, lineNumber, fillColor, 0, null);
-                lineNumber++;
-            }
-        }
-
-        private void PlaceRectangleInGrid( Grid grid, int lineNumber, SolidColorBrush fillColor, double left, double? width)
-        {
-            var rectLineHeight = 20; //textBox.FontSize + (LinePaddingOverride ?? 0);//currentFont.LinePadding);
-            double rectTopOffset = TopOffsetOverride ?? 3;
-
-            var offset = rectLineHeight * lineNumber + rectTopOffset;
-            var floor = Math.Floor(offset);
-            var fraction = offset - floor;
-
-            var rectangle = new Rectangle
-            {
-                Fill = fillColor,
-                Width = width ?? Double.NaN,
-                Height = rectLineHeight + fraction,
-                VerticalAlignment = VerticalAlignment.Top,
-                HorizontalAlignment = width.HasValue ? HorizontalAlignment.Left : HorizontalAlignment.Stretch,
-                Margin = new Thickness(left, floor, 0, 0)
-            };
-
-            grid.Children.Insert(0, rectangle);
+                return fillColor;
         }
 
         public ReactiveCommand<System.Reactive.Unit, Unit> Read { get; set; }
         public ReactiveCommand<System.Reactive.Unit, Unit> Load { get; set; }
 
-        public Grid LeftGrid
+        public IEnumerable<ListBoxItem> LeftBoxText
         {
-            get => leftGrid;
+            get
+            {
+                if(leftBoxText == null)
+                {
+                    leftBoxText = new List<ListBoxItem>();
+                }
+
+                return leftBoxText;
+            }
             set
             {
-                if (value == leftGrid) return;
-                leftGrid = value;
+                if (value == leftBoxText) return;
+                leftBoxText = value;
                 raisePropertyChanged();
             }
         }
 
-
-        public Grid RightGrid
+        public IEnumerable<ListBoxItem> RightBoxText
         {
-            get => rightGrid;
-            set
+            get
             {
-                if (value == rightGrid) return;
-                leftGrid = value;
-                raisePropertyChanged();
+                if (rightBoxText == null)
+                {
+                    rightBoxText = new List<ListBoxItem>();
+                }
+
+                return rightBoxText;
             }
-        }
-
-        public string LeftBox
-        {
-            get => leftBox;
             set
             {
-                if (value == leftBox) return;
-                leftBox = value;
-                raisePropertyChanged();
-            }
-        }
-
-        public string RightBox
-        {
-            get => rightBox;
-            set
-            {
-                if (value == rightBox) return;
-                rightBox = value;
+                if (value == rightBoxText) return;
+                rightBoxText = value;
                 raisePropertyChanged();
             }
         }

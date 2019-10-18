@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 <UserControl.Resources>
-    <Style x:Key="DiffBox" TargetType="TextBox">
+    <Style x:Key="DiffBox" TargetType="ListBox">
         <Setter Property="FontFamily" Value="Courier New" />
     </Style>
 </UserControl.Resources>
@@ -27,13 +27,13 @@
             <Button Command="{Binding Load}">Load</Button>
         </StackPanel>
         <ScrollViewer Name="LeftScroller"  IsTabStop="False" Margin="0 0 10 0" Grid.Column="0" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Grid >
-                <TextBox   TabIndex="0" Background="Transparent" Text="{Binding LeftBox}" Style="{StaticResource DiffBox}" />
+                <Grid>
+                <ListView  ItemsSource="{Binding DataContext.LeftBoxText, RelativeSource={RelativeSource AncestorType=local:CompareView}}"  />
                 </Grid>
             </ScrollViewer>
             <ScrollViewer  Name="RightScroller"  IsTabStop="False" Grid.Column="1" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Grid>
-                    <TextBox  TabIndex="1" Background="Transparent" Text="{Binding RightBox}" Style="{StaticResource DiffBox}"  />
+            <Grid >
+                <ListView  ItemsSource="{Binding DataContext.RightBoxText, RelativeSource={RelativeSource AncestorType=local:CompareView}}"  />
                 </Grid>
             </ScrollViewer>
      
