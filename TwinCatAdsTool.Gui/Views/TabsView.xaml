@@ -14,6 +14,8 @@
             <TabItem Header="Compare">
                 <local:CompareView DataContext="{Binding CompareViewModel}"/>
             </TabItem>
-            <TabItem Header="Explore"></TabItem>
+            <TabItem Header="Explore">
+                <local:ExploreView DataContext="{Binding ExploreViewModel}"/>
+        </TabItem>
     </TabControl>
 </UserControl>
