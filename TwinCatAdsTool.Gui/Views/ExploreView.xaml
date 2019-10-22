@@ -6,27 +6,87 @@
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:viewModels="clr-namespace:TwinCatAdsTool.Gui.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             FocusManager.FocusedElement="{Binding ElementName=SearchBox}">
 <UserControl.Resources >
-    <Style x:Key="TreeViewItemStyle_ExpandAll" TargetType="{x:Type TreeViewItem}">
-        <Setter Property="IsExpanded" Value="True"/>
+    <Style TargetType="ListBox" x:Key="ListStyle" BasedOn="{StaticResource {x:Type ListBox}}">
+        <Style.Triggers>
+            <DataTrigger 
+                Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}" 
+                Value="0">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <TextBlock>No items to display</TextBlock>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
-    <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type viewModels:TreeViewModel}" ItemsSource="{Binding Path=Children}">
-            <Label Content="{Binding Name}"></Label>
-        </HierarchicalDataTemplate>
+    <Style TargetType="TreeView" x:Key="TreeViewStyle" BasedOn="{StaticResource {x:Type TreeView}}">
+        <Style.Triggers>
+            <DataTrigger 
+                Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}" 
+                Value="0">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <TextBlock>No items to display</TextBlock>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+        <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type viewModels:TreeViewModel}" ItemsSource="{Binding Path=Children}">
+        <Label Content="{Binding Name}"></Label>
+    </HierarchicalDataTemplate>
+        <DataTemplate x:Key="TreeNodeTemplateSearchResult" DataType="{x:Type viewModels:TreeViewModel}">
+            <Expander Header="{Binding FullPath}">
+                <TreeView ItemsSource="{Binding Children}" ItemTemplate="{StaticResource TreeNodeTemplate}">
+            </TreeView>
+            </Expander>
+        </DataTemplate>
 </UserControl.Resources>
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*" />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Command="{Binding Read}">Read</Button>
         </StackPanel>
-
-        <TreeView Grid.Row="1"  ItemsSource="{Binding TreeNodes}" ItemTemplate="{StaticResource TreeNodeTemplate}">
+        <ScrollViewer Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <StackPanel>
+            <Label>Search</Label>
+            <TextBox
+                x:Name="SearchBox"
+                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding
+                        Command="{Binding TextBoxEnterCommand}"
+                        Key="Enter" />
+                </TextBox.InputBindings>
+            </TextBox>
+            <TreeView
+                ItemsSource="{Binding SearchResults}" ItemTemplate="{StaticResource TreeNodeTemplateSearchResult}" Style="{StaticResource TreeViewStyle}"/>
+        </StackPanel>
+        </ScrollViewer>
+        <StackPanel Grid.Column="1" Orientation="Vertical" Grid.Row="1" d:LayoutOverrides="Height">
+            <Label>Log</Label>
+            <ListBox
+                ItemsSource="{Binding LogOutput}" Style="{StaticResource ListStyle}"/>
+        </StackPanel>
+        <TreeView Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"  ItemsSource="{Binding TreeNodes}" ItemTemplate="{StaticResource TreeNodeTemplate}">
         </TreeView>
     </Grid>
 </UserControl>
