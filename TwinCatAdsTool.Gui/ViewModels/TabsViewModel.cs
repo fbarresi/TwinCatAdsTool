@@ -23,11 +23,17 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             ExploreViewModel = viewModelFactory.CreateViewModel<ExploreViewModel>();
             ExploreViewModel.AddDisposableTo(Disposables);
+
+
+            RestoreViewModel = viewModelFactory.CreateViewModel<RestoreViewModel>();
+            RestoreViewModel.AddDisposableTo(Disposables);
         }
 
         public BackupViewModel BackupViewModel { get; set; }
         public CompareViewModel CompareViewModel { get; set; }
 
         public ExploreViewModel ExploreViewModel { get; set; }
+
+        public RestoreViewModel RestoreViewModel { get; set; }
     }
 }

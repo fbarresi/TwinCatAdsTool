@@ -12,7 +12,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
     public class ConnectionCabViewModel : ViewModelBase
     {
         private readonly IClientService clientService;
-        private string address;
+        private string address = "5.45.127.110.1.1";
         private int port = 851;
         private ObservableAsPropertyHelper<ConnectionState> connectionStateHelper;
 
