@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:viewModels="clr-namespace:TwinCatAdsTool.Gui.ViewModels"
+             xmlns:views="clr-namespace:TwinCatAdsTool.Gui.Views"
+             xmlns:typeSystem="clr-namespace:TwinCAT.TypeSystem;assembly=TwinCAT.Ads"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              FocusManager.FocusedElement="{Binding ElementName=SearchBox}">
@@ -41,14 +43,12 @@
         </Style.Triggers>
     </Style>
 
-        <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type viewModels:TreeViewModel}" ItemsSource="{Binding Path=Children}">
-        <Label Content="{Binding Name}"></Label>
-    </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type typeSystem:ISymbol}" ItemsSource="{Binding SubSymbols}">
+            <Button Content="{Binding InstancePath}" CommandParameter="{Binding}" Command="{Binding  Path=DataContext.AddObserverCmd, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}"></Button>
+        </HierarchicalDataTemplate>
+
         <DataTemplate x:Key="TreeNodeTemplateSearchResult" DataType="{x:Type viewModels:TreeViewModel}">
-            <Expander Header="{Binding FullPath}">
-                <TreeView ItemsSource="{Binding Children}" ItemTemplate="{StaticResource TreeNodeTemplate}">
-            </TreeView>
-            </Expander>
+            <Button Content="{Binding InstancePath}" /> 
         </DataTemplate>
 </UserControl.Resources>
 
@@ -65,6 +65,8 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Command="{Binding Read}">Read</Button>
         </StackPanel>
+
+
         <ScrollViewer Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <StackPanel>
             <Label>Search</Label>
@@ -81,11 +83,27 @@
                 ItemsSource="{Binding SearchResults}" ItemTemplate="{StaticResource TreeNodeTemplateSearchResult}" Style="{StaticResource TreeViewStyle}"/>
         </StackPanel>
         </ScrollViewer>
-        <StackPanel Grid.Column="1" Orientation="Vertical" Grid.Row="1" d:LayoutOverrides="Height">
-            <Label>Log</Label>
+
+        <StackPanel Grid.Column="1" Orientation="Vertical" Grid.Row="1" d:LayoutOverrides="Height" DataContext="{Binding ObserverViewModel}">
+            <Label>Observe</Label>
             <ListBox
-                ItemsSource="{Binding LogOutput}" Style="{StaticResource ListStyle}"/>
+                ItemsSource="{Binding ViewModels}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                    <Grid DataContext="{Binding}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="{Binding Name}" Grid.Column="0"/>
+                        <Label Content="{Binding Value}" Grid.Column="1"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
         </StackPanel>
+
         <TreeView Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"  ItemsSource="{Binding TreeNodes}" ItemTemplate="{StaticResource TreeNodeTemplate}">
         </TreeView>
     </Grid>

@@ -5,20 +5,23 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TwinCAT.TypeSystem;
 
 namespace TwinCatAdsTool.Gui.ViewModels
 {
     public class TreeViewModel
     {
+        public ISymbol Model { get; }
         public string Name { get; set; }
 
         public ObservableCollection<TreeViewModel> Children { get; set; } = new ObservableCollection<TreeViewModel>();
 
         public string FullPath { get; set; }
 
-        public TreeViewModel(string name)
+        public TreeViewModel(ISymbol model)
         {
-            Name = name;
+            Model = model;
+            Name = model.InstanceName;
         }
     }
 }

@@ -185,7 +185,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
                     try
                     {
                         var jobject = JObject.Load(new JsonTextReader(new StringReader(variable.Json)))  ;
-                        await clientService.Client.WriteJson(variable.Name, jobject, true);
+                        //await clientService.Client.WriteJson(variable.Name, jobject, true);
                     }
                     catch (Exception ex)
                     {
