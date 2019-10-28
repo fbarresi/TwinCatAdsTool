@@ -147,20 +147,15 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             // Transform the event stream into a stream of strings (the input values)
             var input = searchTextChanged
-                .Where((ev => SearchText == null || SearchText.Length < 4))
+                .Where((ev => SearchText == null || SearchText.Length < 5))
                 .Throttle(TimeSpan.FromSeconds(3))
                 .Merge(searchTextChanged
-                           .Where(ev => SearchText != null && SearchText.Length >= 4)
+                           .Where(ev => SearchText != null && SearchText.Length >= 5)
                            .Throttle(TimeSpan.FromMilliseconds(400)))
                 .Select(args => SearchText)
                 .Merge(
                     TextBoxEnterCommand.Executed.Select(e => SearchText))
                 .DistinctUntilChanged();
-
-            // Log all events in the event stream to the Log viewer
-            input.ObserveOnDispatcher()
-                .Subscribe(e => LogOutput.Insert(0,
-                                                 string.Format("Text Changed. Current Value - {0}", e)));
 
             // Setup an Observer for the search operation
             var search = Observable.ToAsync<string, SearchResult>(DoSearch);
@@ -171,19 +166,17 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 from result in search(searchTerm).TakeUntil(input)
                 select result;
 
-
+            
             // Log the search result and add the results to the results collection
             results
                 .ObserveOnDispatcher()
                 .Subscribe(result =>
                     {
                         SearchResults.Clear();
-                        LogOutput.Insert(0, string.Format("Search for '{0}' returned '{1}' items", result.SearchTerm, result.Results.Count()));
-
-
                         result.Results.ToList().ForEach(item => SearchResults.Add(item));
                     }
                 );
+                
         }
 
         private Task<Unit> RegisterSymbolObserver(ISymbol symbol)
