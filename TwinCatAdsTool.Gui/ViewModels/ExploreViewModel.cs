@@ -18,7 +18,9 @@ using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Gui.Commands;
 using TwinCatAdsTool.Interfaces.Commons;
 using TwinCatAdsTool.Interfaces.Extensions;
+using TwinCatAdsTool.Interfaces.Logging;
 using TwinCatAdsTool.Interfaces.Services;
+using ListEx = DynamicData.ListEx;
 
 namespace TwinCatAdsTool.Gui.ViewModels
 {
@@ -50,6 +52,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         }
 
         public ReactiveCommand<ISymbol, Unit> AddObserverCmd { get; set; }
+        public ReactiveCommand<SymbolObservationViewModel, Unit> CmdDelete { get; set; }
 
         public ObservableCollection<string> LogOutput { get; } = new ObservableCollection<string>();
 
@@ -126,6 +129,9 @@ namespace TwinCatAdsTool.Gui.ViewModels
             AddObserverCmd = ReactiveCommand.CreateFromTask<ISymbol, Unit>(RegisterSymbolObserver)
                 .AddDisposableTo(Disposables);
 
+            CmdDelete = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(DeleteSymbolObserver)
+                .AddDisposableTo(Disposables);
+
             Read = ReactiveCommand.CreateFromTask(ReadVariables, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
 
@@ -183,6 +189,12 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private Task<Unit> RegisterSymbolObserver(ISymbol symbol)
         {
             symbolSelection.Select(symbol);
+            return Task.FromResult(Unit.Default);
+        }
+
+        private Task<Unit> DeleteSymbolObserver(SymbolObservationViewModel model)
+        {
+        ObserverViewModel.ViewModels.Remove(model);
             return Task.FromResult(Unit.Default);
         }
 

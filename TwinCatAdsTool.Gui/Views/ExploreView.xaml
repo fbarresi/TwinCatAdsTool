@@ -94,9 +94,11 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Label Content="{Binding Name}" Grid.Column="0"/>
                         <Label Content="{Binding Value}" Grid.Column="1"/>
+                            <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="2" Content="X"></Button>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
