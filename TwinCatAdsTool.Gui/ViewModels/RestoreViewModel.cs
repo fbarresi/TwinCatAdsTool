@@ -165,7 +165,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private async Task ReadVariablesFromPlc()
         {
-            var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client);
+            var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
             liveVariableSubject.OnNext(persistentVariables);
         }
 

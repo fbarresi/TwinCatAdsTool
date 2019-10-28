@@ -32,7 +32,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private readonly ISelectionService<ISymbol> symbolSelection;
 
         private readonly Subject<ReadOnlySymbolCollection> variableSubject = new Subject<ReadOnlySymbolCollection>();
-        private ISymbolLoader loader;
+        private ISymbolLoader treeViewSymbolLoader;
 
         private ObservableCollection<IValueSymbol> observedSymbols;
 
@@ -41,6 +41,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private ObservableCollection<ISymbol> treeNodes;
         private bool isConnected;
         private ObservableAsPropertyHelper<bool> isConnectedHelper;
+        private ISymbolLoader searchViewSymbolLoader;
 
 
         public ExploreViewModel(IClientService clientService, 
@@ -123,6 +124,13 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             var connected = clientService.ConnectionState.Select(state => state == ConnectionState.Connected);
 
+            clientService.ConnectionState
+                .DistinctUntilChanged()
+                .Where(state => state == ConnectionState.Connected)
+                .Do(_ => variableSubject.OnNext(clientService.TreeViewSymbols))
+                .Subscribe()
+                .AddDisposableTo(Disposables);
+
             connected.ToProperty(this, x => x.IsConnected, out isConnectedHelper);
 
             // Setup the command for the enter key on the textbox
@@ -200,6 +208,16 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             try
             {
+                if (symbol.SubSymbols.Any())
+                {
+                    return Task.FromResult(Unit.Default);
+                }
+
+                if (symbol.DataType.IsContainer)
+                {
+                    return Task.FromResult(Unit.Default);
+                }
+
                 symbolSelection.Select(symbol);
             }
             catch (Exception ex)
@@ -235,7 +253,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
                     return searchResult;
                 }
 
-                var iterator = new SymbolIterator(loader.Symbols, s => s.InstancePath.ToLower().Contains(searchTerm.ToLower()));
+                var iterator = new SymbolIterator(searchViewSymbolLoader.Symbols, s => s.InstancePath.ToLower().Contains(searchTerm.ToLower()));
                 searchResult.Results = iterator;
             }catch(Exception ex)
             {
@@ -250,9 +268,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             try
             {
-                loader = SymbolLoaderFactory.Create(clientService.Client, new SymbolLoaderSettings(SymbolsLoadMode.VirtualTree));
+                searchViewSymbolLoader = SymbolLoaderFactory.Create(clientService.Client, new SymbolLoaderSettings(SymbolsLoadMode.Flat));
 
-                variableSubject.OnNext(loader.Symbols);
             }catch(Exception ex)
             {
                 Logger.Error("Could not read variables", ex);

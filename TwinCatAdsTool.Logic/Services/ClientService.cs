@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -7,6 +8,8 @@ using System.Threading.Tasks;
 using Ninject;
 using TwinCAT;
 using TwinCAT.Ads;
+using TwinCAT.Ads.TypeSystem;
+using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
 
@@ -32,6 +35,12 @@ namespace TwinCatAdsTool.Logic.Services
 
         public TcAdsClient Client { get; }
         public IObservable<ConnectionState> ConnectionState => connectionStateSubject.AsObservable();
+        public ReadOnlySymbolCollection TreeViewSymbols { get; set; }
+        public ReadOnlySymbolCollection FlatViewSymbols { get; set; }
+        public Task Reload()
+        {
+            return Task.Run(() => UpdateSymbols(connectionStateSubject.Value));
+        }
 
         public void Initialize()
         {
@@ -42,6 +51,29 @@ namespace TwinCatAdsTool.Logic.Services
                 .Subscribe(connectionStateSubject.OnNext)
                 .AddDisposableTo(disposables);
 
+            connectionStateSubject
+                .DistinctUntilChanged()
+                .Where(state => state == TwinCAT.ConnectionState.Connected)
+                .Do(UpdateSymbols)
+                .Subscribe()
+                .AddDisposableTo(disposables);
+
+
+        }
+
+        private void UpdateSymbols(ConnectionState state)
+        {
+            if (state == TwinCAT.ConnectionState.Connected)
+            {
+                var loader = SymbolLoaderFactory.Create(Client, new SymbolLoaderSettings(SymbolsLoadMode.VirtualTree));
+                TreeViewSymbols = loader.Symbols;
+
+                //todo add symbol for flat structre
+            }
+            else
+            {
+                TreeViewSymbols = null;
+            }
         }
 
         public void Dispose()

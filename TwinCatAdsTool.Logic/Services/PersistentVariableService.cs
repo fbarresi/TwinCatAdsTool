@@ -9,6 +9,8 @@ using TwinCAT;
 using TwinCAT.Ads;
 using TwinCAT.Ads.TypeSystem;
 using TwinCAT.JsonExtension;
+using TwinCAT.TypeSystem;
+using TwinCAT.TypeSystem.Generic;
 using TwinCatAdsTool.Interfaces.Logging;
 using TwinCatAdsTool.Interfaces.Services;
 
@@ -17,15 +19,14 @@ namespace TwinCatAdsTool.Logic.Services
     public class PersistentVariableService : IPersistentVariableService
     {
         private readonly ILog logger =LoggerFactory.GetLogger();
-        public async Task<JObject> ReadPersistentVariables(TcAdsClient client)
+        public async Task<JObject> ReadPersistentVariables(TcAdsClient client, IInstanceCollection<ISymbol> symbols)
         {
             var jobj = new JObject();
             try
             {
                 if (client.IsConnected)
                 {
-                    var loader = SymbolLoaderFactory.Create(client, new SymbolLoaderSettings(SymbolsLoadMode.VirtualTree));
-                    var iterator = new SymbolIterator(loader.Symbols, s => s.IsPersistent && s.InstancePath.Split('.').Length == 2 && !s.InstancePath.Contains("["));
+                    var iterator = new SymbolIterator(symbols, s => s.IsPersistent && s.InstancePath.Split('.').Length == 2 && !s.InstancePath.Contains("["));
 
                     var variables = new Dictionary<string, List<JObject>>();
                     foreach (var symbol in iterator)
