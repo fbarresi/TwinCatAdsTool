@@ -46,10 +46,6 @@
         <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type typeSystem:ISymbol}" ItemsSource="{Binding SubSymbols}">
             <Button Content="{Binding InstancePath}" CommandParameter="{Binding}" Command="{Binding  Path=DataContext.AddObserverCmd, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}"></Button>
         </HierarchicalDataTemplate>
-
-        <DataTemplate x:Key="TreeNodeTemplateSearchResult" DataType="{x:Type viewModels:TreeViewModel}">
-            <Button Content="{Binding InstancePath}" /> 
-        </DataTemplate>
 </UserControl.Resources>
 
     <Grid>
@@ -80,7 +76,7 @@
                 </TextBox.InputBindings>
             </TextBox>
             <TreeView
-                ItemsSource="{Binding SearchResults}" ItemTemplate="{StaticResource TreeNodeTemplateSearchResult}" Style="{StaticResource TreeViewStyle}"/>
+                ItemsSource="{Binding SearchResults}" ItemTemplate="{StaticResource TreeNodeTemplate}" Style="{StaticResource TreeViewStyle}"/>
         </StackPanel>
         </ScrollViewer>
 

@@ -188,40 +188,68 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private Task<Unit> RegisterSymbolObserver(ISymbol symbol)
         {
-            symbolSelection.Select(symbol);
+            try
+            {
+                symbolSelection.Select(symbol);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Could not register Observer for Symbol {symbol?.InstanceName}", ex);
+            }
+
             return Task.FromResult(Unit.Default);
         }
 
         private Task<Unit> DeleteSymbolObserver(SymbolObservationViewModel model)
         {
-        ObserverViewModel.ViewModels.Remove(model);
+            try
+            {
+                ObserverViewModel.ViewModels.Remove(model);
+            }catch(Exception ex)
+            {
+                Logger.Error($"Could not delete Observer for symbol {model?.Name}", ex);
+            }
+
             return Task.FromResult(Unit.Default);
         }
 
         private SearchResult DoSearch(string searchTerm)
         {
             var searchResult = new SearchResult {Results = new List<ISymbol>(), SearchTerm = searchTerm};
-            if (searchTerm.Length < 5)
+            try
             {
-                return searchResult;
+                if (searchTerm.Length < 5)
+                {
+                    return searchResult;
+                }
+
+                var iterator = new SymbolIterator(loader.Symbols, s => s.InstancePath.ToLower().Contains(searchTerm.ToLower()));
+                searchResult.Results = iterator;
+            }catch(Exception ex)
+            {
+                Logger.Error("Error during search", ex);
             }
 
-            var iterator = new SymbolIterator(loader.Symbols, s => s.InstancePath.ToLower().Contains(searchTerm.ToLower()));
-            searchResult.Results = iterator;
             return searchResult;
         }
 
         private async Task<Unit> ReadVariables()
         {
-            loader = SymbolLoaderFactory.Create(clientService.Client, new SymbolLoaderSettings(SymbolsLoadMode.VirtualTree));
+            try
+            {
+                loader = SymbolLoaderFactory.Create(clientService.Client, new SymbolLoaderSettings(SymbolsLoadMode.VirtualTree));
 
-            variableSubject.OnNext(loader.Symbols);
+                variableSubject.OnNext(loader.Symbols);
+            }catch(Exception ex)
+            {
+                Logger.Error("Could not read variables", ex);
+            }
+
             return Unit.Default;
         }
 
         private void UpdateTree(ReadOnlySymbolCollection symbolList)
         {
-            //DisplayTreeView(json.Root, Path.GetFileNameWithoutExtension(json.Path));
             try
             {
                 TreeNodes.Clear();
@@ -229,65 +257,14 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 {
                     TreeNodes.Add(s);
                 }
+            }catch(Exception ex)
+            {
+                Logger.Error("Could not update Tree", ex);
             }
             finally
             {
                 raisePropertyChanged("TreeNodes");
             }
         }
-
-        //private void DisplayTreeView(JToken root, string rootName)
-        //{
-        //    try
-        //    {
-        //        TreeNodes.Clear();
-        //        var rootNode = new TreeViewModel("Root");
-        //        rootNode.FullPath = "Root";
-        //        TreeNodes.Add(rootNode);
-        //        AddNode(root, rootNode, "");
-        //    }
-        //    finally
-        //    {
-        //        raisePropertyChanged("TreeNodes");
-        //    }
-        //}
-
-        //private void AddNode(JToken token, TreeViewModel inTreeNode, string path)
-        //{
-        //    if (token == null)
-        //        return;
-        //    if (token is JValue)
-        //    {
-        //        var childNode = new TreeViewModel(token.ToString());
-        //        childNode.FullPath = path == "" ? childNode.Name : (path + $".{childNode.Name}");
-        //        inTreeNode.Children.Add(childNode);
-        //    }
-        //    else if (token is JObject)
-        //    {
-        //        var obj = (JObject)token;
-        //        foreach (var property in obj.Properties())
-        //        {
-        //            var childNode = new TreeViewModel(property.Name);
-        //            childNode.FullPath = path == "" ? childNode.Name : (path + $".{childNode.Name}");
-        //                inTreeNode.Children.Add(childNode);
-        //            AddNode(property.Value, childNode, childNode.FullPath);
-        //        }
-        //    }
-        //    else if (token is JArray)
-        //    {
-        //        var array = (JArray)token;
-        //        for (int i = 0; i < array.Count; i++)
-        //        {
-        //            var childNode = new TreeViewModel(i.ToString());
-        //            childNode.FullPath = path == "" ? childNode.Name : (path + $".{childNode.Name}");
-        //                inTreeNode.Children.Add(childNode);
-        //            AddNode(array[i], childNode, childNode.FullPath);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
-        //    }
-        //}
     }
 }
