@@ -253,7 +253,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
                     return searchResult;
                 }
 
-                var iterator = new SymbolIterator(searchViewSymbolLoader.Symbols, s => s.InstancePath.ToLower().Contains(searchTerm.ToLower()));
+                var iterator = new SymbolIterator(clientService.FlatViewSymbols, s => s.InstancePath.ToLower().Contains(searchTerm.ToLower()));
                 searchResult.Results = iterator;
             }catch(Exception ex)
             {
@@ -268,11 +268,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             try
             {
-                searchViewSymbolLoader = SymbolLoaderFactory.Create(clientService.Client, new SymbolLoaderSettings(SymbolsLoadMode.Flat));
+                await clientService.Reload();
 
             }catch(Exception ex)
             {
-                Logger.Error("Could not read variables", ex);
+                Logger.Error("Could not reload variables", ex);
                 System.Windows.MessageBox.Show(ex.Message, ex.GetType().ToString(), System.Windows.MessageBoxButton.OK);
             }
 

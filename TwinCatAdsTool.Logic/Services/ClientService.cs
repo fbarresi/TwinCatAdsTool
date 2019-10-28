@@ -68,7 +68,8 @@ namespace TwinCatAdsTool.Logic.Services
                 var loader = SymbolLoaderFactory.Create(Client, new SymbolLoaderSettings(SymbolsLoadMode.VirtualTree));
                 TreeViewSymbols = loader.Symbols;
 
-                //todo add symbol for flat structre
+                var loader2 = SymbolLoaderFactory.Create(Client, new SymbolLoaderSettings(SymbolsLoadMode.Flat));
+                FlatViewSymbols = loader2.Symbols;
             }
             else
             {

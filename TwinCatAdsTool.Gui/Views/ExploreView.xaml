@@ -81,7 +81,8 @@
         </StackPanel>
         </ScrollViewer>
 
-        <StackPanel Grid.Column="1" Orientation="Vertical" Grid.Row="1" d:LayoutOverrides="Height" DataContext="{Binding ObserverViewModel}">
+        <ScrollViewer Grid.Column="1" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <StackPanel  Orientation="Vertical" d:LayoutOverrides="Height" DataContext="{Binding ObserverViewModel}">
             <Label>Observe</Label>
             <ListBox
                 ItemsSource="{Binding ViewModels}">
@@ -102,6 +103,7 @@
             </ListBox>
 
         </StackPanel>
+            </ScrollViewer>
 
         <TreeView Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"  ItemsSource="{Binding TreeNodes}" ItemTemplate="{StaticResource TreeNodeTemplate}">
         </TreeView>
