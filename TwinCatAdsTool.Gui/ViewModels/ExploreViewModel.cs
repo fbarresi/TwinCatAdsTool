@@ -184,6 +184,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             catch (Exception ex)
             {
                 Logger.Error($"Could not register Observer for Symbol {symbol?.InstanceName}", ex);
+                System.Windows.MessageBox.Show(ex.Message, ex.GetType().ToString(), System.Windows.MessageBoxButton.OK);
             }
 
             return Task.FromResult(Unit.Default);
@@ -197,6 +198,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }catch(Exception ex)
             {
                 Logger.Error($"Could not delete Observer for symbol {model?.Name}", ex);
+                System.Windows.MessageBox.Show(ex.Message, ex.GetType().ToString(), System.Windows.MessageBoxButton.OK);
             }
 
             return Task.FromResult(Unit.Default);
@@ -217,6 +219,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }catch(Exception ex)
             {
                 Logger.Error("Error during search", ex);
+                System.Windows.MessageBox.Show(ex.Message, ex.GetType().ToString(), System.Windows.MessageBoxButton.OK);
             }
 
             return searchResult;
@@ -232,6 +235,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }catch(Exception ex)
             {
                 Logger.Error("Could not read variables", ex);
+                System.Windows.MessageBox.Show(ex.Message, ex.GetType().ToString(), System.Windows.MessageBoxButton.OK);
             }
 
             return Unit.Default;
@@ -249,6 +253,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }catch(Exception ex)
             {
                 Logger.Error("Could not update Tree", ex);
+                System.Windows.MessageBox.Show(ex.Message, ex.GetType().ToString(), System.Windows.MessageBoxButton.OK);
             }
             finally
             {
