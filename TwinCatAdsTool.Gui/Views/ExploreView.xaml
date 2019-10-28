@@ -67,6 +67,7 @@
             <StackPanel>
             <Label>Search</Label>
             <TextBox
+                IsEnabled="{Binding IsConnected}"
                 x:Name="SearchBox"
                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
                 <TextBox.InputBindings>

@@ -39,6 +39,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private string searchText;
 
         private ObservableCollection<ISymbol> treeNodes;
+        private bool isConnected;
+        private ObservableAsPropertyHelper<bool> isConnectedHelper;
 
 
         public ExploreViewModel(IClientService clientService, 
@@ -119,6 +121,10 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 .Subscribe()
                 .AddDisposableTo(Disposables);
 
+            var connected = clientService.ConnectionState.Select(state => state == ConnectionState.Connected);
+
+            connected.ToProperty(this, x => x.IsConnected, out isConnectedHelper);
+
             // Setup the command for the enter key on the textbox
             TextBoxEnterCommand = new ReactiveRelayCommand(obj => { });
 
@@ -128,7 +134,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             CmdDelete = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(DeleteSymbolObserver)
                 .AddDisposableTo(Disposables);
 
-            Read = ReactiveCommand.CreateFromTask(ReadVariables, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
+            Read = ReactiveCommand.CreateFromTask(ReadVariables, canExecute: connected)
                 .AddDisposableTo(Disposables);
 
             this.WhenAnyValue(x => x.ObservedSymbols).Subscribe().AddDisposableTo(Disposables);
@@ -174,6 +180,21 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 );
                 
         }
+
+        public bool IsConnected               {
+            get { return isConnectedHelper.Value; }
+        set
+        {
+            if (isConnectedHelper.Value == value)
+            {
+                return;
+            }
+
+            isConnected = value;
+            raisePropertyChanged();
+        }
+        }
+
 
         private Task<Unit> RegisterSymbolObserver(ISymbol symbol)
         {
