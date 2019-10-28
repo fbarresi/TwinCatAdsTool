@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using DynamicData.Binding;
-using ReactiveUI;
+﻿using ReactiveUI;
 using TwinCAT.Ads.Reactive;
 using TwinCAT.TypeSystem;
 

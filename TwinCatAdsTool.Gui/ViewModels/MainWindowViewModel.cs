@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Reactive;
-using System.Threading.Tasks;
-using System.Windows;
-using Microsoft.Win32;
-using ReactiveUI;
-using TwinCatAdsTool.Gui.Extensions;
-using TwinCatAdsTool.Interfaces.Commons;
+﻿using TwinCatAdsTool.Interfaces.Commons;
 using TwinCatAdsTool.Interfaces.Extensions;
 
 namespace TwinCatAdsTool.Gui.ViewModels

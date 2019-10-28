@@ -28,7 +28,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
     {
         private readonly IClientService clientService;
 
-        private readonly IPersistentVariableService persistentVariableService;
         private readonly IViewModelFactory viewModelFactory;
         private readonly ISelectionService<ISymbol> symbolSelection;
 
@@ -42,19 +41,16 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private ObservableCollection<ISymbol> treeNodes;
 
 
-        public ExploreViewModel(IClientService clientService, IPersistentVariableService persistentVariableService, 
+        public ExploreViewModel(IClientService clientService, 
             IViewModelFactory viewModelFactory, ISelectionService<ISymbol> symbolSelection)
         {
             this.clientService = clientService;
-            this.persistentVariableService = persistentVariableService;
             this.viewModelFactory = viewModelFactory;
             this.symbolSelection = symbolSelection;
         }
 
         public ReactiveCommand<ISymbol, Unit> AddObserverCmd { get; set; }
         public ReactiveCommand<SymbolObservationViewModel, Unit> CmdDelete { get; set; }
-
-        public ObservableCollection<string> LogOutput { get; } = new ObservableCollection<string>();
 
         public ObservableCollection<IValueSymbol> ObservedSymbols
         {

@@ -36,9 +36,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private IEnumerable<ListBoxItem> leftBoxText;
         private IEnumerable<ListBoxItem> rightBoxText;
 
-        public double? LinePaddingOverride { private get; set; }
-        public double? TopOffsetOverride { private get; set; }
-
         public CompareViewModel(IClientService clientService, IPersistentVariableService persistentVariableService)
         {
             this.clientService = clientService;
