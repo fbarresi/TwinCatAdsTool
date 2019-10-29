@@ -85,6 +85,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
                         ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<LTIME>>(symbol));
                         break;
                     default:
+                        if (symbol.TypeName.ToUpper().StartsWith("STRING"))
+                        {
+                            ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<string>>(symbol));
+                            break;
+                        }
                         ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationDefaultViewModel>(symbol));
                         var exception = new NotImplementedException("This type is not implemented.");
                         Logger.Error(exception.Message, exception);
