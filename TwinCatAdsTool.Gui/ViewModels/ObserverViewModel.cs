@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Linq;
+using TwinCAT.PlcOpen;
 using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Interfaces.Commons;
 using TwinCatAdsTool.Interfaces.Extensions;
@@ -26,10 +28,73 @@ namespace TwinCatAdsTool.Gui.ViewModels
             ViewModels.Clear();
             symbolSelection.Elements
                 .ObserveOnDispatcher()
-                .Do(symbol =>ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol,SymbolObservationViewModel>(symbol)))
-
+                .Do(CreateViewModelOrShowMessage)
                 .Subscribe()
                 .AddDisposableTo(Disposables);
+        }
+
+        private void CreateViewModelOrShowMessage(ISymbol symbol)
+        {
+            if(ViewModels.All(viewModel => viewModel.Model != symbol))
+            {
+                switch (symbol.TypeName)
+                {
+                    case "BOOL":
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<bool>>(symbol));
+                        break;
+                    case "BYTE":
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<byte>>(symbol));
+                        break;
+                    case "WORD":
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<UInt16>>(symbol));
+                        break;
+                    case "DWORD":
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<UInt32>>(symbol));
+                        break;
+                    case "SINT":
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<sbyte>>(symbol));
+                        break;
+                    case "USINT":
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<byte>>(symbol));
+                        break;
+                    case "INT":
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<short>>(symbol));
+                        break;
+                    case "UINT":
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<ushort>>(symbol));
+                        break;
+                    case "DINT":
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<int>>(symbol));
+                        break;
+                    case "UDINT":
+                        ViewModels.Add(viewModelFactory.CreateViewModel < ISymbol, SymbolObservationViewModel <uint>> (symbol));
+                        break;
+                    case "REAL":
+                        ViewModels.Add(viewModelFactory.CreateViewModel < ISymbol, SymbolObservationViewModel <float>> (symbol));
+                        break;
+                    case "LREAL":
+                        ViewModels.Add(viewModelFactory.CreateViewModel < ISymbol, SymbolObservationViewModel <double>> (symbol));
+                        break;
+                    case "STRING":
+                        ViewModels.Add(viewModelFactory.CreateViewModel < ISymbol, SymbolObservationViewModel <string>> (symbol));
+                        break;
+                    case "DATE_AND_TIME":
+                        ViewModels.Add(viewModelFactory.CreateViewModel < ISymbol, SymbolObservationViewModel <DT>> (symbol));
+                        break;
+                    case "LTIME":
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<LTIME>>(symbol));
+                        break;
+                    default:
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationDefaultViewModel>(symbol));
+                        var exception = new NotImplementedException("This type is not implemented.");
+                        Logger.Error(exception.Message, exception);
+                        break;
+                }
+            }
+            else
+            {
+                System.Windows.MessageBox.Show($"The symbol {symbol?.InstanceName} has already been added to the list of observables", "Symbol already observed", System.Windows.MessageBoxButton.OK);
+            }
         }
     }
 }

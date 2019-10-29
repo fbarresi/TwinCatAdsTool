@@ -1,52 +1,213 @@
 ﻿<UserControl x:Class="TwinCatAdsTool.Gui.Views.ExploreView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:viewModels="clr-namespace:TwinCatAdsTool.Gui.ViewModels"
              xmlns:views="clr-namespace:TwinCatAdsTool.Gui.Views"
              xmlns:typeSystem="clr-namespace:TwinCAT.TypeSystem;assembly=TwinCAT.Ads"
-             mc:Ignorable="d" 
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:converters="clr-namespace:TwinCatAdsTool.Gui.Converters"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              FocusManager.FocusedElement="{Binding ElementName=SearchBox}">
-<UserControl.Resources >
-    <Style TargetType="ListBox" x:Key="ListStyle" BasedOn="{StaticResource {x:Type ListBox}}">
-        <Style.Triggers>
-            <DataTrigger 
-                Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}" 
-                Value="0">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate>
-                            <TextBlock>No items to display</TextBlock>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
+    <UserControl.Resources>
 
-    <Style TargetType="TreeView" x:Key="TreeViewStyle" BasedOn="{StaticResource {x:Type TreeView}}">
-        <Style.Triggers>
-            <DataTrigger 
-                Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}" 
-                Value="0">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate>
-                            <TextBlock>No items to display</TextBlock>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
+        <Style TargetType="TreeView" x:Key="TreeViewStyle" BasedOn="{StaticResource {x:Type TreeView}}">
+            <Style.Triggers>
+                <DataTrigger
+                    Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}"
+                    Value="0">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">No items to display</TextBlock>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
 
         <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type typeSystem:ISymbol}" ItemsSource="{Binding SubSymbols}">
-            <Button Content="{Binding InstancePath}" CommandParameter="{Binding}" Command="{Binding  Path=DataContext.AddObserverCmd, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}"></Button>
+            <Button Content="{Binding InstancePath}"
+                    CommandParameter="{Binding}"
+                    Command="{Binding  Path=DataContext.AddObserverCmd, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}"
+                    Margin="0"
+                    Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" />
         </HierarchicalDataTemplate>
-</UserControl.Resources>
+
+        <DataTemplate x:Key="StringTemplate" DataType="{x:Type viewModels:SymbolObservationViewModel}">
+            <Grid DataContext="{Binding}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Label Content="{Binding Name}" Grid.Column="0" />
+                <Label Content="{Binding Value}" Grid.Column="1" />
+                <TextBox Text="{Binding NewValue}" Grid.Column="2" />
+                <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
+                <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DefaultTemplate" DataType="{x:Type viewModels:SymbolObservationViewModel}">
+            <Grid DataContext="{Binding}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Label Content="{Binding Name}" Grid.Column="0" />
+                <Label Content="{Binding Value}" Grid.Column="1" />
+                <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="IntTemplate">
+            <Grid DataContext="{Binding}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Label Content="{Binding Name}" Grid.Column="0" />
+                <Label Content="{Binding Value}" Grid.Column="1" />
+                <xctk:IntegerUpDown Grid.Column="2" Value="{Binding NewValue}" />
+                <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
+                <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TimeSpanTemplate">
+            <Grid DataContext="{Binding}">
+                <Grid.Resources>
+                    <converters:LTimeToTimeSpanConverter x:Key="LTimeToTimeSpanConverter" />
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Label Content="{Binding Name}" Grid.Column="0" />
+                <Label Content="{Binding Value}" Grid.Column="1" />
+                <xctk:TimeSpanUpDown Grid.Column="2" Value="{Binding NewValue, Converter={StaticResource LTimeToTimeSpanConverter}}" />
+                <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
+                <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ByteTemplate">
+            <Grid DataContext="{Binding}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Label Content="{Binding Name}" Grid.Column="0" />
+                <Label Content="{Binding Value}" Grid.Column="1" />
+                <xctk:ByteUpDown Grid.Column="2" Value="{Binding NewValue}" />
+                <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
+                <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DateTimeTemplate">
+            <Grid DataContext="{Binding}">
+                <Grid.Resources>
+                    <converters:DtToDateTimeConverter x:Key="DtToDateTimeConverter" />
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Label Content="{Binding Name}" Grid.Column="0" />
+                <Label Content="{Binding Value}" Grid.Column="1" />
+                <xctk:DateTimePicker Grid.Column="2" Value="{Binding NewValue, Converter={StaticResource DtToDateTimeConverter}}" />
+                <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
+                <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="BoolTemplate">
+            <Grid DataContext="{Binding}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Label Content="{Binding Name}" Grid.Column="0" />
+                <Label Content="{Binding Value}" Grid.Column="1" />
+                <CheckBox Grid.Column="2" IsChecked="{Binding NewValue}" VerticalAlignment="Center" />
+                <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
+                <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SingleTemplate">
+            <Grid DataContext="{Binding}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label Content="{Binding Name}" Grid.Column="0" />
+                <Label Content="{Binding Value}" Grid.Column="1" />
+                <xctk:SingleUpDown Grid.Column="2" Value="{Binding NewValue}" />
+                <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
+                <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
+            </Grid>
+        </DataTemplate>
+
+
+        <DataTemplate x:Key="DoubleTemplate">
+            <Grid DataContext="{Binding}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label Content="{Binding Name}" Grid.Column="0" />
+                <Label Content="{Binding Value}" Grid.Column="1" />
+                <xctk:DoubleUpDown Grid.Column="2" Value="{Binding NewValue}" />
+                <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
+                <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
+            </Grid>
+        </DataTemplate>
+
+        <views:SymbolObservationTemplateSelector x:Key="SymbolObservationTemplateSelector"
+                                                 StringTemplate="{StaticResource StringTemplate}"
+                                                 IntTemplate="{StaticResource IntTemplate}"
+                                                 SingleTemplate="{StaticResource SingleTemplate}"
+                                                 DefaultTemplate="{StaticResource DefaultTemplate}"
+                                                 ByteTemplate="{StaticResource ByteTemplate}"
+                                                 BoolTemplate="{StaticResource BoolTemplate}"
+                                                 DateTimeTemplate="{StaticResource DateTimeTemplate}"
+                                                 TimeSpanTemplate="{StaticResource TimeSpanTemplate}"
+                                                 DoubleTemplate="{StaticResource DoubleTemplate}" />
+    </UserControl.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -54,58 +215,74 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Button Command="{Binding Read}">Read</Button>
+            <Button Command="{Binding Read}">
+                <StackPanel Orientation="Horizontal">
+                    <fa:ImageAwesome Icon="Refresh" Height="20" Margin="5"/>
+                    <Label Content="Refresh data from PLC" />
+                </StackPanel>
+                
+            </Button>
         </StackPanel>
 
+        <TabControl Grid.Column="0" Grid.Row="1" TabStripPlacement="Left" Margin="5">
 
-        <ScrollViewer Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <StackPanel>
-            <Label>Search</Label>
-            <TextBox
-                IsEnabled="{Binding IsConnected}"
-                x:Name="SearchBox"
-                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
-                <TextBox.InputBindings>
-                    <KeyBinding
-                        Command="{Binding TextBoxEnterCommand}"
-                        Key="Enter" />
-                </TextBox.InputBindings>
-            </TextBox>
-            <TreeView
-                ItemsSource="{Binding SearchResults}" ItemTemplate="{StaticResource TreeNodeTemplate}" Style="{StaticResource TreeViewStyle}"/>
-        </StackPanel>
-        </ScrollViewer>
+            <TabItem Header="Tree">
+
+                <TreeView ItemsSource="{Binding TreeNodes}" ItemTemplate="{StaticResource TreeNodeTemplate}" />
+
+            </TabItem>
+
+            <TabItem Header="Search">
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Column="0" Grid.Row="0">Enter symbolname to search</Label>
+                        <TextBox Grid.Column="1" Grid.Row="0"
+                                 IsEnabled="{Binding IsConnected}"
+                                 x:Name="SearchBox"
+                                 VerticalContentAlignment="Center"
+                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding TextBoxEnterCommand}"
+                                    Key="Enter" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+
+                        <TreeView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5"
+                                  ItemsSource="{Binding SearchResults}" 
+                                  ItemTemplate="{StaticResource TreeNodeTemplate}" 
+                                  Style="{StaticResource TreeViewStyle}" />
+                    </Grid>
+                </ScrollViewer>
+
+            </TabItem>
+
+        </TabControl>
+
+        
 
         <ScrollViewer Grid.Column="1" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <StackPanel  Orientation="Vertical" d:LayoutOverrides="Height" DataContext="{Binding ObserverViewModel}">
-            <Label>Observe</Label>
-            <ListBox
-                ItemsSource="{Binding ViewModels}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                    <Grid DataContext="{Binding}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Label Content="{Binding Name}" Grid.Column="0"/>
-                        <Label Content="{Binding Value}" Grid.Column="1"/>
-                            <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="2" Content="X"></Button>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <Grid d:LayoutOverrides="Height" DataContext="{Binding ObserverViewModel}">
+                <Label>Observe</Label>
+                <ListBox ItemsSource="{Binding ViewModels}" ItemTemplateSelector="{StaticResource SymbolObservationTemplateSelector}" />
 
-        </StackPanel>
-            </ScrollViewer>
+            </Grid>
+        </ScrollViewer>
 
-        <TreeView Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"  ItemsSource="{Binding TreeNodes}" ItemTemplate="{StaticResource TreeNodeTemplate}">
-        </TreeView>
+        
     </Grid>
 </UserControl>
