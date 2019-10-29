@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TwinCatAdsTool.Gui.Views"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -12,11 +13,27 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Button Command="{Binding Read}">Read</Button>
-            <Button Command="{Binding Save}">Save</Button>
+            
+            <Button Command="{Binding Read}">
+                <StackPanel Orientation="Horizontal">
+                    <fa:ImageAwesome Icon="Microchip" Height="20" Margin="5"/>
+                    <Label Content="Read from PLC" />
+                </StackPanel>
+            </Button>
+
+            <Button Command="{Binding Save}">
+                <StackPanel Orientation="Horizontal">
+                    <fa:ImageAwesome Icon="Save" Height="20" Margin="5"/>
+                    <Label Content="Save to file" />
+                </StackPanel>
+            </Button>
+
         </StackPanel>
-        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
-            <TextBlock Text="{Binding BackupText}" FontFamily="Courier"/>
+
+        <Border Grid.Row="1" BorderThickness="1" BorderBrush="Gray" Margin="5" Padding="5">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto">
+            <TextBlock Text="{Binding BackupText}" FontFamily="Courier New" Foreground="GreenYellow" Background="Black"/>
         </ScrollViewer>
+        </Border>
     </Grid>
 </UserControl>

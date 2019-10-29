@@ -42,11 +42,11 @@
         <DataTemplate x:Key="StringTemplate" DataType="{x:Type viewModels:SymbolObservationViewModel}">
             <Grid DataContext="{Binding}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -59,11 +59,11 @@
         <DataTemplate x:Key="DefaultTemplate" DataType="{x:Type viewModels:SymbolObservationViewModel}">
             <Grid DataContext="{Binding}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -74,11 +74,11 @@
         <DataTemplate x:Key="IntTemplate">
             <Grid DataContext="{Binding}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -94,11 +94,11 @@
                     <converters:LTimeToTimeSpanConverter x:Key="LTimeToTimeSpanConverter" />
                 </Grid.Resources>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -111,11 +111,11 @@
         <DataTemplate x:Key="ByteTemplate">
             <Grid DataContext="{Binding}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -131,11 +131,11 @@
                     <converters:DtToDateTimeConverter x:Key="DtToDateTimeConverter" />
                 </Grid.Resources>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -148,11 +148,11 @@
         <DataTemplate x:Key="BoolTemplate">
             <Grid DataContext="{Binding}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -165,11 +165,11 @@
         <DataTemplate x:Key="SingleTemplate">
             <Grid DataContext="{Binding}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="50" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -183,11 +183,11 @@
         <DataTemplate x:Key="DoubleTemplate">
             <Grid DataContext="{Binding}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="50" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -211,8 +211,9 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -221,10 +222,10 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Command="{Binding Read}">
                 <StackPanel Orientation="Horizontal">
-                    <fa:ImageAwesome Icon="Refresh" Height="20" Margin="5"/>
+                    <fa:ImageAwesome Icon="Refresh" Height="20" Margin="5" />
                     <Label Content="Refresh data from PLC" />
                 </StackPanel>
-                
+
             </Button>
         </StackPanel>
 
@@ -242,7 +243,7 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
@@ -258,13 +259,13 @@
                                  Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
                             <TextBox.InputBindings>
                                 <KeyBinding Command="{Binding TextBoxEnterCommand}"
-                                    Key="Enter" />
+                                            Key="Enter" />
                             </TextBox.InputBindings>
                         </TextBox>
 
                         <TreeView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5"
-                                  ItemsSource="{Binding SearchResults}" 
-                                  ItemTemplate="{StaticResource TreeNodeTemplate}" 
+                                  ItemsSource="{Binding SearchResults}"
+                                  ItemTemplate="{StaticResource TreeNodeTemplate}"
                                   Style="{StaticResource TreeViewStyle}" />
                     </Grid>
                 </ScrollViewer>
@@ -273,16 +274,13 @@
 
         </TabControl>
 
-        
+        <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Stretch" />
 
-        <ScrollViewer Grid.Column="1" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <Grid d:LayoutOverrides="Height" DataContext="{Binding ObserverViewModel}">
-                <Label>Observe</Label>
-                <ListBox ItemsSource="{Binding ViewModels}" ItemTemplateSelector="{StaticResource SymbolObservationTemplateSelector}" />
+        <ListBox Grid.Column="2" Grid.Row="1"
+                 DataContext="{Binding ObserverViewModel}"
+                 ItemsSource="{Binding ViewModels}"
+                 ItemTemplateSelector="{StaticResource SymbolObservationTemplateSelector}" />
 
-            </Grid>
-        </ScrollViewer>
 
-        
     </Grid>
 </UserControl>
