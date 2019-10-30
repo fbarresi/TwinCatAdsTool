@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using DynamicData;
@@ -13,6 +14,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using TwinCAT;
+using TwinCAT.Ads;
+using TwinCAT.JsonExtension;
+using TwinCAT.PlcOpen;
+using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Gui.Extensions;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
@@ -179,8 +184,13 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 {
                     try
                     {
-                        var jobject = JObject.Load(new JsonTextReader(new StringReader(variable.Json)))  ;
-                        //await clientService.Client.WriteJson(variable.Name, jobject, true);
+                        var jobject = JObject.Load(new JsonTextReader(new StringReader(variable.Json)));
+                        foreach (var p in jobject.Properties())
+                        {
+                            var o = new JObject();
+                            o.Add(p.Name, p.Value);
+                            await WriteJsonRecursive(clientService.Client,  variable.Name +"." + p.Name, p.Value);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -189,6 +199,64 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 }
             }
             return Unit.Default;
+        }
+
+        public async Task WriteJsonRecursive(TcAdsClient client, string name, JToken token)
+        {
+            var symbolInfo = (ITcAdsSymbol5)client.ReadSymbolInfo(name);
+            var dataType = symbolInfo.DataType;
+            if (dataType.Category == DataTypeCategory.Array)
+            {
+                var array= token as JArray;
+                var elementCount = array.Count < dataType.Dimensions.ElementCount ? array.Count : dataType.Dimensions.ElementCount;
+                for (int i = 0; i < elementCount; i++)
+                {
+                    //TODO handle strings
+                    if (dataType.BaseType.ManagedType != null && array[i].Type != JTokenType.String)
+                    {
+                        await client.WriteAsync(name + $"[{i + dataType.Dimensions.LowerBounds.First()}]", array[i]).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await WriteJsonRecursive(client, name + $"[{i + dataType.Dimensions.LowerBounds.First()}]", array[i]).ConfigureAwait(false);
+                    }
+                }
+            }
+            else if (dataType.ManagedType == null)
+            {
+                if (dataType.SubItems.Any())
+                {
+                    foreach (var subItem in dataType.SubItems)
+                    {
+                        await WriteJsonRecursive(client, name + "." + subItem.SubItemName, token.SelectToken(subItem.SubItemName)).ConfigureAwait(false);
+                    }
+                }
+            }
+            else if (dataType.ManagedType == typeof(TwinCAT.PlcOpen.TIME))
+            {
+                await client.WriteAsync(symbolInfo.Name, new TIME(token.ToObject<TimeSpan>())).ConfigureAwait(false);
+            }
+            else if (dataType.ManagedType == typeof(TwinCAT.PlcOpen.LTIME))
+            {
+                await client.WriteAsync( symbolInfo.Name, new LTIME(token.ToObject<TimeSpan>())).ConfigureAwait(false);
+            }
+            else if (dataType.ManagedType == typeof(TwinCAT.PlcOpen.DT))
+            {
+                await client.WriteAsync(symbolInfo.Name, new DT(token.ToObject<DateTime>())).ConfigureAwait(false);
+            }
+            else if (dataType.ManagedType == typeof(TwinCAT.PlcOpen.DATE))
+            {
+                await client.WriteAsync(symbolInfo.Name, new DATE(token.ToObject<DateTime>())).ConfigureAwait(false);
+            }
+            else
+            {
+                // TODO handle strings
+                if (token.Type != JTokenType.String)
+                {
+                    await client.WriteAsync(symbolInfo.Name, token).ConfigureAwait(false);
+                }
+            }
+
         }
 
         public ReactiveCommand<Unit, Unit> Load { get; set; }

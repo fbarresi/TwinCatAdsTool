@@ -47,7 +47,8 @@
             </Button>
 
         </StackPanel>
-        
-        <ListBox Grid.Row="1" ItemsSource="{Binding DisplayVariables}" FontFamily="Courier" ItemTemplate="{StaticResource VariableTemplate}" />
+
+        <ListBox Grid.Row="1" ItemsSource="{Binding DisplayVariables}" FontFamily="Courier" ItemTemplate="{StaticResource VariableTemplate}"/>
+    
     </Grid>
 </UserControl>
