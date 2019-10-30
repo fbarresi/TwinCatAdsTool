@@ -23,16 +23,17 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Grid.Column=" 0" Orientation="Horizontal" >
 
-            <Button Command="{Binding Read}">
+
+                <Button Command="{Binding ReadLeft}">
                 <StackPanel Orientation="Horizontal">
                     <fa:ImageAwesome Icon="Microchip" Height="20" Margin="5" />
                     <Label Content="Read from PLC" />
                 </StackPanel>
             </Button>
 
-            <Button Command="{Binding Load}">
+            <Button Command="{Binding LoadLeft}">
                 <StackPanel Orientation="Horizontal">
                     <fa:ImageAwesome Icon="FolderOpen" Height="20" Margin="5" />
                     <Label Content="Load from file" />
@@ -40,6 +41,25 @@
             </Button>
 
         </StackPanel>
+
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" >
+
+            <Button Command="{Binding ReadRight}">
+                <StackPanel Orientation="Horizontal">
+                    <fa:ImageAwesome Icon="Microchip" Height="20" Margin="5" />
+                    <Label Content="Read from PLC" />
+                </StackPanel>
+            </Button>
+
+            <Button Command="{Binding LoadRight}">
+                <StackPanel Orientation="Horizontal">
+                    <fa:ImageAwesome Icon="FolderOpen" Height="20" Margin="5" />
+                    <Label Content="Load from file" />
+                </StackPanel>
+            </Button>
+
+        </StackPanel>
+
         <ScrollViewer Name="LeftScroller" IsTabStop="False" Margin="0 0 10 0" Grid.Column="0" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Grid>
                 <ListView ItemsSource="{Binding DataContext.LeftBoxText, RelativeSource={RelativeSource AncestorType=local:CompareView}}" />

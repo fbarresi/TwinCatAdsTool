@@ -59,10 +59,17 @@ namespace TwinCatAdsTool.Gui.ViewModels
             rightTextSubject.OnNext(new JObject());
 
     
-            Read = ReactiveCommand.CreateFromTask(ReadVariables, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
+            ReadLeft = ReactiveCommand.CreateFromTask(ReadVariablesLeft, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
 
-            Load = ReactiveCommand.CreateFromTask(LoadJson, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
+            LoadLeft = ReactiveCommand.CreateFromTask(LoadJsonLeft, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
+                .AddDisposableTo(Disposables);
+
+
+            ReadRight = ReactiveCommand.CreateFromTask(ReadVariablesRight, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
+                .AddDisposableTo(Disposables);
+
+            LoadRight = ReactiveCommand.CreateFromTask(LoadJsonRight, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
         }
 
@@ -103,8 +110,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 return fillColor;
         }
 
-        public ReactiveCommand<System.Reactive.Unit, Unit> Read { get; set; }
-        public ReactiveCommand<System.Reactive.Unit, Unit> Load { get; set; }
+        public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ReadLeft { get; set; }
+        public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> LoadLeft { get; set; }
+
+        public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ReadRight { get; set; }
+        public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> LoadRight { get; set; }
 
         public IEnumerable<ListBoxItem> LeftBoxText
         {
@@ -144,26 +154,68 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
         }
 
-        private async Task<Unit> ReadVariables()
+        private async Task<JObject> ReadVariables()
         {
             var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
             leftTextSubject.OnNext(persistentVariables);
-            return Unit.Empty;
+            return persistentVariables;
         }
 
-        private Task<Unit> LoadJson()
+        private async Task ReadVariablesLeft()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Json files (*.json)|*.json";
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            if (openFileDialog.ShowDialog() == true)
+            var json = await ReadVariables();
+            leftTextSubject.OnNext(json);
+        }
+
+        private async Task ReadVariablesRight()
+        {
+            var json = await ReadVariables();
+            rightTextSubject.OnNext(json);
+        }
+
+
+        private Task LoadJsonLeft()
+        {
+            var json = LoadJson().Result;
+            if (json != null)
             {
-                JObject json = JObject.Parse(File.ReadAllText(openFileDialog.FileName));
-                rightTextSubject.OnNext(json);
-                
+                leftTextSubject.OnNext(json);
             }
 
             return Task.FromResult(Unit.Empty);
+        }
+
+        private Task LoadJsonRight()
+        {
+            var json = LoadJson()?.Result;
+            if (json != null)
+            {
+                rightTextSubject.OnNext(json);
+            }
+
+
+            return Task.FromResult(Unit.Empty);
+        }
+
+
+        private Task<JObject> LoadJson()
+        {
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Json files (*.json)|*.json";
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    JObject json = JObject.Parse(File.ReadAllText(openFileDialog.FileName));
+                    return Task.FromResult(json);
+                }
+            }catch(Exception ex)
+            {
+                Logger.Error("Error during load of file");
+            }
+      
+            return Task.FromResult<JObject>(null);
         }
 
     }
