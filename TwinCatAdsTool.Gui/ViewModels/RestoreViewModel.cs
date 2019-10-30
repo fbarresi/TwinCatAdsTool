@@ -203,22 +203,32 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public async Task WriteJsonRecursive(TcAdsClient client, string name, JToken token)
         {
-            var symbolInfo = (ITcAdsSymbol5)client.ReadSymbolInfo(name);
+            var symbolInfo = (ITcAdsSymbol5) client.ReadSymbolInfo(name);
             var dataType = symbolInfo.DataType;
             if (dataType.Category == DataTypeCategory.Array)
             {
-                var array= token as JArray;
+                var array = token as JArray;
                 var elementCount = array.Count < dataType.Dimensions.ElementCount ? array.Count : dataType.Dimensions.ElementCount;
-                for (int i = 0; i < elementCount; i++)
+                if (dataType.BaseType.ManagedType == typeof(System.Byte))
                 {
-                    //TODO handle strings
-                    if (dataType.BaseType.ManagedType != null && array[i].Type != JTokenType.String)
+                    byte[] bytes = Convert.FromBase64String(array[0].ToString());
+                    for (int i = 0; i < bytes.Length; i++)
                     {
-                        await client.WriteAsync(name + $"[{i + dataType.Dimensions.LowerBounds.First()}]", array[i]).ConfigureAwait(false);
+                        await client.WriteAsync(name + $"[{i + dataType.Dimensions.LowerBounds.First()}]", bytes[i]).ConfigureAwait(false);
                     }
-                    else
+                }
+                else
+                {
+                    for (int i = 0; i < elementCount; i++)
                     {
-                        await WriteJsonRecursive(client, name + $"[{i + dataType.Dimensions.LowerBounds.First()}]", array[i]).ConfigureAwait(false);
+                        if (dataType.BaseType.ManagedType != null)
+                        {
+                            await client.WriteAsync(name + $"[{i + dataType.Dimensions.LowerBounds.First()}]", array[i]).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await WriteJsonRecursive(client, name + $"[{i + dataType.Dimensions.LowerBounds.First()}]", array[i]).ConfigureAwait(false);
+                        }
                     }
                 }
             }
@@ -238,7 +248,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
             else if (dataType.ManagedType == typeof(TwinCAT.PlcOpen.LTIME))
             {
-                await client.WriteAsync( symbolInfo.Name, new LTIME(token.ToObject<TimeSpan>())).ConfigureAwait(false);
+                await client.WriteAsync(symbolInfo.Name, new LTIME(token.ToObject<TimeSpan>())).ConfigureAwait(false);
             }
             else if (dataType.ManagedType == typeof(TwinCAT.PlcOpen.DT))
             {
@@ -248,16 +258,12 @@ namespace TwinCatAdsTool.Gui.ViewModels
             {
                 await client.WriteAsync(symbolInfo.Name, new DATE(token.ToObject<DateTime>())).ConfigureAwait(false);
             }
-            else
-            {
-                // TODO handle strings
-                if (token.Type != JTokenType.String)
-                {
-                    await client.WriteAsync(symbolInfo.Name, token).ConfigureAwait(false);
-                }
+            else { 
+
+                await client.WriteAsync(symbolInfo.Name, token).ConfigureAwait(false);
             }
 
-        }
+    }
 
         public ReactiveCommand<Unit, Unit> Load { get; set; }
         public ReactiveCommand<Unit, Unit> Write { get; set; }
