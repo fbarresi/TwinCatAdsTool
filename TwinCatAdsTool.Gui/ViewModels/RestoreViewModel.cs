@@ -34,6 +34,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private ObservableCollection<VariableViewModel> liveVariables;
         private ObservableCollection<VariableViewModel> fileVariables;
         private ObservableCollection<VariableViewModel> displayVariables;
+        private readonly BehaviorSubject<bool> canWrite = new BehaviorSubject<bool>(false);
 
         public ObservableCollection<VariableViewModel> LiveVariables
         {
@@ -93,10 +94,13 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 .AddDisposableTo(Disposables)
                 ;
 
+            canWrite.Subscribe().AddDisposableTo(Disposables);
+
+
             Load = ReactiveCommand.CreateFromTask(LoadVariables, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
 
-            Write = ReactiveCommand.CreateFromTask(WriteVariables, clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
+            Write = ReactiveCommand.CreateFromTask(WriteVariables, canWrite.Select(x => x))
                 .AddDisposableTo(Disposables);
         }
 
@@ -163,6 +167,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             {
                 JObject json = JObject.Parse(File.ReadAllText(openFileDialog.FileName));
                 fileVariableSubject.OnNext(json);
+                canWrite.OnNext(true);
             }
 
             return Unit.Default;
