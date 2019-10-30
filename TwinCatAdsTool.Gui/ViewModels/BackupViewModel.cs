@@ -19,7 +19,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private readonly IClientService clientService;
         private readonly IPersistentVariableService persistentVariableService;
         private string backupText;
-        private readonly BehaviorSubject<JObject> variableSubject = new BehaviorSubject<JObject>(new JObject());
+        private readonly Subject<JObject> variableSubject = new Subject<JObject>();
 
         public BackupViewModel(IClientService clientService, IPersistentVariableService persistentVariableService)
         {
@@ -60,7 +60,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             var result = saveFileDialog1.ShowDialog();
             if (result == DialogResult.OK || result == DialogResult.Yes)
             {
-                File.WriteAllText(saveFileDialog1.FileName, variableSubject.Value.ToString(Formatting.Indented));
+                File.WriteAllText(saveFileDialog1.FileName, BackupText);
             }
             return Task.FromResult(Unit.Default);
         }

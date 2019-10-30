@@ -27,8 +27,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
     public class CompareViewModel : ViewModelBase
     {
 
-        private readonly Subject<JObject> leftTextSubject = new Subject<JObject>();
-        private readonly Subject<JObject> rightTextSubject = new Subject<JObject>();
+        private readonly Subject<string> leftTextSubject = new Subject<string>();
+        private readonly Subject<string> rightTextSubject = new Subject<string>();
         private IClientService clientService;
         private IPersistentVariableService persistentVariableService;
         private SideBySideDiffBuilder comparisonBuilder = new SideBySideDiffBuilder(new Differ());
@@ -47,7 +47,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
 
             var x = Observable
-                .CombineLatest(leftTextSubject, rightTextSubject, 
+                .CombineLatest(leftTextSubject.StartWith(""), rightTextSubject.StartWith(""), 
                 (l, r) => comparisonModel = GenerateDiffModel(l, r));
 
             x.ObserveOnDispatcher()
@@ -55,10 +55,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 .Subscribe()
                 .AddDisposableTo(Disposables);
 
-            leftTextSubject.OnNext(new JObject());
-            rightTextSubject.OnNext(new JObject());
-
-    
             ReadLeft = ReactiveCommand.CreateFromTask(ReadVariablesLeft, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
 
@@ -73,9 +69,9 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 .AddDisposableTo(Disposables);
         }
 
-        private SideBySideDiffModel GenerateDiffModel(JObject left, JObject right)
+        private SideBySideDiffModel GenerateDiffModel(string left, string right)
         {
-            var diffModel = comparisonBuilder.BuildDiffModel(left.ToString(), right.ToString());
+            var diffModel = comparisonBuilder.BuildDiffModel(left, right);
 
 
             var leftBox = diffModel.OldText.Lines;
@@ -154,23 +150,26 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
         }
 
+        private bool leftInitialized = false;
+        private bool rightInitialized = false;
+
         private async Task<JObject> ReadVariables()
         {
             var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
-            leftTextSubject.OnNext(persistentVariables);
+            leftTextSubject.OnNext(persistentVariables.ToString());
             return persistentVariables;
         }
 
         private async Task ReadVariablesLeft()
         {
             var json = await ReadVariables();
-            leftTextSubject.OnNext(json);
+            leftTextSubject.OnNext(json.ToString());
         }
 
         private async Task ReadVariablesRight()
         {
             var json = await ReadVariables();
-            rightTextSubject.OnNext(json);
+            rightTextSubject.OnNext(json.ToString());
         }
 
 
@@ -179,7 +178,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             var json = LoadJson().Result;
             if (json != null)
             {
-                leftTextSubject.OnNext(json);
+                leftTextSubject.OnNext(json.ToString());
             }
 
             return Task.FromResult(Unit.Empty);
@@ -190,7 +189,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             var json = LoadJson()?.Result;
             if (json != null)
             {
-                rightTextSubject.OnNext(json);
+                rightTextSubject.OnNext(json.ToString());
             }
 
 
