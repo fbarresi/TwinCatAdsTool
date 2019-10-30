@@ -98,7 +98,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             if (typeof(T) == typeof(string))
             {
-                clientService.Client.WriteAnyString(variableHandle, value as string, (value as string).Length, Encoding.Unicode);
+                clientService.Client.WriteAnyString(variableHandle, value as string, (value as string).Length, Encoding.Default);
                 return;
             }
             else{
