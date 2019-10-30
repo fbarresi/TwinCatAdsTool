@@ -150,9 +150,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
         }
 
-        private bool leftInitialized = false;
-        private bool rightInitialized = false;
-
         private async Task<JObject> ReadVariables()
         {
             var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
