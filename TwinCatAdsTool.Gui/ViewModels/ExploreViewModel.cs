@@ -261,11 +261,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
             var searchResult = new SearchResult { Results = new List<ISymbol>(), SearchTerm = searchTerm };
             try
             {
-                if (searchTerm.Length < 5)
-                {
-                    return searchResult;
-                }
-
                 var iterator = new SymbolIterator(clientService.FlatViewSymbols, s => s.InstancePath.ToLower().Contains(searchTerm.ToLower()));
                 searchResult.Results = iterator;
             }
