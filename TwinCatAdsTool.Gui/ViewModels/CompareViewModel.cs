@@ -77,13 +77,15 @@ namespace TwinCatAdsTool.Gui.ViewModels
             var leftBox = diffModel.OldText.Lines;
             var rightBox = diffModel.NewText.Lines;
 
-            LeftBoxText = leftBox.Select(x => new ListBoxItem() { Content = x.Text, Background = GetBGColor(x)});
-            RightBoxText = rightBox.Select(x => new ListBoxItem() { Content = x.Text, Background = GetBGColor(x) });
+            // all items have the same fixed height. this makes synchronizing of the scrollbars easier
+            LeftBoxText = leftBox.Select(x => new ListBoxItem() { Content = x.Text, Background = GetBGColor(x), Height = 20});
+            RightBoxText = rightBox.Select(x => new ListBoxItem() { Content = x.Text, Background = GetBGColor(x), Height = 20});
 
             return diffModel;
         }
 
-        // https://github.com/SciGit/scigit-client/blob/master/DiffPlex/SilverlightDiffer/TextBoxDiffRenderer.cs
+        //manually coloring the ListboxItems depending on their diff state
+        //compare https://github.com/SciGit/scigit-client/blob/master/DiffPlex/SilverlightDiffer/TextBoxDiffRenderer.cs
         private SolidColorBrush GetBGColor(DiffPiece diffPiece)
         {
       

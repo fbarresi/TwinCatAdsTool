@@ -26,5 +26,18 @@ namespace TwinCatAdsTool.Gui.Views
             InitializeComponent();
         }
 
+        private void ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (sender == LeftScroller)
+            {
+                RightScroller.ScrollToVerticalOffset(e.VerticalOffset);
+                RightScroller.ScrollToHorizontalOffset(e.HorizontalOffset);
+            }
+            else
+            {
+                LeftScroller.ScrollToVerticalOffset(e.VerticalOffset);
+                LeftScroller.ScrollToHorizontalOffset(e.HorizontalOffset);
+            }
+        }
     }
 }
