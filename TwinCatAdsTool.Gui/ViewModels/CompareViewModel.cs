@@ -58,14 +58,14 @@ namespace TwinCatAdsTool.Gui.ViewModels
             ReadLeft = ReactiveCommand.CreateFromTask(ReadVariablesLeft, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
 
-            LoadLeft = ReactiveCommand.CreateFromTask(LoadJsonLeft, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
+            LoadLeft = ReactiveCommand.CreateFromTask(LoadJsonLeft)
                 .AddDisposableTo(Disposables);
 
 
             ReadRight = ReactiveCommand.CreateFromTask(ReadVariablesRight, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
 
-            LoadRight = ReactiveCommand.CreateFromTask(LoadJsonRight, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
+            LoadRight = ReactiveCommand.CreateFromTask(LoadJsonRight)
                 .AddDisposableTo(Disposables);
         }
 

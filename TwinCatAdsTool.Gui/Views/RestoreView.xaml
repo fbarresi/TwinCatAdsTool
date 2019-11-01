@@ -41,7 +41,7 @@
 
             <Button Command="{Binding Write}">
                 <StackPanel Orientation="Horizontal">
-                    <fa:ImageAwesome Icon="Microchip" Height="20" Margin="5" />
+                    <fa:ImageAwesome Icon="Pencil" Height="20" Margin="5" />
                     <Label Content="Write" />
                 </StackPanel>
             </Button>

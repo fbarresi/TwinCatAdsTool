@@ -24,5 +24,10 @@ namespace TwinCatAdsTool.Gui.Views
         {
             InitializeComponent();
         }
+
+        private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.evopro-ag.de");
+        }
     }
 }
