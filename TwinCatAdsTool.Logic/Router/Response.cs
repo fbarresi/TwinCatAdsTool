@@ -9,7 +9,7 @@ namespace TwinCatAdsTool.Logic.Router
 {
     internal class Response
     {
-        UdpClient client;
+        readonly UdpClient client;
         public UdpClient Client { get { return client; } }
         public int Timeout;
 

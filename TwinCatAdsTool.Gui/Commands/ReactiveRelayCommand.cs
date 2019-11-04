@@ -22,7 +22,9 @@ namespace TwinCatAdsTool.Gui.Commands
         public ReactiveRelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
             if (execute == null)
+            {
                 throw new ArgumentNullException("execute");
+            }
 
             this.execute = execute;
             this.canExecute = canExecute;

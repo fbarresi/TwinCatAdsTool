@@ -33,14 +33,17 @@ namespace TwinCatAdsTool.Logic.Services
                     {
                         var globalName = symbol.InstancePath.Split('.').First();
                         if (!variables.ContainsKey(globalName))
+                        {
                             variables.Add(globalName, new List<JObject>());
+                        }
+
                         try
                         {
                             variables[globalName].Add(await client.ReadJson(symbol.InstancePath, force:true));
                         }
                         catch (Exception e)
                         {
-                            logger.Error($"Error during reding variable {symbol.InstancePath} in json format", e);
+                            logger.Error($"Error during reading variable {symbol.InstancePath} in json format", e);
                         }
 
                     }
@@ -62,7 +65,7 @@ namespace TwinCatAdsTool.Logic.Services
             }
             catch (Exception e)
             {
-                logger.Error("error while reading persistente variables:",e);
+                logger.Error("error while reading persistent variables:",e);
             }
 
             return jobj;

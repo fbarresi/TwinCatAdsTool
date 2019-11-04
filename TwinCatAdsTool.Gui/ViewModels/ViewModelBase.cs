@@ -27,10 +27,12 @@ namespace TwinCatAdsTool.Gui.ViewModels
 		[SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "Disposables")]
 		protected virtual void Dispose(bool disposing)
 		{
-			if (disposed)
-				return;
+            if (disposed)
+            {
+                return;
+            }
 
-			Disposables?.Dispose();
+            Disposables?.Dispose();
 			Disposables = null;
 
 			disposed = true;

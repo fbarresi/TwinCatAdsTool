@@ -91,11 +91,17 @@ namespace TwinCatAdsTool.Gui.ViewModels
       
                 var fillColor = new SolidColorBrush(Colors.Transparent);
                 if (diffPiece.Type == ChangeType.Deleted)
+                {
                     fillColor = new SolidColorBrush(Color.FromArgb(255, 255, 200, 100));
+                }
                 else if (diffPiece.Type == ChangeType.Inserted)
+                {
                     fillColor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 0));
+                }
                 else if (diffPiece.Type == ChangeType.Unchanged)
+                {
                     fillColor = new SolidColorBrush(Colors.White);
+                }
                 else if (diffPiece.Type == ChangeType.Modified)
                 {
                     fillColor = new SolidColorBrush(Color.FromArgb(255, 220, 220, 255));
@@ -127,7 +133,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
             set
             {
-                if (value == leftBoxText) return;
+                if (value == leftBoxText)
+                {
+                    return;
+                }
+
                 leftBoxText = value;
                 raisePropertyChanged();
             }
@@ -161,7 +171,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private async Task ReadVariablesLeft()
         {
-            var json = await ReadVariables();
+            var json = await ReadVariables().ConfigureAwait(false);
             leftTextSubject.OnNext(json.ToString());
         }
 

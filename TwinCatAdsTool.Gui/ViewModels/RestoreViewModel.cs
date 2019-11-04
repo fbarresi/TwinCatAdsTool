@@ -52,7 +52,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
             get => fileVariables ?? (fileVariables = new ObservableCollection<VariableViewModel>());
             set
             {
-                if (value == fileVariables) return;
+                if (value == fileVariables)
+                {
+                    return;
+                }
+
                 fileVariables = value;
                 raisePropertyChanged();
             }
@@ -63,7 +67,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
             get => displayVariables ?? (displayVariables = new ObservableCollection<VariableViewModel>());
             set
             {
-                if (value == displayVariables) return;
+                if (value == displayVariables)
+                {
+                    return;
+                }
+
                 liveVariables = value;
                 raisePropertyChanged();
             }
@@ -165,7 +173,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (openFileDialog.ShowDialog() == true)
             {
-                JObject json = JObject.Parse(File.ReadAllText(openFileDialog.FileName));
+                JObject json =  JObject.Parse(File.ReadAllText(openFileDialog.FileName));
                 fileVariableSubject.OnNext(json);
                 canWrite.OnNext(true);
             }
@@ -194,7 +202,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
                         {
                             var o = new JObject();
                             o.Add(p.Name, p.Value);
-                            await WriteJsonRecursive(clientService.Client,  variable.Name +"." + p.Name, p.Value);
+                            await WriteJsonRecursive(clientService.Client,  variable.Name +"." + p.Name, p.Value).ConfigureAwait(false);
                         }
                     }
                     catch (Exception ex)

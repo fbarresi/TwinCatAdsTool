@@ -12,7 +12,7 @@ namespace TwinCatAdsTool.Logic.Router
     {
         public const int DEFAULT_UDP_PORT = 48899;
 
-        UdpClient client;
+        readonly UdpClient client;
         public UdpClient Client { get { return client; } }
 
         public int timeout;
@@ -44,7 +44,7 @@ namespace TwinCatAdsTool.Logic.Router
             return new Response(client, Timeout);
         }
 
-        List<byte[]> listOfBytes = new List<byte[]>();
+        readonly List<byte[]> listOfBytes = new List<byte[]>();
         public byte[] GetRequestBytes
         {
             get { return listOfBytes.SelectMany(a => a).ToArray(); }

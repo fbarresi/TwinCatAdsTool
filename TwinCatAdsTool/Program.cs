@@ -78,9 +78,12 @@ namespace TwinCatAdsTool
 	{
 		public static void ReplaceViewModelLocator(this Application application, IViewModelFactory viewModelLocator, string locatorKey = "Locator")
 		{
-			if (application.Resources.Contains(locatorKey))
-				application.Resources.Remove(locatorKey);
-			application.Resources.Add(locatorKey, viewModelLocator);
+            if (application.Resources.Contains(locatorKey))
+            {
+                application.Resources.Remove(locatorKey);
+            }
+
+            application.Resources.Add(locatorKey, viewModelLocator);
 		}
 	}
 }

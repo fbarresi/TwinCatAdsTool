@@ -96,7 +96,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
             get => treeNodes ?? (treeNodes = new ObservableCollection<ISymbol>());
             set
             {
-                if (value == treeNodes) return;
+                if (value == treeNodes)
+                {
+                    return;
+                }
+
                 treeNodes = value;
                 raisePropertyChanged();
             }

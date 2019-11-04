@@ -50,7 +50,7 @@ namespace TwinCatAdsTool.Logic.Services
             return Task.Run(() => UpdateSymbols(connectionStateSubject.Value));
         }
 
-        public async void Initialize()
+        public void Initialize()
         {
             Observable.FromEventPattern<ConnectionStateChangedEventArgs>(ev => Client.ConnectionStateChanged += ev,
                                                                          ev => Client.ConnectionStateChanged -= ev)
@@ -72,7 +72,6 @@ namespace TwinCatAdsTool.Logic.Services
                 .AddressList
                 .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
             AmsNetIds = DeviceFinder.BroadcastSearchAsync(localhost).Result.Select(x => x.AmsNetId.ToString());
-
         }
 
         private void UpdateSymbols(ConnectionState state)

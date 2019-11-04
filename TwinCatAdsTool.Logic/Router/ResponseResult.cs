@@ -10,7 +10,7 @@ namespace TwinCatAdsTool.Logic.Router
 {
     internal class ResponseResult
     {
-        private UdpReceiveResult result;
+        private readonly UdpReceiveResult result;
         public byte[] Buffer { get { return result.Buffer; } }
         public IPAddress RemoteHost { get { return result.RemoteEndPoint.Address; } }
 
