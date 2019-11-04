@@ -1,5 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Net;
+using System.Net.Sockets;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -12,6 +17,7 @@ using TwinCAT.Ads.TypeSystem;
 using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
+using TwinCatAdsTool.Logic.Router;
 
 namespace TwinCatAdsTool.Logic.Services
 {
@@ -23,6 +29,7 @@ namespace TwinCatAdsTool.Logic.Services
         {
             Client = new TcAdsClient();
         }
+
 
         public Task Connect(string amsNetId, int port = 851)
         {
@@ -37,12 +44,13 @@ namespace TwinCatAdsTool.Logic.Services
         public IObservable<ConnectionState> ConnectionState => connectionStateSubject.AsObservable();
         public ReadOnlySymbolCollection TreeViewSymbols { get; set; }
         public ReadOnlySymbolCollection FlatViewSymbols { get; set; }
+        public IEnumerable<string> AmsNetIds { get; set; }
         public Task Reload()
         {
             return Task.Run(() => UpdateSymbols(connectionStateSubject.Value));
         }
 
-        public void Initialize()
+        public async void Initialize()
         {
             Observable.FromEventPattern<ConnectionStateChangedEventArgs>(ev => Client.ConnectionStateChanged += ev,
                                                                          ev => Client.ConnectionStateChanged -= ev)
@@ -57,7 +65,13 @@ namespace TwinCatAdsTool.Logic.Services
                 .Do(UpdateSymbols)
                 .Subscribe()
                 .AddDisposableTo(disposables);
+  
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
 
+            var localhost = host
+                .AddressList
+                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+            AmsNetIds = DeviceFinder.BroadcastSearchAsync(localhost).Result.Select(x => x.AmsNetId.ToString());
 
         }
 

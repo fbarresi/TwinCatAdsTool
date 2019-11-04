@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using TwinCAT;
 using TwinCAT.Ads;
@@ -15,6 +16,7 @@ namespace TwinCatAdsTool.Interfaces.Services
         IObservable<ConnectionState> ConnectionState { get; }
         ReadOnlySymbolCollection TreeViewSymbols { get; }
         ReadOnlySymbolCollection FlatViewSymbols { get; }
+        IEnumerable<string> AmsNetIds { get; set; }
         Task Reload();
 
     }

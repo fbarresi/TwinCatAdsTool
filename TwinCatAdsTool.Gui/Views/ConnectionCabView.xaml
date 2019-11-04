@@ -25,7 +25,7 @@
         <Label Grid.Row="0" Grid.Column="0">Address:</Label>
         <Label Grid.Row="1" Grid.Column="0">Port:</Label>
         <fa:ImageAwesome Grid.Row="2" Grid.Column="2" Icon="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIconConverter}}" Width="20" HorizontalAlignment="Left"/>
-        <TextBox Text="{Binding Address}" Grid.Row="0" Grid.Column="1"/>
+        <TextBox Text="{Binding SelectedAmsNetId}" Grid.Row="0" Grid.Column="1"/>
         <TextBox Text="{Binding Port}" Grid.Row="1" Grid.Column="1"/>
         <Button Grid.Row="2" Grid.Column="0" Command="{Binding Connect}">Connect</Button>
         <Button Grid.Row="2" Grid.Column="1" Command="{Binding Disconnect}">Disconnect</Button>
