@@ -98,10 +98,12 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             if (typeof(T) == typeof(string))
             {
+                Logger.Debug($"Trying to write to {Model?.InstancePath} with value {(value as string)}");
                 clientService.Client.WriteAnyString(variableHandle, value as string, (value as string).Length, Encoding.Default);
                 return;
             }
             else{
+                Logger.Debug($"Trying to write to {Model?.InstancePath} with value {value}");
                 clientService.Client.WriteAny(variableHandle, value);
             }
         }

@@ -48,6 +48,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
             variableSubject.OnNext(persistentVariables);
+            Logger.Debug("Read Persistent Variables");
+
             return Unit.Default;
         }
 
@@ -61,7 +63,9 @@ namespace TwinCatAdsTool.Gui.ViewModels
             if (result == DialogResult.OK || result == DialogResult.Yes)
             {
                 File.WriteAllText(saveFileDialog1.FileName, BackupText);
+                Logger.Debug($"Saved Backup to {saveFileDialog1.FileName}");
             }
+
             return Task.FromResult(Unit.Default);
         }
 

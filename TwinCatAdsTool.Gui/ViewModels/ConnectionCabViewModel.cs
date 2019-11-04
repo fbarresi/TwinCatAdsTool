@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Documents;
 using ReactiveUI;
 using TwinCAT;
+using TwinCAT.Ads;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
 
@@ -18,10 +19,10 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private readonly IClientService clientService;
         private int port = 851;
         private ObservableAsPropertyHelper<ConnectionState> connectionStateHelper;
-        private string selectedAmsNetId;
-        public IEnumerable<string> AmsNetIds { get; set; }
+        private AmsNetId selectedAmsNetId = null;
+        public List<AmsNetId> AmsNetIds { get; set; } = new List<AmsNetId>();
 
-        public string SelectedAmsNetId
+        public AmsNetId SelectedAmsNetId
         {
             get { return selectedAmsNetId; }
 
@@ -54,18 +55,20 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 .ToProperty(this, model => model.ConnectionState);
 
 
-            AmsNetIds = clientService.AmsNetIds;
+            AmsNetIds.AddRange(clientService.AmsNetIds);
         }
 
         private Task<Unit> ConnectClient()
         {
             clientService.Client.Connect(SelectedAmsNetId, Port);
+            Logger.Debug($"Client connected to {SelectedAmsNetId}");
             return Task.FromResult(Unit.Default);
         }
 
         private Task<Unit> DisconnectClient()
         {
             clientService.Client.Disconnect();
+            Logger.Debug($"Client disconnected");
             return Task.FromResult(Unit.Default);
         }
 

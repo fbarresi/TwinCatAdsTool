@@ -116,6 +116,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             viewModels.Clear();
             AddVariable(json.Properties(), viewModels);
+            Logger.Debug("Updated RestoreView");
         }
 
         private void AddVariable(IEnumerable<JProperty> token, ObservableCollection<VariableViewModel> variables)
@@ -216,6 +217,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public async Task WriteJsonRecursive(TcAdsClient client, string name, JToken token)
         {
+            Logger.Debug($"Trying to write JSON {name} with value {token?.ToString()}");
             var symbolInfo = (ITcAdsSymbol5) client.ReadSymbolInfo(name);
             var dataType = symbolInfo.DataType;
             if (dataType.Category == DataTypeCategory.Array)

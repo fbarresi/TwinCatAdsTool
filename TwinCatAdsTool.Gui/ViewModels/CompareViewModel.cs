@@ -81,6 +81,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             LeftBoxText = leftBox.Select(x => new ListBoxItem() { Content = x.Text, Background = GetBGColor(x), Height = 20});
             RightBoxText = rightBox.Select(x => new ListBoxItem() { Content = x.Text, Background = GetBGColor(x), Height = 20});
 
+            Logger.Debug("Generated Comparison Model");
             return diffModel;
         }
 
@@ -166,6 +167,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
             leftTextSubject.OnNext(persistentVariables.ToString());
+
+            Logger.Debug("Read Persistent Variables");
             return persistentVariables;
         }
 
@@ -173,12 +176,14 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             var json = await ReadVariables().ConfigureAwait(false);
             leftTextSubject.OnNext(json.ToString());
+            Logger.Debug("Updated left TextBox");
         }
 
         private async Task ReadVariablesRight()
         {
             var json = await ReadVariables();
             rightTextSubject.OnNext(json.ToString());
+            Logger.Debug("Updated right TextBox");
         }
 
 
@@ -188,8 +193,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
             if (json != null)
             {
                 leftTextSubject.OnNext(json.ToString());
+                Logger.Debug("Updated left TextBox");
             }
-
             return Task.FromResult(Unit.Empty);
         }
 
@@ -199,6 +204,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             if (json != null)
             {
                 rightTextSubject.OnNext(json.ToString());
+                Logger.Debug("Updated right TextBox");
             }
 
 
@@ -216,6 +222,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 if (openFileDialog.ShowDialog() == true)
                 {
                     JObject json = JObject.Parse(File.ReadAllText(openFileDialog.FileName));
+                    Logger.Debug($"Load of File {openFileDialog.FileName} was succesful");
                     return Task.FromResult(json);
                 }
             }catch(Exception ex)

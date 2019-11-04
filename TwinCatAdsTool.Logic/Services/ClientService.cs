@@ -31,7 +31,7 @@ namespace TwinCatAdsTool.Logic.Services
         }
 
 
-        public Task Connect(string amsNetId, int port = 851)
+        public Task Connect(AmsNetId amsNetId, int port = 851)
         {
             if (!Client.IsConnected)
             {
@@ -44,7 +44,7 @@ namespace TwinCatAdsTool.Logic.Services
         public IObservable<ConnectionState> ConnectionState => connectionStateSubject.AsObservable();
         public ReadOnlySymbolCollection TreeViewSymbols { get; set; }
         public ReadOnlySymbolCollection FlatViewSymbols { get; set; }
-        public IEnumerable<string> AmsNetIds { get; set; }
+        public IEnumerable<AmsNetId> AmsNetIds { get; set; }
         public Task Reload()
         {
             return Task.Run(() => UpdateSymbols(connectionStateSubject.Value));
@@ -71,7 +71,7 @@ namespace TwinCatAdsTool.Logic.Services
             var localhost = host
                 .AddressList
                 .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
-            AmsNetIds = DeviceFinder.BroadcastSearchAsync(localhost).Result.Select(x => x.AmsNetId.ToString());
+            AmsNetIds = DeviceFinder.BroadcastSearchAsync(localhost).Result.Select(x => x.AmsNetId);
         }
 
         private void UpdateSymbols(ConnectionState state)
