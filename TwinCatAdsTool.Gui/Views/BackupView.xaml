@@ -32,7 +32,7 @@
 
         <Border Grid.Row="1" BorderThickness="1" BorderBrush="Gray" Margin="5" Padding="5">
         <ScrollViewer HorizontalScrollBarVisibility="Auto">
-            <TextBlock Text="{Binding BackupText}" FontFamily="Courier New" Foreground="GreenYellow" Background="Black"/>
+            <TextBox Text="{Binding BackupText}" FontFamily="Courier New" Foreground="GreenYellow" Background="Black" IsReadOnly="True"/>
         </ScrollViewer>
         </Border>
     </Grid>
