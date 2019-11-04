@@ -11,8 +11,4 @@
     <PackageReference Include="TwinCAT.JsonExtension" Version="1.0.29" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
 </Project>

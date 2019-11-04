@@ -16,6 +16,7 @@ using TwinCAT.Ads;
 using TwinCAT.Ads.TypeSystem;
 using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Interfaces.Extensions;
+using TwinCatAdsTool.Interfaces.Models;
 using TwinCatAdsTool.Interfaces.Services;
 using TwinCatAdsTool.Logic.Router;
 
@@ -44,7 +45,7 @@ namespace TwinCatAdsTool.Logic.Services
         public IObservable<ConnectionState> ConnectionState => connectionStateSubject.AsObservable();
         public ReadOnlySymbolCollection TreeViewSymbols { get; set; }
         public ReadOnlySymbolCollection FlatViewSymbols { get; set; }
-        public IEnumerable<AmsNetId> AmsNetIds { get; set; }
+        public IEnumerable<NetId> AmsNetIds { get; set; }
         public Task Reload()
         {
             return Task.Run(() => UpdateSymbols(connectionStateSubject.Value));
@@ -71,7 +72,7 @@ namespace TwinCatAdsTool.Logic.Services
             var localhost = host
                 .AddressList
                 .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
-            AmsNetIds = DeviceFinder.BroadcastSearchAsync(localhost).Result.Select(x => x.AmsNetId);
+            AmsNetIds = DeviceFinder.BroadcastSearchAsync(localhost).Result.Select(x => new NetId{Name = x.Name, Address = x.AmsNetId.ToString()});
         }
 
         private void UpdateSymbols(ConnectionState state)

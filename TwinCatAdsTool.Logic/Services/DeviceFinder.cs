@@ -35,7 +35,7 @@ namespace TwinCatAdsTool.Logic.Services
                     adsUdpPort);
 
             Response response = await request.SendAsync(broadcast);
-            List<ResponseResult> responses = await response.ReceiveMultipleAsync();
+            var responses = new List<ResponseResult>(await response.ReceiveMultipleAsync());
 
             List<RemotePlcInfo> devices = new List<RemotePlcInfo>();
             foreach (var r in responses)

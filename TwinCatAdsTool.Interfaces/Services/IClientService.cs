@@ -6,6 +6,7 @@ using TwinCAT;
 using TwinCAT.Ads;
 using TwinCAT.TypeSystem;
 using TwinCAT.TypeSystem.Generic;
+using TwinCatAdsTool.Interfaces.Models;
 
 namespace TwinCatAdsTool.Interfaces.Services
 {
@@ -16,7 +17,7 @@ namespace TwinCatAdsTool.Interfaces.Services
         IObservable<ConnectionState> ConnectionState { get; }
         ReadOnlySymbolCollection TreeViewSymbols { get; }
         ReadOnlySymbolCollection FlatViewSymbols { get; }
-        IEnumerable<AmsNetId> AmsNetIds { get; set; }
+        IEnumerable<NetId> AmsNetIds { get; set; }
         Task Reload();
 
     }
