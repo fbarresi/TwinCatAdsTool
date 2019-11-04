@@ -4,12 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TwinCatAdsTool.Gui.Views"
-             xmlns:converters="clr-namespace:TwinCatAdsTool.Gui.Converters"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:converters="clr-namespace:TwinCatAdsTool.Gui.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:ConnectionStateToIconConverter x:Key="ConnectionStateToIconConverter" />
+        <converters:ConnectionStateToIsDisconnected x:Key="ConnectionStateToIsDisconnected" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -25,7 +26,7 @@
         <Label Grid.Row="0" Grid.Column="0">Address:</Label>
         <Label Grid.Row="1" Grid.Column="0">Port:</Label>
         <fa:ImageAwesome Grid.Row="2" Grid.Column="2" Icon="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIconConverter}}" Width="20" HorizontalAlignment="Left"/>
-        <ComboBox ItemsSource="{Binding AmsNetIds}" SelectedItem="{Binding SelectedAmsNetId}" Grid.Row="0" Grid.Column="1"  DisplayMemberPath="Name"/>
+        <ComboBox ItemsSource="{Binding AmsNetIds}" SelectedItem="{Binding SelectedAmsNetId}" Grid.Row="0" Grid.Column="1"  DisplayMemberPath="Name" IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}"/>
         <TextBox Text="{Binding Port}" Grid.Row="1" Grid.Column="1"/>
         <Button Grid.Row="2" Grid.Column="0" Command="{Binding Connect}">Connect</Button>
         <Button Grid.Row="2" Grid.Column="1" Command="{Binding Disconnect}">Disconnect</Button>

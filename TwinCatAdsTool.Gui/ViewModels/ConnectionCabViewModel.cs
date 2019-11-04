@@ -47,7 +47,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             Connect = ReactiveCommand.CreateFromTask(ConnectClient, canExecute: clientService.ConnectionState.CombineLatest(this.WhenAnyValue(vm => vm.SelectedAmsNetId), (state, amsNetId) => state != ConnectionState.Connected && amsNetId != null))
                 .AddDisposableTo(Disposables);
-            Disconnect = ReactiveCommand.CreateFromTask(DisconnectClient, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
+            Disconnect = ReactiveCommand.CreateFromTask(DisconnectClient, canExecute: IsConnected)
                 .AddDisposableTo(Disposables);
 
             connectionStateHelper = clientService
@@ -58,6 +58,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             AmsNetIds.AddRange(clientService.AmsNetIds);
         }
+
+        public IObservable<bool> IsConnected { get; set; }
 
         private Task<Unit> ConnectClient()
         {
