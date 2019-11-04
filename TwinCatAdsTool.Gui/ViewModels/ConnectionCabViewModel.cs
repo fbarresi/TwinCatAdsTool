@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -42,7 +43,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public override void Init()
         {
-            Connect = ReactiveCommand.CreateFromTask(ConnectClient, canExecute: clientService.ConnectionState.Select(state => state != ConnectionState.Connected))
+            Connect = ReactiveCommand.CreateFromTask(ConnectClient, canExecute: clientService.ConnectionState.CombineLatest(this.WhenAnyValue(vm => vm.SelectedAmsNetId), (state, amsNetId) => state != ConnectionState.Connected && amsNetId != null))
                 .AddDisposableTo(Disposables);
             Disconnect = ReactiveCommand.CreateFromTask(DisconnectClient, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
