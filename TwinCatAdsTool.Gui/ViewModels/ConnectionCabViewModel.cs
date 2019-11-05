@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Documents;
+using DynamicData;
 using ReactiveUI;
 using TwinCAT;
 using TwinCAT.Ads;
@@ -21,7 +23,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private int port = 851;
         private ObservableAsPropertyHelper<ConnectionState> connectionStateHelper;
         private NetId selectedAmsNetId = null;
-        public List<NetId> AmsNetIds { get; set; } = new List<NetId>();
+        public ObservableCollection<NetId> AmsNetIds { get; set; } = new ObservableCollection<NetId>();
 
         public NetId SelectedAmsNetId
         {
@@ -57,6 +59,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
 
             AmsNetIds.AddRange(clientService.AmsNetIds);
+            SelectedAmsNetId = AmsNetIds.FirstOrDefault();
         }
 
         public IObservable<bool> IsConnected { get; set; }

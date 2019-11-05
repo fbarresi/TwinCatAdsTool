@@ -19,15 +19,15 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="0">Address:</Label>
         <Label Grid.Row="1" Grid.Column="0">Port:</Label>
         <fa:ImageAwesome Grid.Row="2" Grid.Column="2" Icon="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIconConverter}}" Width="20" HorizontalAlignment="Left"/>
-        <ComboBox ItemsSource="{Binding AmsNetIds}" SelectedItem="{Binding SelectedAmsNetId}" Grid.Row="0" Grid.Column="1"  DisplayMemberPath="Name" IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}"/>
-        <TextBox Text="{Binding Port}" Grid.Row="1" Grid.Column="1"/>
+        <ComboBox ItemsSource="{Binding AmsNetIds}" SelectedValue="{Binding SelectedAmsNetId}" Grid.Row="0" Grid.Column="1"  DisplayMemberPath="Name" IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}" />
+        <TextBox Text="{Binding Port}" Grid.Row="1" Grid.Column="1" />
         <Button Grid.Row="2" Grid.Column="0" Command="{Binding Connect}">Connect</Button>
         <Button Grid.Row="2" Grid.Column="1" Command="{Binding Disconnect}">Disconnect</Button>
         <Image  Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" Source="../Resources/evopro.png" Width="300" MouseDown="UIElement_OnMouseDown"/>

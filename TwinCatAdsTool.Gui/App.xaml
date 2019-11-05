@@ -26,6 +26,10 @@
                 <Setter Property="Padding" Value="10,5"></Setter>
             </Style>
 
+            <Style TargetType="ComboBox">
+                <Setter Property="Margin" Value="5"></Setter>
+            </Style>
+
             <Style TargetType="ListBox">
                 <Setter Property="Margin" Value="5"></Setter>
             </Style>
