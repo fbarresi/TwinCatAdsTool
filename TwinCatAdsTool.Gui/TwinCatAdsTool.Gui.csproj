@@ -7,21 +7,15 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
 
   <ItemGroup>
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
-    <None Remove="Resources\evopro.png" />
-    <None Remove="Views\CompareView.xaml" />
-    <None Remove="Views\ExploreView.xaml" />
-    <None Remove="Views\RestoreView.xaml" />
-    <Resource Include="Resources\evopro.png" />
-    <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="4.3.10" />
-    <PackageReference Include="DiffPlex" Version="1.4.4" />
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="3.6.0" />
+    <None Remove="Views\BackupView.xaml" />
+    <None Remove="Views\ConnectionCabView.xaml" />
+    <None Remove="Views\TabsView.xaml" />
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Ninject" Version="3.3.4" />
@@ -35,16 +29,16 @@
     <None Update="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <None Update="Views\BackupView.xaml">
+    <None Update="Views\CompareView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <None Update="Views\ConnectionCabView.xaml">
+    <None Update="Views\ExploreView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <None Update="Views\TabsView.xaml">
+    <None Update="Views\RestoreView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
