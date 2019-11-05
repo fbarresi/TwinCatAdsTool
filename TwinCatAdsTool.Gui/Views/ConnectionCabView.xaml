@@ -4,8 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TwinCatAdsTool.Gui.Views"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:converters="clr-namespace:TwinCatAdsTool.Gui.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:ConnectionStateToIconConverter x:Key="ConnectionStateToIconConverter" />
+        <converters:ConnectionStateToIsDisconnected x:Key="ConnectionStateToIsDisconnected" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -13,16 +19,18 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="0">Address:</Label>
         <Label Grid.Row="1" Grid.Column="0">Port:</Label>
-        <Label Grid.Row="2" Grid.Column="2" Content="{Binding ConnectionState}"/>
-        <TextBox Text="{Binding Address}" Grid.Row="0" Grid.Column="1"/>
-        <TextBox Text="{Binding Port}" Grid.Row="1" Grid.Column="1"/>
+        <fa:ImageAwesome Grid.Row="2" Grid.Column="2" Icon="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIconConverter}}" Width="20" HorizontalAlignment="Left"/>
+        <ComboBox ItemsSource="{Binding AmsNetIds}" SelectedValue="{Binding SelectedAmsNetId}" Grid.Row="0" Grid.Column="1"  DisplayMemberPath="Name" IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}" />
+        <TextBox Text="{Binding Port}" Grid.Row="1" Grid.Column="1" />
         <Button Grid.Row="2" Grid.Column="0" Command="{Binding Connect}">Connect</Button>
         <Button Grid.Row="2" Grid.Column="1" Command="{Binding Disconnect}">Disconnect</Button>
+        <Image  Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" Source="../Resources/evopro.png" Width="300" MouseDown="UIElement_OnMouseDown"/>
+        <Label Grid.Row="0" Grid.Column="2" Grid.RowSpan="2">Powered by</Label>
     </Grid>
 </UserControl>

@@ -22,7 +22,10 @@ namespace TwinCatAdsTool.Gui
 		private void BindServices()
 		{
 			Kernel.Bind<MainWindowViewModel>().To<MainWindowViewModel>();
-		}
+            Kernel.Bind<CompareViewModel>().To<CompareViewModel>();
+            Kernel.Bind<ExploreViewModel>().To<ExploreViewModel>();
+            Kernel.Bind<ConnectionCabViewModel>().To<ConnectionCabViewModel>();
+        }
 
 		public ViewModelLocator(IKernel kernel)
 		{

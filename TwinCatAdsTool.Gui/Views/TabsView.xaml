@@ -10,8 +10,14 @@
         <TabItem Header="Backup">
             <local:BackupView DataContext="{Binding BackupViewModel}"/>
         </TabItem>
-            <TabItem Header="Restore"></TabItem>
-            <TabItem Header="Compare"></TabItem>
-            <TabItem Header="Explore"></TabItem>
+            <TabItem Header="Restore">
+                <local:RestoreView DataContext="{Binding RestoreViewModel}"/>
+        </TabItem>
+            <TabItem Header="Compare">
+                <local:CompareView DataContext="{Binding CompareViewModel}"/>
+            </TabItem>
+            <TabItem Header="Explore">
+                <local:ExploreView DataContext="{Binding ExploreViewModel}"/>
+        </TabItem>
     </TabControl>
 </UserControl>

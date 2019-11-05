@@ -16,18 +16,13 @@ using System.Windows.Shapes;
 namespace TwinCatAdsTool.Gui.Views
 {
     /// <summary>
-    /// Interaction logic for ConnectionCabView.xaml
+    /// Interaction logic for RestoreView.xaml
     /// </summary>
-    public partial class ConnectionCabView : UserControl
+    public partial class RestoreView : UserControl
     {
-        public ConnectionCabView()
+        public RestoreView()
         {
             InitializeComponent();
-        }
-
-        private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            System.Diagnostics.Process.Start("http://www.evopro-ag.de");
         }
     }
 }

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
     <OutputType>WinExe</OutputType>
+    <ApplicationIcon>twincat.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
