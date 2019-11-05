@@ -64,7 +64,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private Task<Unit> ConnectClient()
         {
             clientService.Client.Connect(SelectedAmsNetId.Address, Port);
-            Logger.Debug($"Client connected to {SelectedAmsNetId}");
+            Logger.Debug($"Client connected to device {SelectedAmsNetId?.Name} with address  {SelectedAmsNetId?.Address} ");
             return Task.FromResult(Unit.Default);
         }
 
