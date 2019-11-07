@@ -24,6 +24,6 @@ More information at [https://infosys.beckhoff.com/](https://infosys.beckhoff.com
 
 This software was sponsored by
 
-<a href="www.evopro-ag.de"><img src="https://github.com/fbarresi/TwinCatAdsTool/raw/master/docs/images/evopro.png" height=100/></a>
+<a href="http://www.evopro-ag.de"><img src="https://github.com/fbarresi/TwinCatAdsTool/raw/master/docs/images/evopro.png" height=100/></a>
 
 and was realized with [Twincat.JsonExtension](https://github.com/fbarresi/TwinCAT.JsonExtension)
