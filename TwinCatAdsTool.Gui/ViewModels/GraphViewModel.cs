@@ -56,18 +56,18 @@ namespace TwinCatAdsTool.Gui.ViewModels
             
             var axis = new DateTimeAxis {
                 Position = AxisPosition.Bottom, Minimum = DateTimeAxis.ToDouble(
-                    DateTime.Now.Subtract(TimeSpan.FromHours(1))), Maximum = DateTimeAxis.ToDouble(DateTime.Now.Add(TimeSpan.FromHours(1))), StringFormat = "hh:mm:ss" };
+                    DateTime.Now.Subtract(TimeSpan.FromMinutes(15))), Maximum = DateTimeAxis.ToDouble(DateTime.Now.Add(TimeSpan.FromMinutes(15))), StringFormat = "hh:mm:ss" };
 
      
             PlotModel.Axes.Add(axis);
             PlotModel.Axes.Add(new LinearAxis() { Minimum = 0, Maximum = 5000 });
-            Observable.Interval(TimeSpan.FromSeconds(10)).Do(x => {
+            Observable.Interval(TimeSpan.FromSeconds(1)).Do(x => {
                 PlotModel.Axes.Replace(PlotModel.Axes.First(), new DateTimeAxis
                 {
                     Position = AxisPosition.Bottom,
                     Minimum = DateTimeAxis.ToDouble(
-                    DateTime.Now.Subtract(TimeSpan.FromHours(1))),
-                    Maximum = DateTimeAxis.ToDouble(DateTime.Now.Add(TimeSpan.FromHours(1))),
+                    DateTime.Now.Subtract(TimeSpan.FromMinutes(15))),
+                    Maximum = DateTimeAxis.ToDouble(DateTime.Now.Add(TimeSpan.FromMinutes(15))),
                     StringFormat = "hh:mm:ss"
                 });
                 PlotModel.InvalidatePlot(true);
@@ -80,7 +80,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             var lineSeries = new LineSeries();
         
 
-            Observable.Interval(TimeSpan.FromSeconds(10)).Do(x => {
+            Observable.Interval(TimeSpan.FromSeconds(1)).Do(x => {
                 lineSeries.Points.Add(DateTimeAxis.CreateDataPoint(DateTime.Now, Convert.ToDouble(symbol.Value)));
                 PlotModel.InvalidatePlot(true);
             }).ObserveOnDispatcher().Subscribe().AddDisposableTo(Disposables);
