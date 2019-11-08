@@ -60,6 +60,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public ReactiveCommand<SymbolObservationViewModel, Unit> CmdAddGraph { get; set; }
 
+        public ReactiveCommand<SymbolObservationViewModel, Unit> CmdRemoveGraph { get; set; }
+
         public GraphViewModel GraphViewModel { get; set; }
 
         public ObservableCollection<IValueSymbol> ObservedSymbols
@@ -159,6 +161,9 @@ namespace TwinCatAdsTool.Gui.ViewModels
             CmdAddGraph = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(AddGraph)
                 .AddDisposableTo(Disposables);
 
+            CmdRemoveGraph = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(RemoveGraph)
+                .AddDisposableTo(Disposables);
+
             Read = ReactiveCommand.CreateFromTask(ReadVariables, canExecute: connected)
                 .AddDisposableTo(Disposables);
 
@@ -207,6 +212,12 @@ namespace TwinCatAdsTool.Gui.ViewModels
                     }
                 );
 
+        }
+
+        private Task<Unit> RemoveGraph(SymbolObservationViewModel symbolObservationViewModel)
+        {
+            GraphViewModel.RemoveSymbol(symbolObservationViewModel);
+            return Task.FromResult(Unit.Default);
         }
 
         private Task<Unit> AddGraph(SymbolObservationViewModel symbolObservationViewModel)

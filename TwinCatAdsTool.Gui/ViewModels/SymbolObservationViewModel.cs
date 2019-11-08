@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Eventing.Reader;
+using System.Drawing;
 using System.Globalization;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -22,6 +23,9 @@ namespace TwinCatAdsTool.Gui.ViewModels
         public ISymbol Model { get; set; }
         public object Value => helper.Value;
         public string Name { get; set; }
+
+        public Color Color { get; set; }
+
 
         public SymbolObservationViewModel(ISymbol model, IClientService clientService)
         {

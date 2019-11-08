@@ -79,13 +79,16 @@
                     <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
                 <xctk:IntegerUpDown Grid.Column="2" Value="{Binding NewValue}" />
                 <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
                 <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
-                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="Add Graph" />
+                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="5" Content="Add Graph" />
+                <Button Command="{Binding  Path=DataContext.CmdRemoveGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="6" Content="Remove Graph" />
             </Grid>
         </DataTemplate>
 
@@ -117,13 +120,16 @@
                     <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
                 <xctk:ByteUpDown Grid.Column="2" Value="{Binding NewValue}"/>
                 <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
                 <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
-                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="Add Graph" />
+                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="5" Content="Add Graph" />
+                <Button Command="{Binding  Path=DataContext.CmdRemoveGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="6" Content="Remove Graph" />
             </Grid>
         </DataTemplate>
 
@@ -138,13 +144,18 @@
                     <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
                 <xctk:DateTimePicker Grid.Column="2" Value="{Binding NewValue, Converter={StaticResource DtToDateTimeConverter}}" />
                 <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
                 <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
-            </Grid>
+                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="5" Content="Add Graph" />
+                <Button Command="{Binding  Path=DataContext.CmdRemoveGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="6" Content="Remove Graph" />
+
+</Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="BoolTemplate">
@@ -172,13 +183,16 @@
                     <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width ="100"/>
+                    <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
                 <xctk:SingleUpDown Grid.Column="2" Value="{Binding NewValue}" />
                 <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
                 <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
-                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="Add Graph" />
+                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="5" Content="Add Graph" />
+                <Button Command="{Binding  Path=DataContext.CmdRemoveGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="6" Content="Remove Graph" />
             </Grid>
         </DataTemplate>
 
@@ -191,15 +205,17 @@
                     <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
                 <xctk:DoubleUpDown Grid.Column="2" Value="{Binding NewValue}" />
                 <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
                 <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
-                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="Add Graph" />
-
-</Grid>
+                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="5" Content="Add Graph" />
+                <Button Command="{Binding  Path=DataContext.CmdRemoveGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="6" Content="Remove Graph" />
+            </Grid>
         </DataTemplate>
 
         <views:SymbolObservationTemplateSelector x:Key="SymbolObservationTemplateSelector"

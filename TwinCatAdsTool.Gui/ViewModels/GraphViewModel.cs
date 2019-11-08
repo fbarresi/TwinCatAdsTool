@@ -37,7 +37,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private SourceCache<SymbolObservationViewModel, string> symbolCache = new SourceCache<SymbolObservationViewModel, string>(x => x.Name);
         private PlotModel plotModel;
         private IObservableCache<SymbolObservationViewModel, string> SymbolCache => symbolCache.AsObservableCache();
-        private IObservableCollection<LineSeries> Series { get; set; } = new ObservableCollectionExtended<LineSeries>(new List<LineSeries>());
 
         public GraphViewModel()
         {
@@ -50,25 +49,25 @@ namespace TwinCatAdsTool.Gui.ViewModels
             SymbolCache.Connect()
                 .Transform(CreateSymbolLineSeries)
                 .ObserveOnDispatcher()
-                .Bind(Series)
                 .Subscribe()
                 .AddDisposableTo(Disposables);
             
             var axis = new DateTimeAxis {
                 Position = AxisPosition.Bottom, Minimum = DateTimeAxis.ToDouble(
-                    DateTime.Now.Subtract(TimeSpan.FromMinutes(15))), Maximum = DateTimeAxis.ToDouble(DateTime.Now.Add(TimeSpan.FromMinutes(15))), StringFormat = "hh:mm:ss" };
-
+                    DateTime.Now.Subtract(TimeSpan.FromMinutes(15))), Maximum = DateTimeAxis.ToDouble(DateTime.Now.Add(TimeSpan.FromMinutes(15))), StringFormat = "hh:mm:ss", IsZoomEnabled = false};
+            PlotModel.LegendPosition = LegendPosition.BottomRight;
      
             PlotModel.Axes.Add(axis);
-            PlotModel.Axes.Add(new LinearAxis() { Minimum = 0, Maximum = 5000 });
-            Observable.Interval(TimeSpan.FromSeconds(1)).Do(x => {
+            PlotModel.Axes.Add(new LinearAxis() { Minimum = 0, Maximum = 500 });
+            Observable.Interval(TimeSpan.FromMinutes(5)).Do(x => {
                 PlotModel.Axes.Replace(PlotModel.Axes.First(), new DateTimeAxis
                 {
                     Position = AxisPosition.Bottom,
                     Minimum = DateTimeAxis.ToDouble(
                     DateTime.Now.Subtract(TimeSpan.FromMinutes(15))),
                     Maximum = DateTimeAxis.ToDouble(DateTime.Now.Add(TimeSpan.FromMinutes(15))),
-                    StringFormat = "hh:mm:ss"
+                    StringFormat = "hh:mm:ss",
+                    IsZoomEnabled = false
                 });
                 PlotModel.InvalidatePlot(true);
             }).ObserveOnDispatcher().Subscribe().AddDisposableTo(Disposables);
@@ -78,6 +77,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private LineSeries CreateSymbolLineSeries(SymbolObservationViewModel symbol)
         {
             var lineSeries = new LineSeries();
+            lineSeries.Title = symbol.Name;
+
         
 
             Observable.Interval(TimeSpan.FromSeconds(1)).Do(x => {
@@ -99,7 +100,9 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public void RemoveSymbol(SymbolObservationViewModel symbol)
         {
-            symbolCache.Remove(symbol);
+            symbolCache.Remove(symbol.Name);
+
+            PlotModel.Series.Remove(PlotModel.Series.FirstOrDefault(series => series.Title == symbol.Name));
         }
     }
 }

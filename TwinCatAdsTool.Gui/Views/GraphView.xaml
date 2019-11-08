@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <oxy:PlotView x:Name="Plot1" Model="{Binding PlotModel}"  Margin="10" Grid.Row="0">
+        <oxy:PlotView x:Name="Plot1" Model="{Binding PlotModel}"  Margin="10" Grid.Row="0" >
         </oxy:PlotView>
     </Grid>
 </UserControl>
