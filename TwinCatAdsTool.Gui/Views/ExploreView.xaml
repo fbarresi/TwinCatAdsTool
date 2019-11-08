@@ -85,6 +85,7 @@
                 <xctk:IntegerUpDown Grid.Column="2" Value="{Binding NewValue}" />
                 <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
                 <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
+                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="Add Graph" />
             </Grid>
         </DataTemplate>
 
@@ -122,6 +123,7 @@
                 <xctk:ByteUpDown Grid.Column="2" Value="{Binding NewValue}"/>
                 <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
                 <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
+                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="Add Graph" />
             </Grid>
         </DataTemplate>
 
@@ -176,6 +178,7 @@
                 <xctk:SingleUpDown Grid.Column="2" Value="{Binding NewValue}" />
                 <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
                 <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
+                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="Add Graph" />
             </Grid>
         </DataTemplate>
 
@@ -194,7 +197,9 @@
                 <xctk:DoubleUpDown Grid.Column="2" Value="{Binding NewValue}" />
                 <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
                 <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
-            </Grid>
+                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="Add Graph" />
+
+</Grid>
         </DataTemplate>
 
         <views:SymbolObservationTemplateSelector x:Key="SymbolObservationTemplateSelector"
@@ -218,6 +223,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Command="{Binding Read}">
@@ -229,7 +235,7 @@
             </Button>
         </StackPanel>
 
-        <TabControl Grid.Column="0" Grid.Row="1" TabStripPlacement="Left" Margin="5">
+        <TabControl Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" TabStripPlacement="Left" Margin="5">
 
             <TabItem Header="Tree">
 
@@ -274,13 +280,11 @@
 
         </TabControl>
 
-        <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Stretch" />
-
-        <ListBox Grid.Column="2" Grid.Row="1"
+        <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" HorizontalAlignment="Stretch" />
+        <ListBox Grid.Column="2" Grid.Row="1" 
                  DataContext="{Binding ObserverViewModel}"
                  ItemsSource="{Binding ViewModels}"
                  ItemTemplateSelector="{StaticResource SymbolObservationTemplateSelector}" />
-
-
+            <views:GraphView Grid.Column="2" Grid.Row="2"  DataContext="{Binding GraphViewModel}" />
     </Grid>
 </UserControl>

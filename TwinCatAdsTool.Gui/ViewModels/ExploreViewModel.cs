@@ -58,6 +58,10 @@ namespace TwinCatAdsTool.Gui.ViewModels
         public ReactiveCommand<SymbolObservationViewModel, Unit> CmdDelete { get; set; }
         public ReactiveCommand<SymbolObservationViewModel, Unit> CmdSubmit { get; set; }
 
+        public ReactiveCommand<SymbolObservationViewModel, Unit> CmdAddGraph { get; set; }
+
+        public GraphViewModel GraphViewModel { get; set; }
+
         public ObservableCollection<IValueSymbol> ObservedSymbols
         {
             get => observedSymbols ?? (observedSymbols = new ObservableCollection<IValueSymbol>());
@@ -152,8 +156,14 @@ namespace TwinCatAdsTool.Gui.ViewModels
             CmdSubmit = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(SubmitSymbol)
                 .AddDisposableTo(Disposables);
 
+            CmdAddGraph = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(AddGraph)
+                .AddDisposableTo(Disposables);
+
             Read = ReactiveCommand.CreateFromTask(ReadVariables, canExecute: connected)
                 .AddDisposableTo(Disposables);
+
+            GraphViewModel = viewModelFactory.CreateViewModel<GraphViewModel>();
+            GraphViewModel.AddDisposableTo(Disposables);
 
             this.WhenAnyValue(x => x.ObservedSymbols).Subscribe().AddDisposableTo(Disposables);
 
@@ -197,6 +207,12 @@ namespace TwinCatAdsTool.Gui.ViewModels
                     }
                 );
 
+        }
+
+        private Task<Unit> AddGraph(SymbolObservationViewModel symbolObservationViewModel)
+        {
+            GraphViewModel.AddSymbol(symbolObservationViewModel);
+            return Task.FromResult(Unit.Default);
         }
 
         public bool IsConnected

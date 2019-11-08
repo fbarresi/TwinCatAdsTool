@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -15,12 +15,14 @@ using System.Windows.Shapes;
 using DiffPlex;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
+using DynamicData;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using TwinCAT;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
+using ChangeType = DiffPlex.DiffBuilder.Model.ChangeType;
 
 namespace TwinCatAdsTool.Gui.ViewModels
 {
@@ -195,7 +197,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 leftTextSubject.OnNext(json.ToString());
                 Logger.Debug("Updated left TextBox");
             }
-            return Task.FromResult(Unit.Empty);
+            return Task.FromResult(Unit.Default);
         }
 
         private Task LoadJsonRight()
@@ -208,7 +210,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
 
 
-            return Task.FromResult(Unit.Empty);
+            return Task.FromResult(Unit.Default);
         }
 
 

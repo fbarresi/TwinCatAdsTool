@@ -27,6 +27,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             TabsViewModel = viewModelFactory.CreateViewModel<TabsViewModel>();
             TabsViewModel.AddDisposableTo(Disposables);
 
+
         }
 
 		public string Version
