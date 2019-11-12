@@ -6,6 +6,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using DynamicData;
 using DynamicData.Binding;
 using OxyPlot;
@@ -49,6 +50,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             SymbolCache.Connect()
                 .Transform(CreateSymbolLineSeries)
                 .ObserveOnDispatcher()
+                .DisposeMany()
                 .Subscribe()
                 .AddDisposableTo(Disposables);
             
@@ -58,7 +60,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
             PlotModel.LegendPosition = LegendPosition.BottomRight;
      
             PlotModel.Axes.Add(axis);
-            PlotModel.Axes.Add(new LinearAxis() { Minimum = 0, Maximum = 500 });
             Observable.Interval(TimeSpan.FromMinutes(5)).Do(x => {
                 PlotModel.Axes.Replace(PlotModel.Axes.First(), new DateTimeAxis
                 {
@@ -74,23 +75,35 @@ namespace TwinCatAdsTool.Gui.ViewModels
             
         }
 
-        private LineSeries CreateSymbolLineSeries(SymbolObservationViewModel symbol)
+        private IDisposable CreateSymbolLineSeries(SymbolObservationViewModel symbol)
         {
             var lineSeries = new LineSeries();
             lineSeries.Title = symbol.Name;
+            lineSeries.LineStyle = LineStyle.None;
 
-        
+            var axis = new LinearAxis()
+            {
+                AxisDistance = PlotModel.Axes.OfType<LinearAxis>().Count() * 50,
+                Position = AxisPosition.Left,
+                IsZoomEnabled = false,
+                Key = symbol.Name,
+                Tag = symbol.Name
+            };
 
-            Observable.Interval(TimeSpan.FromSeconds(1)).Do(x => {
+            lineSeries.YAxisKey = symbol.Name;
+
+            PlotModel.Axes.Add(axis);
+
+            var subscription = Observable.Interval(TimeSpan.FromSeconds(1)).Do(x => {
                 lineSeries.Points.Add(DateTimeAxis.CreateDataPoint(DateTime.Now, Convert.ToDouble(symbol.Value)));
                 PlotModel.InvalidatePlot(true);
-            }).ObserveOnDispatcher().Subscribe().AddDisposableTo(Disposables);
+            }).ObserveOnDispatcher().Subscribe();
 
 
             PlotModel.Series.Add(lineSeries);
 
             raisePropertyChanged("PlotModel");
-            return lineSeries;
+            return subscription;
         }
 
         public void AddSymbol(SymbolObservationViewModel symbol)
@@ -102,7 +115,17 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             symbolCache.Remove(symbol.Name);
 
-            PlotModel.Series.Remove(PlotModel.Series.FirstOrDefault(series => series.Title == symbol.Name));
+            var seriesToRemove = PlotModel.Series.FirstOrDefault(series => series.Title == symbol.Name);
+            if (seriesToRemove != null)
+            {
+                PlotModel.Series.Remove(seriesToRemove);
+            }
+
+            var axisToRemove = PlotModel.Axes.FirstOrDefault(axis => axis.Key == symbol.Name);
+            if (axisToRemove != null)
+            {
+                PlotModel.Axes.Remove(axisToRemove);
+            }
         }
     }
 }
