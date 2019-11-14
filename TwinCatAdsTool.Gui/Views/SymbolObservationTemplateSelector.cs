@@ -67,12 +67,12 @@ namespace TwinCatAdsTool.Gui.Views
                 return BoolTemplate;
             }
 
-            if (item is SymbolObservationViewModel<UInt16>)
+            if (item is SymbolObservationViewModel<ushort>)
             {
                 return IntTemplate;
             }
 
-            if (item is SymbolObservationViewModel<UInt32>)
+            if (item is SymbolObservationViewModel<uint>)
             {
                 return IntTemplate;
             }
@@ -87,6 +87,15 @@ namespace TwinCatAdsTool.Gui.Views
                 return IntTemplate;
             }
 
+            if (item is SymbolObservationViewModel<long>)
+            {
+                return IntTemplate;
+            }
+
+            if (item is SymbolObservationViewModel<ulong>)
+            {
+                return IntTemplate;
+            }
 
             return DefaultTemplate;
         }
