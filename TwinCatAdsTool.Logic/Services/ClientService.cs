@@ -32,7 +32,7 @@ namespace TwinCatAdsTool.Logic.Services
         }
 
 
-        public Task Connect(AmsNetId amsNetId, int port = 851)
+        public Task Connect(AmsNetId amsNetId, int port)
         {
             if (!Client.IsConnected)
             {

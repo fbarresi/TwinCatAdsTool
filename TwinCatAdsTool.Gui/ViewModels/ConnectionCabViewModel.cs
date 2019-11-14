@@ -7,6 +7,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Documents;
+using System.Windows.Threading;
 using DynamicData;
 using ReactiveUI;
 using TwinCAT;
@@ -23,6 +24,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private int port = 851;
         private ObservableAsPropertyHelper<ConnectionState> connectionStateHelper;
         private NetId selectedAmsNetId = null;
+        private string selectedNetId;
         public ObservableCollection<NetId> AmsNetIds { get; set; } = new ObservableCollection<NetId>();
 
         public NetId SelectedAmsNetId
@@ -31,14 +33,24 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             set
             {
-                if (selectedAmsNetId != value)
-                {
-                    selectedAmsNetId = value;
-                    raisePropertyChanged("SelectedAmsNetId");
-                }
+                selectedAmsNetId = value;
+                raisePropertyChanged();
             }
         }
 
+
+        public string SelectedNetId
+        {
+            get => selectedNetId;
+            set
+            {
+                if (selectedNetId != value)
+                {
+                    selectedNetId = value;
+                    raisePropertyChanged();
+                }
+            }
+        }
 
         public ConnectionCabViewModel(IClientService clientService)
         {
@@ -47,7 +59,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public override void Init()
         {
-            Connect = ReactiveCommand.CreateFromTask(ConnectClient, canExecute: clientService.ConnectionState.CombineLatest(this.WhenAnyValue(vm => vm.SelectedAmsNetId), (state, amsNetId) => state != ConnectionState.Connected && amsNetId != null))
+            Connect = ReactiveCommand.CreateFromTask(ConnectClient, canExecute: clientService.ConnectionState.Select(state => state != ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
             Disconnect = ReactiveCommand.CreateFromTask(DisconnectClient, canExecute: IsConnected)
                 .AddDisposableTo(Disposables);
@@ -59,14 +71,21 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
 
             AmsNetIds.AddRange(clientService.AmsNetIds);
+            AmsNetIds.Add(new NetId(){Address = "", Name = "*"});
             SelectedAmsNetId = AmsNetIds.FirstOrDefault();
+
+            this.WhenAnyValue(vm => vm.SelectedAmsNetId)
+                .ObserveOn(Dispatcher.CurrentDispatcher)
+                .Do(s => SelectedNetId = s.Address)
+                .Subscribe()
+                .AddDisposableTo(Disposables);
         }
 
         public IObservable<bool> IsConnected { get; set; }
 
         private Task<Unit> ConnectClient()
         {
-            clientService.Client.Connect(SelectedAmsNetId.Address, Port);
+            clientService.Client.Connect(SelectedNetId, Port);
             Logger.Debug($"Client connected to device {SelectedAmsNetId?.Name} with address  {SelectedAmsNetId?.Address} ");
             return Task.FromResult(Unit.Default);
         }
