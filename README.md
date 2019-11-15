@@ -2,7 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/2ddq0r736xlqhgly?svg=true)](https://ci.appveyor.com/project/fbarresi/twincatadstool)
 
-The TwinCAT Tool you ever wanted and you lite alternative to visual studio
+The TwinCAT Tool you ever wanted and your lite alternative to visual studio
 
 ### [Download it now](https://github.com/fbarresi/TwinCatAdsTool/releases/latest)
 
@@ -18,7 +18,7 @@ This software requires Twincat ADS installed.
 
 In order to get connected with a PLC you also need to setup a route.
 
-More information at [https://infosys.beckhoff.com/](https://infosys.beckhoff.com/) or [download](https://www.beckhoff.de/english.asp?forms/twincat3/warenkorb2.aspx?id=1890306418903071160&lg=en&title=TC31-ADS-Setup.3.1.4024.4&version=3.1.4024.4).
+Get more information [here](https://infosys.beckhoff.com/) or [download ADS](https://www.beckhoff.de/english.asp?forms/twincat3/warenkorb2.aspx?id=1890306418903071160&lg=en&title=TC31-ADS-Setup.3.1.4024.4&version=3.1.4024.4).
 
 ## Credits
 
