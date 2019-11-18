@@ -195,7 +195,7 @@
                     <GridViewColumn>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type viewModels:SymbolObservationViewModel}">
-                                <Button Command="{Binding CmdSubmit}" Content="Submit" />
+                                <Button Command="{Binding CmdSubmit}" Content="Submit" IsEnabled="{Binding SupportsSubmit}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

@@ -30,6 +30,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
         public string Name { get; set; }
 
         public bool SuportsGraph => GetSupportsGraph();
+        public bool SupportsSubmit => GetSupportsSubmit();
+
         public object Value => helper.Value;
 
         public override void Init()
@@ -45,6 +47,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         }
 
         protected abstract bool GetSupportsGraph();
+        protected abstract bool GetSupportsSubmit();
         protected abstract Task SubmitSymbol();
     }
 
@@ -55,6 +58,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
         }
 
         protected override bool GetSupportsGraph()
+        {
+            return false;
+        }
+
+        protected override bool GetSupportsSubmit()
         {
             return false;
         }
@@ -96,6 +104,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 || (typeof(T) == typeof(bool))
                 || (typeof(T) == typeof(float))
                 || (typeof(T) == typeof(double));
+        }
+
+        protected override bool GetSupportsSubmit()
+        {
+            return true;
         }
 
         protected override Task SubmitSymbol()
