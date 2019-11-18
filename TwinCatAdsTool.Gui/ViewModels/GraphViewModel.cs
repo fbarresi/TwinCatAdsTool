@@ -53,36 +53,47 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 .DisposeMany()
                 .Subscribe()
                 .AddDisposableTo(Disposables);
-            
+
             var axis = new DateTimeAxis {
                 Position = AxisPosition.Bottom, Minimum = DateTimeAxis.ToDouble(
                     DateTime.Now.Subtract(TimeSpan.FromMinutes(15))), Maximum = DateTimeAxis.ToDouble(DateTime.Now.Add(TimeSpan.FromMinutes(15))), StringFormat = "hh:mm:ss", IsZoomEnabled = false};
             PlotModel.LegendPosition = LegendPosition.BottomRight;
      
             PlotModel.Axes.Add(axis);
-            Observable.Interval(TimeSpan.FromMinutes(5)).Do(x => {
-                PlotModel.Axes.Replace(PlotModel.Axes.First(), new DateTimeAxis
+            Observable.Interval(TimeSpan.FromMinutes(5))
+                .ObserveOnDispatcher()
+                .Subscribe(x =>
                 {
-                    Position = AxisPosition.Bottom,
-                    Minimum = DateTimeAxis.ToDouble(
-                    DateTime.Now.Subtract(TimeSpan.FromMinutes(15))),
-                    Maximum = DateTimeAxis.ToDouble(DateTime.Now.Add(TimeSpan.FromMinutes(15))),
-                    StringFormat = "hh:mm:ss",
-                    IsZoomEnabled = false
-                });
-                PlotModel.InvalidatePlot(true);
-            }).ObserveOnDispatcher().Subscribe().AddDisposableTo(Disposables);
-            
+                    PlotModel.Axes.Replace(PlotModel.Axes.First(), new DateTimeAxis
+                    {
+                        Position = AxisPosition.Bottom,
+                        Minimum = DateTimeAxis.ToDouble(
+                            DateTime.Now.Subtract(TimeSpan.FromMinutes(15))),
+                        Maximum = DateTimeAxis.ToDouble(DateTime.Now.Add(TimeSpan.FromMinutes(15))),
+                        StringFormat = "hh:mm:ss",
+                        IsZoomEnabled = false
+                    });
+                    PlotModel.InvalidatePlot(true);
+                })
+                .AddDisposableTo(Disposables);
+
         }
 
         private IDisposable CreateSymbolLineSeries(SymbolObservationViewModel symbol)
         {
             var lineSeries = new LineSeries();
             lineSeries.Title = symbol.Name;
-            lineSeries.LineStyle = LineStyle.None;
+
+            var index = PlotModel.Axes.Count - 1;
 
             var axis = new LinearAxis()
             {
+                AxislineThickness = 2,
+                AxislineColor = PlotModel.DefaultColors[index],
+                MinorTickSize = 4,
+                MajorTickSize = 7,
+                TicklineColor = PlotModel.DefaultColors[index],
+                TextColor = PlotModel.DefaultColors[index],
                 AxisDistance = PlotModel.Axes.OfType<LinearAxis>().Count() * 50,
                 Position = AxisPosition.Left,
                 IsZoomEnabled = false,
@@ -94,10 +105,14 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             PlotModel.Axes.Add(axis);
 
-            var subscription = Observable.Interval(TimeSpan.FromSeconds(1)).Do(x => {
-                lineSeries.Points.Add(DateTimeAxis.CreateDataPoint(DateTime.Now, Convert.ToDouble(symbol.Value)));
-                PlotModel.InvalidatePlot(true);
-            }).ObserveOnDispatcher().Subscribe();
+            var subscription = Observable.Interval(TimeSpan.FromSeconds(1))
+                .ObserveOnDispatcher()
+                .Subscribe(x =>
+                {
+                    lineSeries.Points.Add(DateTimeAxis.CreateDataPoint(DateTime.Now, Convert.ToDouble(symbol.Value)));
+                    PlotModel.InvalidatePlot(true);
+                    raisePropertyChanged("PlotModel");
+                });
 
 
             PlotModel.Series.Add(lineSeries);
