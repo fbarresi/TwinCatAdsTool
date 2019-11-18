@@ -105,7 +105,9 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             PlotModel.Axes.Add(axis);
 
-            var subscription = Observable.Interval(TimeSpan.FromSeconds(1))
+            RescaleAxisDistances();
+
+              var subscription = Observable.Interval(TimeSpan.FromSeconds(1))
                 .ObserveOnDispatcher()
                 .Subscribe(x =>
                 {
@@ -119,6 +121,14 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             raisePropertyChanged("PlotModel");
             return subscription;
+        }
+
+        public void RescaleAxisDistances()
+        {
+            for (var i = 0; i < PlotModel.Axes.OfType<LinearAxis>().Count(); i++)
+            {
+                PlotModel.Axes.OfType<LinearAxis>().Skip(i).First().AxisDistance = 0; //i * 50;
+            }
         }
 
         public void AddSymbol(SymbolObservationViewModel symbol)
@@ -141,6 +151,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
             {
                 PlotModel.Axes.Remove(axisToRemove);
             }
+
+            RescaleAxisDistances();
         }
     }
 }
