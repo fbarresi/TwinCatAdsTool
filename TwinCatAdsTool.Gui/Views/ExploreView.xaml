@@ -80,7 +80,7 @@
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
                     <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -121,7 +121,7 @@
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
                     <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -144,8 +144,6 @@
                     <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -163,12 +161,17 @@
                     <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="150"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
                 <CheckBox Grid.Column="2" IsChecked="{Binding NewValue}" VerticalAlignment="Center" />
                 <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
                 <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
+                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="5" Content="Add Graph" />
+                <Button Command="{Binding  Path=DataContext.CmdRemoveGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="6" Content="Remove Graph" />
+
             </Grid>
         </DataTemplate>
 
@@ -180,8 +183,6 @@
                     <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width ="100"/>
-                    <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -203,7 +204,7 @@
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="50" />
                     <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{Binding Name}" Grid.Column="0" />
                 <Label Content="{Binding Value}" Grid.Column="1" />
@@ -229,9 +230,9 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="6*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
