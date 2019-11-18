@@ -15,9 +15,9 @@ namespace TwinCatAdsTool.Gui.ViewModels
     public class GraphViewModel : ViewModelBase
     {
         readonly Dictionary<string, List<DataPoint>> dataPoints = new Dictionary<string, List<DataPoint>>();
-        private PlotModel plotModel;
 
         private readonly SourceCache<SymbolObservationViewModel, string> symbolCache = new SourceCache<SymbolObservationViewModel, string>(x => x.Name);
+        private PlotModel plotModel;
 
 
         public PlotModel PlotModel
@@ -34,7 +34,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public void AddSymbol(SymbolObservationViewModel symbol)
         {
-            symbolCache.AddOrUpdate(symbol);
+            var symbolInLineSeries = PlotModel.Series.FirstOrDefault(series => series.Title == symbol.Name);
+            if (symbolInLineSeries == null)
+            {
+                symbolCache.AddOrUpdate(symbol);
+            }
         }
 
         public override void Init()
@@ -60,7 +64,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 StringFormat = "hh:mm:ss",
                 IsZoomEnabled = false
             };
-            PlotModel.LegendPosition = LegendPosition.BottomRight;
 
             PlotModel.Axes.Add(axis);
         }
@@ -82,14 +85,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
 
             RescaleAxisDistances();
-        }
-
-        private void RescaleAxisDistances()
-        {
-            for (var i = 0; i < PlotModel.Axes.OfType<LinearAxis>().Count(); i++)
-            {
-                PlotModel.Axes.OfType<LinearAxis>().Skip(i).First().AxisDistance = i * 50;
-            }
         }
 
         private IDisposable CreateSymbolLineSeries(SymbolObservationViewModel symbol)
@@ -160,7 +155,19 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             raisePropertyChanged("PlotModel");
 
+            // Need to invalidate oxyplot graph after removal of line series in order to have it really removed from UI
+            Disposable.Create(() => PlotModel.InvalidatePlot(true))
+                .AddDisposableTo(disposable);
+
             return disposable;
+        }
+
+        private void RescaleAxisDistances()
+        {
+            for (var i = 0; i < PlotModel.Axes.OfType<LinearAxis>().Count(); i++)
+            {
+                PlotModel.Axes.OfType<LinearAxis>().Skip(i).First().AxisDistance = i * 50;
+            }
         }
     }
 }

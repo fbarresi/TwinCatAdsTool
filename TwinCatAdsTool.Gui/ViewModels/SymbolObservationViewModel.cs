@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Diagnostics.Eventing.Reader;
-using System.Drawing;
-using System.Globalization;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using ReactiveUI;
-using TwinCAT.Ads;
 using TwinCAT.Ads.Reactive;
 using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Interfaces.Extensions;
@@ -18,25 +16,27 @@ namespace TwinCatAdsTool.Gui.ViewModels
 {
     public abstract class SymbolObservationViewModel : ViewModelBase
     {
-        protected readonly IClientService clientService;
+        protected readonly IClientService ClientService;
         private ObservableAsPropertyHelper<object> helper;
-        public ISymbol Model { get; set; }
-        public object Value => helper.Value;
-        public string Name { get; set; }
 
-        public Color Color { get; set; }
-
-
-        public SymbolObservationViewModel(ISymbol model, IClientService clientService)
+        protected SymbolObservationViewModel(ISymbol model, IClientService clientService)
         {
-            this.clientService = clientService;
+            ClientService = clientService;
             Model = model;
         }
+
+        public ReactiveCommand<Unit, Unit> CmdSubmit { get; private set; }
+        public ISymbol Model { get; set; }
+        public string Name { get; set; }
+
+        public bool SuportsGraph => GetSupportsGraph();
+        public object Value => helper.Value;
+
         public override void Init()
         {
             Name = Model.InstanceName;
-            var readSymbolInfo = clientService.Client.ReadSymbolInfo(Model.InstancePath);
-            var initialValue = clientService.Client.ReadSymbol(readSymbolInfo);
+            var readSymbolInfo = ClientService.Client.ReadSymbolInfo(Model.InstancePath);
+            var initialValue = ClientService.Client.ReadSymbol(readSymbolInfo);
             var observable = ((IValueSymbol) Model).WhenValueChanged().StartWith(initialValue);
             helper = observable.ToProperty(this, m => m.Value);
 
@@ -44,15 +44,19 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 .AddDisposableTo(Disposables);
         }
 
+        protected abstract bool GetSupportsGraph();
         protected abstract Task SubmitSymbol();
-
-        public ReactiveCommand<Unit, Unit> CmdSubmit { get; private set; }
     }
 
     public class SymbolObservationDefaultViewModel : SymbolObservationViewModel
     {
         public SymbolObservationDefaultViewModel(ISymbol model, IClientService clientService) : base(model, clientService)
         {
+        }
+
+        protected override bool GetSupportsGraph()
+        {
+            return false;
         }
 
         protected override Task SubmitSymbol()
@@ -65,23 +69,33 @@ namespace TwinCatAdsTool.Gui.ViewModels
     {
         private T newValue;
 
+        public SymbolObservationViewModel(ISymbol model, IClientService clientService) : base(model, clientService)
+        {
+        }
+
         public T NewValue
         {
             get => newValue;
-            set  {
+            set
+            {
                 newValue = value;
-            raisePropertyChanged();
+                raisePropertyChanged();
             }
-        }
-
-        public SymbolObservationViewModel(ISymbol model, IClientService clientService) : base(model, clientService)
-        {
         }
 
         public override void Init()
         {
             base.Init();
             NewValue = (T) Value;
+        }
+
+        protected override bool GetSupportsGraph()
+        {
+            return (typeof(T) == typeof(int))
+                || (typeof(T) == typeof(short))
+                || (typeof(T) == typeof(bool))
+                || (typeof(T) == typeof(float))
+                || (typeof(T) == typeof(double));
         }
 
         protected override Task SubmitSymbol()
@@ -94,24 +108,22 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             if (Model.IsReadOnly)
             {
-                System.Windows.MessageBox.Show("This value is Read Only", "Read Only Value", System.Windows.MessageBoxButton.OK);
+                MessageBox.Show("This value is Read Only", "Read Only Value", MessageBoxButton.OK);
                 return;
             }
 
-            var variableHandle = clientService.Client.CreateVariableHandle(Model.InstancePath);
+            var variableHandle = ClientService.Client.CreateVariableHandle(Model.InstancePath);
 
             if (typeof(T) == typeof(string))
             {
                 Logger.Debug($"Trying to write to {Model?.InstancePath} with value {(value as string)}");
-                clientService.Client.WriteAnyString(variableHandle, value as string, (value as string).Length, Encoding.Default);
-                return;
+                ClientService.Client.WriteAnyString(variableHandle, value as string, (value as string).Length, Encoding.Default);
             }
-            else{
+            else
+            {
                 Logger.Debug($"Trying to write to {Model?.InstancePath} with value {value}");
-                clientService.Client.WriteAny(variableHandle, value);
+                ClientService.Client.WriteAny(variableHandle, value);
             }
         }
-
-
     }
 }

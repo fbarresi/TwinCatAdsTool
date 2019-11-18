@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reactive.Linq;
+using System.Linq;
+using System.Windows;
 using TwinCAT.PlcOpen;
 using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Interfaces.Commons;
@@ -12,8 +13,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
 {
     public class ObserverViewModel : ViewModelBase
     {
-        private readonly IViewModelFactory viewModelFactory;
         private readonly ISelectionService<ISymbol> symbolSelection;
+        private readonly IViewModelFactory viewModelFactory;
 
         public ObserverViewModel(IViewModelFactory viewModelFactory, ISelectionService<ISymbol> symbolSelection)
         {
@@ -35,7 +36,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private void CreateViewModelOrShowMessage(ISymbol symbol)
         {
-            if(ViewModels.All(viewModel => viewModel.Model != symbol))
+            if (ViewModels.All(viewModel => viewModel.Model != symbol))
             {
                 switch (symbol.TypeName)
                 {
@@ -46,10 +47,10 @@ namespace TwinCatAdsTool.Gui.ViewModels
                         ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<byte>>(symbol));
                         break;
                     case "WORD":
-                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<UInt16>>(symbol));
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<ushort>>(symbol));
                         break;
                     case "DWORD":
-                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<UInt32>>(symbol));
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<uint>>(symbol));
                         break;
                     case "SINT":
                         ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<sbyte>>(symbol));
@@ -67,19 +68,19 @@ namespace TwinCatAdsTool.Gui.ViewModels
                         ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<int>>(symbol));
                         break;
                     case "UDINT":
-                        ViewModels.Add(viewModelFactory.CreateViewModel < ISymbol, SymbolObservationViewModel <uint>> (symbol));
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<uint>>(symbol));
                         break;
                     case "REAL":
-                        ViewModels.Add(viewModelFactory.CreateViewModel < ISymbol, SymbolObservationViewModel <float>> (symbol));
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<float>>(symbol));
                         break;
                     case "LREAL":
-                        ViewModels.Add(viewModelFactory.CreateViewModel < ISymbol, SymbolObservationViewModel <double>> (symbol));
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<double>>(symbol));
                         break;
                     case "STRING":
-                        ViewModels.Add(viewModelFactory.CreateViewModel < ISymbol, SymbolObservationViewModel <string>> (symbol));
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<string>>(symbol));
                         break;
                     case "DATE_AND_TIME":
-                        ViewModels.Add(viewModelFactory.CreateViewModel < ISymbol, SymbolObservationViewModel <DT>> (symbol));
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<DT>>(symbol));
                         break;
                     case "LTIME":
                         ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<LTIME>>(symbol));
@@ -90,6 +91,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
                             ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<string>>(symbol));
                             break;
                         }
+
                         ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationDefaultViewModel>(symbol));
                         var exception = new NotImplementedException("This type is not implemented.");
                         Logger.Error(exception.Message, exception);
@@ -98,7 +100,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
             else
             {
-                System.Windows.MessageBox.Show($"The symbol {symbol?.InstanceName} has already been added to the list of observables", "Symbol already observed", System.Windows.MessageBoxButton.OK);
+                MessageBox.Show($"The symbol {symbol?.InstanceName} has already been added to the list of observables", "Symbol already observed", MessageBoxButton.OK);
             }
         }
     }
