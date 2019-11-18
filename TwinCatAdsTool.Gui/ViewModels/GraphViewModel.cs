@@ -60,7 +60,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             PlotModel.LegendPosition = LegendPosition.BottomRight;
      
             PlotModel.Axes.Add(axis);
-            Observable.Interval(TimeSpan.FromMinutes(5))
+            Observable.Interval(TimeSpan.FromMinutes(15))
                 .ObserveOnDispatcher()
                 .Subscribe(x =>
                 {
@@ -127,7 +127,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             for (var i = 0; i < PlotModel.Axes.OfType<LinearAxis>().Count(); i++)
             {
-                PlotModel.Axes.OfType<LinearAxis>().Skip(i).First().AxisDistance = 0; //i * 50;
+                PlotModel.Axes.OfType<LinearAxis>().Skip(i).First().AxisDistance = i * 50;
             }
         }
 

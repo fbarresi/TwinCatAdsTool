@@ -272,6 +272,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             try
             {
                 ObserverViewModel.ViewModels.Remove(model);
+                RemoveGraph(model);
             }
             catch (Exception ex)
             {

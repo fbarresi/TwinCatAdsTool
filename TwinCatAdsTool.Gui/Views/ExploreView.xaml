@@ -152,10 +152,7 @@
                 <xctk:DateTimePicker Grid.Column="2" Value="{Binding NewValue, Converter={StaticResource DtToDateTimeConverter}}" />
                 <Button Command="{Binding CmdSubmit}" Grid.Column="3" Content="Submit" />
                 <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="4" Content="X" />
-                <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="5" Content="Add Graph" />
-                <Button Command="{Binding  Path=DataContext.CmdRemoveGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Grid.Column="6" Content="Remove Graph" />
-
-</Grid>
+            </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="BoolTemplate">
