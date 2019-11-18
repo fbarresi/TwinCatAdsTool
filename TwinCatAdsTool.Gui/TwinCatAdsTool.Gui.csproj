@@ -13,10 +13,12 @@
 
   <ItemGroup>
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <None Remove="Resources\evopro.png" />
     <None Remove="Views\BackupView.xaml" />
     <None Remove="Views\ConnectionCabView.xaml" />
     <None Remove="Views\GraphView.xaml" />
     <None Remove="Views\TabsView.xaml" />
+    <Resource Include="Resources\evopro.png" />
     <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="4.3.10" />
     <PackageReference Include="DiffPlex" Version="1.4.4" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="3.6.0" />
