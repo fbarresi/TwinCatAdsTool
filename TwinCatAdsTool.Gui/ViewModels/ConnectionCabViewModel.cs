@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Reactive;
@@ -18,6 +19,7 @@ using TwinCatAdsTool.Interfaces.Services;
 
 namespace TwinCatAdsTool.Gui.ViewModels
 {
+    [SuppressMessage("ReSharper", "InvokeAsExtensionMethod")]
     public class ConnectionCabViewModel : ViewModelBase
     {
         private readonly IClientService clientService;
@@ -59,9 +61,19 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public override void Init()
         {
-            Connect = ReactiveCommand.CreateFromTask(ConnectClient, canExecute: clientService.ConnectionState.Select(state => state != ConnectionState.Connected))
+            var canConnect = Observable.CombineLatest(clientService.ConnectionState.StartWith(ConnectionState.Disconnected),
+                                                      this.WhenAnyValue(vm => vm.SelectedAmsNetId),
+                                                      (state, amsNetId) => state != ConnectionState.Connected && amsNetId != null)
+                .ObserveOnDispatcher();
+
+            Connect = ReactiveCommand.CreateFromTask(ConnectClient, canExecute: canConnect)
                 .AddDisposableTo(Disposables);
-            Disconnect = ReactiveCommand.CreateFromTask(DisconnectClient, canExecute: IsConnected)
+
+            var canDisconnect = clientService.ConnectionState.StartWith(ConnectionState.Disconnected)
+                .Select(state => state == ConnectionState.Connected)
+                .ObserveOnDispatcher();
+            Disconnect = ReactiveCommand.CreateFromTask(DisconnectClient, canExecute: 
+                                                        canDisconnect)
                 .AddDisposableTo(Disposables);
 
             connectionStateHelper = clientService
@@ -83,18 +95,16 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public IObservable<bool> IsConnected { get; set; }
 
-        private Task<Unit> ConnectClient()
+        private async Task ConnectClient()
         {
-            clientService.Client.Connect(SelectedNetId, Port);
+            await clientService.Connect(SelectedAmsNetId.Address, Port);
             Logger.Debug($"Client connected to device {SelectedAmsNetId?.Name} with address  {SelectedAmsNetId?.Address} ");
-            return Task.FromResult(Unit.Default);
         }
 
-        private Task<Unit> DisconnectClient()
+        private async Task DisconnectClient()
         {
-            clientService.Client.Disconnect();
+            await clientService.Disconnect();
             Logger.Debug($"Client disconnected");
-            return Task.FromResult(Unit.Default);
         }
 
         public ConnectionState ConnectionState => connectionStateHelper.Value;

@@ -10,6 +10,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Ninject;
 using TwinCAT;
 using TwinCAT.Ads;
@@ -32,12 +33,19 @@ namespace TwinCatAdsTool.Logic.Services
         }
 
 
-        public Task Connect(AmsNetId amsNetId, int port)
+        public Task Connect(string amsNetId, int port = 851)
         {
             if (!Client.IsConnected)
             {
                 Client.Connect(amsNetId, port);
             }
+
+            if (!TreeViewSymbols.Any())
+            {
+                MessageBox.Show("Symbols could not be loaded. Please ensure that route to PLC is established in TwinCAT configuration and re-connect.");
+                Disconnect();
+            }
+
             return Task.FromResult(Unit.Default);
         }
 
@@ -51,12 +59,17 @@ namespace TwinCatAdsTool.Logic.Services
             return Task.Run(() => UpdateSymbols(connectionStateSubject.Value));
         }
 
+        public Task Disconnect()
+        {
+            Client.Disconnect();
+            return Task.FromResult(Unit.Default);
+        }
+
         public void Initialize()
         {
             Observable.FromEventPattern<ConnectionStateChangedEventArgs>(ev => Client.ConnectionStateChanged += ev,
                                                                          ev => Client.ConnectionStateChanged -= ev)
-                .Select(pattern => pattern.EventArgs)
-                .Select(args => args.NewState)
+                .Select(pattern => pattern.EventArgs.NewState)
                 .Subscribe(connectionStateSubject.OnNext)
                 .AddDisposableTo(disposables);
 
@@ -91,10 +104,10 @@ namespace TwinCatAdsTool.Logic.Services
             }
         }
 
+
         public void Dispose()
         {
             Client.Disconnect();
-            connectionStateSubject.OnNext(TwinCAT.ConnectionState.Disconnected);
             Client?.Dispose();
             disposables?.Dispose();
         }
