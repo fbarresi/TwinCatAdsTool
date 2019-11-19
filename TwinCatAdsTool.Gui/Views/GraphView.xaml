@@ -5,12 +5,25 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TwinCatAdsTool.Gui.Views"
              xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <oxy:PlotView Grid.Row="0" 
+                      Grid.ColumnSpan="2"
                       Margin="10" 
                       Model="{Binding PlotModel}" >
         </oxy:PlotView>
+
+        <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Content="Datapoints expire after timespan" />
+        <xctk:TimeSpanUpDown Grid.Row="1"  Grid.Column="1" Value="{Binding ExpiresAfter}" />
     </Grid>
 </UserControl>
