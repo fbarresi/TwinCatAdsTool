@@ -2,48 +2,41 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Reactive.Linq;
 using DynamicData.Binding;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Disposables;
 using System.Reactive.Subjects;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using ReactiveUI;
 using TwinCAT;
-using TwinCAT.Ads;
-using TwinCAT.Ads.Reactive;
-using TwinCAT.Ads.TypeSystem;
 using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Gui.Commands;
 using TwinCatAdsTool.Interfaces.Commons;
 using TwinCatAdsTool.Interfaces.Extensions;
-using TwinCatAdsTool.Interfaces.Logging;
 using TwinCatAdsTool.Interfaces.Services;
-using ListEx = DynamicData.ListEx;
 
 namespace TwinCatAdsTool.Gui.ViewModels
 {
     public class ExploreViewModel : ViewModelBase
     {
         private readonly IClientService clientService;
-
-        private readonly IViewModelFactory viewModelFactory;
         private readonly ISelectionService<ISymbol> symbolSelection;
 
         private readonly Subject<ReadOnlySymbolCollection> variableSubject = new Subject<ReadOnlySymbolCollection>();
-        private ISymbolLoader treeViewSymbolLoader;
+
+        private readonly IViewModelFactory viewModelFactory;
+        private bool isConnected;
+        private ObservableAsPropertyHelper<bool> isConnectedHelper;
 
         private ObservableCollection<IValueSymbol> observedSymbols;
 
         private string searchText;
+        private ISymbolLoader searchViewSymbolLoader;
 
         private ObservableCollection<ISymbol> treeNodes;
-        private bool isConnected;
-        private ObservableAsPropertyHelper<bool> isConnectedHelper;
-        private ISymbolLoader searchViewSymbolLoader;
+        private ISymbolLoader treeViewSymbolLoader;
 
 
         public ExploreViewModel(IClientService clientService,
@@ -55,14 +48,29 @@ namespace TwinCatAdsTool.Gui.ViewModels
         }
 
         public ReactiveCommand<ISymbol, Unit> AddObserverCmd { get; set; }
-        public ReactiveCommand<SymbolObservationViewModel, Unit> CmdDelete { get; set; }
-        public ReactiveCommand<SymbolObservationViewModel, Unit> CmdSubmit { get; set; }
 
         public ReactiveCommand<SymbolObservationViewModel, Unit> CmdAddGraph { get; set; }
+        public ReactiveCommand<SymbolObservationViewModel, Unit> CmdDelete { get; set; }
 
         public ReactiveCommand<SymbolObservationViewModel, Unit> CmdRemoveGraph { get; set; }
+        public ReactiveCommand<SymbolObservationViewModel, Unit> CmdSubmit { get; set; }
 
         public GraphViewModel GraphViewModel { get; set; }
+
+        public bool IsConnected
+        {
+            get { return isConnectedHelper.Value; }
+            set
+            {
+                if (isConnectedHelper.Value == value)
+                {
+                    return;
+                }
+
+                isConnected = value;
+                raisePropertyChanged();
+            }
+        }
 
         public ObservableCollection<IValueSymbol> ObservedSymbols
         {
@@ -74,6 +82,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 raisePropertyChanged();
             }
         }
+
+        public ObserverViewModel ObserverViewModel { get; set; }
 
         public ReactiveCommand<Unit, Unit> Read { get; set; }
 
@@ -111,8 +121,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 raisePropertyChanged();
             }
         }
-
-        public ObserverViewModel ObserverViewModel { get; set; }
 
         public override void Init()
         {
@@ -198,8 +206,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             // Chain the input event stream and the search stream, cancelling searches when input is received
             var results = from searchTerm in input
-                          from result in search(searchTerm).TakeUntil(input)
-                          select result;
+                from result in search(searchTerm).TakeUntil(input)
+                select result;
 
 
             // Log the search result and add the results to the results collection
@@ -211,13 +219,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
                         result.Results.ToList().ForEach(item => SearchResults.Add(item));
                     }
                 );
-
-        }
-
-        private Task<Unit> RemoveGraph(SymbolObservationViewModel symbolObservationViewModel)
-        {
-            GraphViewModel.RemoveSymbol(symbolObservationViewModel);
-            return Task.FromResult(Unit.Default);
         }
 
         private Task<Unit> AddGraph(SymbolObservationViewModel symbolObservationViewModel)
@@ -226,19 +227,52 @@ namespace TwinCatAdsTool.Gui.ViewModels
             return Task.FromResult(Unit.Default);
         }
 
-        public bool IsConnected
+        private Task<Unit> DeleteSymbolObserver(SymbolObservationViewModel model)
         {
-            get { return isConnectedHelper.Value; }
-            set
+            try
             {
-                if (isConnectedHelper.Value == value)
-                {
-                    return;
-                }
-
-                isConnected = value;
-                raisePropertyChanged();
+                ObserverViewModel.ViewModels.Remove(model);
+                RemoveGraph(model);
             }
+            catch (Exception ex)
+            {
+                Logger.Error($"Could not delete Observer for symbol {model?.Name}", ex);
+                MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
+            }
+
+            return Task.FromResult(Unit.Default);
+        }
+
+        private SearchResult DoSearch(string searchTerm)
+        {
+            var searchResult = new SearchResult {Results = new List<ISymbol>(), SearchTerm = searchTerm};
+            try
+            {
+                var iterator = new SymbolIterator(clientService.FlatViewSymbols, s => s.InstancePath.ToLower().Contains(searchTerm.ToLower()));
+                searchResult.Results = iterator;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Error during search", ex);
+                MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
+            }
+
+            return searchResult;
+        }
+
+        private async Task<Unit> ReadVariables()
+        {
+            try
+            {
+                await clientService.Reload();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Could not reload variables", ex);
+                MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
+            }
+
+            return Unit.Default;
         }
 
 
@@ -261,64 +295,21 @@ namespace TwinCatAdsTool.Gui.ViewModels
             catch (Exception ex)
             {
                 Logger.Error($"Could not register Observer for Symbol {symbol?.InstanceName}", ex);
-                System.Windows.MessageBox.Show(ex.Message, ex.GetType().ToString(), System.Windows.MessageBoxButton.OK);
+                MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
             }
 
             return Task.FromResult(Unit.Default);
         }
 
-        private Task<Unit> DeleteSymbolObserver(SymbolObservationViewModel model)
+        private Task<Unit> RemoveGraph(SymbolObservationViewModel symbolObservationViewModel)
         {
-            try
-            {
-                ObserverViewModel.ViewModels.Remove(model);
-                RemoveGraph(model);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error($"Could not delete Observer for symbol {model?.Name}", ex);
-                System.Windows.MessageBox.Show(ex.Message, ex.GetType().ToString(), System.Windows.MessageBoxButton.OK);
-            }
-
+            GraphViewModel.RemoveSymbol(symbolObservationViewModel);
             return Task.FromResult(Unit.Default);
         }
 
         private Task<Unit> SubmitSymbol(SymbolObservationViewModel model)
         {
             return Task.FromResult(Unit.Default);
-        }
-
-        private SearchResult DoSearch(string searchTerm)
-        {
-            var searchResult = new SearchResult { Results = new List<ISymbol>(), SearchTerm = searchTerm };
-            try
-            {
-                var iterator = new SymbolIterator(clientService.FlatViewSymbols, s => s.InstancePath.ToLower().Contains(searchTerm.ToLower()));
-                searchResult.Results = iterator;
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("Error during search", ex);
-                System.Windows.MessageBox.Show(ex.Message, ex.GetType().ToString(), System.Windows.MessageBoxButton.OK);
-            }
-
-            return searchResult;
-        }
-
-        private async Task<Unit> ReadVariables()
-        {
-            try
-            {
-                await clientService.Reload();
-
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("Could not reload variables", ex);
-                System.Windows.MessageBox.Show(ex.Message, ex.GetType().ToString(), System.Windows.MessageBoxButton.OK);
-            }
-
-            return Unit.Default;
         }
 
         private void UpdateTree(ReadOnlySymbolCollection symbolList)
@@ -334,7 +325,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             catch (Exception ex)
             {
                 Logger.Error("Could not update Tree", ex);
-                System.Windows.MessageBox.Show(ex.Message, ex.GetType().ToString(), System.Windows.MessageBoxButton.OK);
+                MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
             }
             finally
             {
