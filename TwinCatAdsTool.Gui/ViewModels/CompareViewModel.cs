@@ -1,41 +1,34 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reactive.Linq;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using DiffPlex;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
-using DynamicData;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using TwinCAT;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
-using ChangeType = DiffPlex.DiffBuilder.Model.ChangeType;
 
 namespace TwinCatAdsTool.Gui.ViewModels
 {
     public class CompareViewModel : ViewModelBase
     {
-
         private readonly Subject<string> leftTextSubject = new Subject<string>();
         private readonly Subject<string> rightTextSubject = new Subject<string>();
-        private IClientService clientService;
-        private IPersistentVariableService persistentVariableService;
-        private SideBySideDiffBuilder comparisonBuilder = new SideBySideDiffBuilder(new Differ());
+        private readonly IClientService clientService;
+        private readonly SideBySideDiffBuilder comparisonBuilder = new SideBySideDiffBuilder(new Differ());
         private SideBySideDiffModel comparisonModel = new SideBySideDiffModel();
         private IEnumerable<ListBoxItem> leftBoxText;
+        private readonly IPersistentVariableService persistentVariableService;
         private IEnumerable<ListBoxItem> rightBoxText;
 
         public CompareViewModel(IClientService clientService, IPersistentVariableService persistentVariableService)
@@ -44,13 +37,61 @@ namespace TwinCatAdsTool.Gui.ViewModels
             this.persistentVariableService = persistentVariableService;
         }
 
+        public IEnumerable<ListBoxItem> LeftBoxText
+        {
+            get
+            {
+                if (leftBoxText == null)
+                {
+                    leftBoxText = new List<ListBoxItem>();
+                }
+
+                return leftBoxText;
+            }
+            set
+            {
+                if (value == leftBoxText)
+                {
+                    return;
+                }
+
+                leftBoxText = value;
+                raisePropertyChanged();
+            }
+        }
+
+        public ReactiveCommand<Unit, Unit> LoadLeft { get; set; }
+        public ReactiveCommand<Unit, Unit> LoadRight { get; set; }
+
+        public ReactiveCommand<Unit, Unit> ReadLeft { get; set; }
+
+        public ReactiveCommand<Unit, Unit> ReadRight { get; set; }
+
+        public IEnumerable<ListBoxItem> RightBoxText
+        {
+            get
+            {
+                if (rightBoxText == null)
+                {
+                    rightBoxText = new List<ListBoxItem>();
+                }
+
+                return rightBoxText;
+            }
+            set
+            {
+                if (value == rightBoxText) return;
+                rightBoxText = value;
+                raisePropertyChanged();
+            }
+        }
+
 
         public override void Init()
         {
-
-            var x = Observable
-                .CombineLatest(leftTextSubject.StartWith(""), rightTextSubject.StartWith(""), 
-                (l, r) => comparisonModel = GenerateDiffModel(l, r));
+            var x = leftTextSubject.StartWith("")
+                .CombineLatest(rightTextSubject.StartWith(""),
+                               (l, r) => comparisonModel = GenerateDiffModel(l, r));
 
             x.ObserveOnDispatcher()
                 .Retry()
@@ -80,8 +121,18 @@ namespace TwinCatAdsTool.Gui.ViewModels
             var rightBox = diffModel.NewText.Lines;
 
             // all items have the same fixed height. this makes synchronizing of the scrollbars easier
-            LeftBoxText = leftBox.Select(x => new ListBoxItem() { Content = x.Text, Background = GetBGColor(x), Height = 20});
-            RightBoxText = rightBox.Select(x => new ListBoxItem() { Content = x.Text, Background = GetBGColor(x), Height = 20});
+            LeftBoxText = leftBox.Select(x => new ListBoxItem
+            {
+                Content = x.Text,
+                Background = GetBGColor(x),
+                Height = 20
+            });
+            RightBoxText = rightBox.Select(x => new ListBoxItem
+            {
+                Content = x.Text,
+                Background = GetBGColor(x),
+                Height = 20
+            });
 
             Logger.Debug("Generated Comparison Model");
             return diffModel;
@@ -91,78 +142,78 @@ namespace TwinCatAdsTool.Gui.ViewModels
         //compare https://github.com/SciGit/scigit-client/blob/master/DiffPlex/SilverlightDiffer/TextBoxDiffRenderer.cs
         private SolidColorBrush GetBGColor(DiffPiece diffPiece)
         {
-      
-                var fillColor = new SolidColorBrush(Colors.Transparent);
-                if (diffPiece.Type == ChangeType.Deleted)
-                {
-                    fillColor = new SolidColorBrush(Color.FromArgb(255, 255, 200, 100));
-                }
-                else if (diffPiece.Type == ChangeType.Inserted)
-                {
-                    fillColor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 0));
-                }
-                else if (diffPiece.Type == ChangeType.Unchanged)
-                {
-                    fillColor = new SolidColorBrush(Colors.White);
-                }
-                else if (diffPiece.Type == ChangeType.Modified)
-                {
-                    fillColor = new SolidColorBrush(Color.FromArgb(255, 220, 220, 255));
-                }
-                else if (diffPiece.Type == ChangeType.Imaginary)
-                {
-                    fillColor = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
-                }
+            var fillColor = new SolidColorBrush(Colors.Transparent);
+            if (diffPiece.Type == ChangeType.Deleted)
+            {
+                fillColor = new SolidColorBrush(Color.FromArgb(255, 255, 200, 100));
+            }
+            else if (diffPiece.Type == ChangeType.Inserted)
+            {
+                fillColor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 0));
+            }
+            else if (diffPiece.Type == ChangeType.Unchanged)
+            {
+                fillColor = new SolidColorBrush(Colors.White);
+            }
+            else if (diffPiece.Type == ChangeType.Modified)
+            {
+                fillColor = new SolidColorBrush(Color.FromArgb(255, 220, 220, 255));
+            }
+            else if (diffPiece.Type == ChangeType.Imaginary)
+            {
+                fillColor = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
+            }
 
-                return fillColor;
+            return fillColor;
         }
 
-        public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ReadLeft { get; set; }
-        public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> LoadLeft { get; set; }
 
-        public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ReadRight { get; set; }
-        public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> LoadRight { get; set; }
-
-        public IEnumerable<ListBoxItem> LeftBoxText
+        private Task<JObject> LoadJson()
         {
-            get
+            try
             {
-                if(leftBoxText == null)
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Json files (*.json)|*.json";
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                if (openFileDialog.ShowDialog() == true)
                 {
-                    leftBoxText = new List<ListBoxItem>();
+                    JObject json = JObject.Parse(File.ReadAllText(openFileDialog.FileName));
+                    Logger.Debug($"Load of File {openFileDialog.FileName} was succesful");
+                    return Task.FromResult(json);
                 }
-
-                return leftBoxText;
             }
-            set
+            catch (Exception ex)
             {
-                if (value == leftBoxText)
-                {
-                    return;
-                }
-
-                leftBoxText = value;
-                raisePropertyChanged();
+                Logger.Error("Error during load of file");
             }
+
+            return Task.FromResult<JObject>(null);
         }
 
-        public IEnumerable<ListBoxItem> RightBoxText
-        {
-            get
-            {
-                if (rightBoxText == null)
-                {
-                    rightBoxText = new List<ListBoxItem>();
-                }
 
-                return rightBoxText;
-            }
-            set
+        private Task LoadJsonLeft()
+        {
+            var json = LoadJson().Result;
+            if (json != null)
             {
-                if (value == rightBoxText) return;
-                rightBoxText = value;
-                raisePropertyChanged();
+                leftTextSubject.OnNext(json.ToString());
+                Logger.Debug("Updated left TextBox");
             }
+
+            return Task.FromResult(Unit.Default);
+        }
+
+        private Task LoadJsonRight()
+        {
+            var json = LoadJson()?.Result;
+            if (json != null)
+            {
+                rightTextSubject.OnNext(json.ToString());
+                Logger.Debug("Updated right TextBox");
+            }
+
+
+            return Task.FromResult(Unit.Default);
         }
 
         private async Task<JObject> ReadVariables()
@@ -187,53 +238,5 @@ namespace TwinCatAdsTool.Gui.ViewModels
             rightTextSubject.OnNext(json.ToString());
             Logger.Debug("Updated right TextBox");
         }
-
-
-        private Task LoadJsonLeft()
-        {
-            var json = LoadJson().Result;
-            if (json != null)
-            {
-                leftTextSubject.OnNext(json.ToString());
-                Logger.Debug("Updated left TextBox");
-            }
-            return Task.FromResult(Unit.Default);
-        }
-
-        private Task LoadJsonRight()
-        {
-            var json = LoadJson()?.Result;
-            if (json != null)
-            {
-                rightTextSubject.OnNext(json.ToString());
-                Logger.Debug("Updated right TextBox");
-            }
-
-
-            return Task.FromResult(Unit.Default);
-        }
-
-
-        private Task<JObject> LoadJson()
-        {
-            try
-            {
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "Json files (*.json)|*.json";
-                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                if (openFileDialog.ShowDialog() == true)
-                {
-                    JObject json = JObject.Parse(File.ReadAllText(openFileDialog.FileName));
-                    Logger.Debug($"Load of File {openFileDialog.FileName} was succesful");
-                    return Task.FromResult(json);
-                }
-            }catch(Exception ex)
-            {
-                Logger.Error("Error during load of file");
-            }
-      
-            return Task.FromResult<JObject>(null);
-        }
-
     }
 }

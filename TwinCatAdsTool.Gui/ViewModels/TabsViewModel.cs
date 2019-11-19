@@ -1,4 +1,6 @@
-﻿using TwinCatAdsTool.Interfaces.Commons;
+﻿using System;
+using System.Linq;
+using TwinCatAdsTool.Interfaces.Commons;
 using TwinCatAdsTool.Interfaces.Extensions;
 
 namespace TwinCatAdsTool.Gui.ViewModels
@@ -11,6 +13,13 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             this.viewModelFactory = viewModelFactory;
         }
+
+        public BackupViewModel BackupViewModel { get; set; }
+        public CompareViewModel CompareViewModel { get; set; }
+
+        public ExploreViewModel ExploreViewModel { get; set; }
+
+        public RestoreViewModel RestoreViewModel { get; set; }
 
         public override void Init()
         {
@@ -28,12 +37,5 @@ namespace TwinCatAdsTool.Gui.ViewModels
             RestoreViewModel = viewModelFactory.CreateViewModel<RestoreViewModel>();
             RestoreViewModel.AddDisposableTo(Disposables);
         }
-
-        public BackupViewModel BackupViewModel { get; set; }
-        public CompareViewModel CompareViewModel { get; set; }
-
-        public ExploreViewModel ExploreViewModel { get; set; }
-
-        public RestoreViewModel RestoreViewModel { get; set; }
     }
 }

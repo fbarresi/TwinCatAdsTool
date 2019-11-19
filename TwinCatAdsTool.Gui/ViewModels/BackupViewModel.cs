@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -18,14 +19,28 @@ namespace TwinCatAdsTool.Gui.ViewModels
     {
         private readonly IClientService clientService;
         private readonly IPersistentVariableService persistentVariableService;
-        private string backupText;
         private readonly Subject<JObject> variableSubject = new Subject<JObject>();
+        private string backupText;
 
         public BackupViewModel(IClientService clientService, IPersistentVariableService persistentVariableService)
         {
             this.clientService = clientService;
             this.persistentVariableService = persistentVariableService;
         }
+
+        public string BackupText
+        {
+            get => backupText;
+            set
+            {
+                if (value == backupText) return;
+                backupText = value;
+                raisePropertyChanged();
+            }
+        }
+
+        public ReactiveCommand<Unit, Unit> Read { get; set; }
+        public ReactiveCommand<Unit, Unit> Save { get; set; }
 
         public override void Init()
         {
@@ -37,7 +52,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 .AddDisposableTo(Disposables)
                 ;
 
-            Read = ReactiveCommand.CreateFromTask(ReadVariables, canExecute:clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
+            Read = ReactiveCommand.CreateFromTask(ReadVariables, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
 
             Save = ReactiveCommand.CreateFromTask(SaveVariables, clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
@@ -68,19 +83,5 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             return Task.FromResult(Unit.Default);
         }
-
-        public string BackupText
-        {
-            get => backupText;
-            set
-            {
-                if (value == backupText) return;
-                backupText = value;
-                raisePropertyChanged();
-            }
-        }
-
-        public ReactiveCommand<Unit,Unit> Read { get; set; }
-        public ReactiveCommand<Unit, Unit> Save { get; set; }
     }
 }

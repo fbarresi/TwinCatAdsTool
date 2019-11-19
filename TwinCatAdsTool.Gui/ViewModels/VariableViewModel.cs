@@ -1,8 +1,11 @@
-﻿namespace TwinCatAdsTool.Gui.ViewModels
+﻿using System;
+using System.Linq;
+
+namespace TwinCatAdsTool.Gui.ViewModels
 {
     public class VariableViewModel
     {
-        public string Name { get; set; }
         public string Json { get; set; }
+        public string Name { get; set; }
     }
 }

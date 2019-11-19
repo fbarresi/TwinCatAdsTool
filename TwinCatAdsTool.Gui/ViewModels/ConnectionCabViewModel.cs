@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Net;
-using System.Reactive;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
-using System.Windows.Documents;
-using System.Windows.Threading;
 using DynamicData;
+using System.Linq;
+using System.Reactive;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 using ReactiveUI;
 using TwinCAT;
-using TwinCAT.Ads;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Models;
 using TwinCatAdsTool.Interfaces.Services;
@@ -23,11 +19,35 @@ namespace TwinCatAdsTool.Gui.ViewModels
     public class ConnectionCabViewModel : ViewModelBase
     {
         private readonly IClientService clientService;
-        private int port = 851;
         private ObservableAsPropertyHelper<ConnectionState> connectionStateHelper;
-        private NetId selectedAmsNetId = null;
+        private int port = 851;
         private string selectedNetId;
+        private NetId selectedAmsNetId;
+
+
+        public ConnectionCabViewModel(IClientService clientService)
+        {
+            this.clientService = clientService;
+        }
+
         public ObservableCollection<NetId> AmsNetIds { get; set; } = new ObservableCollection<NetId>();
+        public ReactiveCommand<Unit, Unit> Connect { get; set; }
+
+        public ConnectionState ConnectionState => connectionStateHelper.Value;
+        public ReactiveCommand<Unit, Unit> Disconnect { get; set; }
+
+        public IObservable<bool> IsConnected { get; set; }
+
+        public int Port
+        {
+            get => port;
+            set
+            {
+                if (value == port) return;
+                port = value;
+                raisePropertyChanged();
+            }
+        }
 
         public NetId SelectedAmsNetId
         {
@@ -36,7 +56,10 @@ namespace TwinCatAdsTool.Gui.ViewModels
             set
             {
                 selectedAmsNetId = value;
-                raisePropertyChanged();
+                if (selectedAmsNetId != value)
+                {
+                    selectedAmsNetId = value;
+                    raisePropertyChanged();
             }
         }
 
@@ -54,9 +77,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
         }
 
-        public ConnectionCabViewModel(IClientService clientService)
-        {
-            this.clientService = clientService;
         }
 
         public override void Init()
@@ -72,7 +92,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             var canDisconnect = clientService.ConnectionState.StartWith(ConnectionState.Disconnected)
                 .Select(state => state == ConnectionState.Connected)
                 .ObserveOnDispatcher();
-            Disconnect = ReactiveCommand.CreateFromTask(DisconnectClient, canExecute: 
+            Disconnect = ReactiveCommand.CreateFromTask(DisconnectClient, canExecute:
                                                         canDisconnect)
                 .AddDisposableTo(Disposables);
 
@@ -93,8 +113,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 .AddDisposableTo(Disposables);
         }
 
-        public IObservable<bool> IsConnected { get; set; }
-
         private async Task ConnectClient()
         {
             await clientService.Connect(SelectedAmsNetId.Address, Port);
@@ -104,22 +122,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private async Task DisconnectClient()
         {
             await clientService.Disconnect();
-            Logger.Debug($"Client disconnected");
-        }
-
-        public ConnectionState ConnectionState => connectionStateHelper.Value;
-        public ReactiveCommand<Unit, Unit> Connect { get; set; }
-        public ReactiveCommand<Unit, Unit> Disconnect { get; set; }
-
-        public int Port
-        {
-            get => port;
-            set
-            {
-                if (value == port) return;
-                port = value;
-                raisePropertyChanged();
-            }
+            Logger.Debug("Client disconnected");
         }
     }
 }

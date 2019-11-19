@@ -5,7 +5,7 @@ using TwinCAT.TypeSystem;
 
 namespace TwinCatAdsTool.Gui.ViewModels
 {
-    public struct SearchResult :IEquatable<SearchResult>
+    public struct SearchResult : IEquatable<SearchResult>
     {
         public string SearchTerm { get; set; }
         public IEnumerable<ISymbol> Results { get; set; }

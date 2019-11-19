@@ -103,7 +103,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 || (typeof(T) == typeof(short))
                 || (typeof(T) == typeof(bool))
                 || (typeof(T) == typeof(float))
-                || (typeof(T) == typeof(double));
+                || (typeof(T) == typeof(double))
+                || (typeof(T) == typeof(byte))
+                || (typeof(T) == typeof(ushort))
+                || (typeof(T) == typeof(uint))
+                || (typeof(T) == typeof(sbyte));
         }
 
         protected override bool GetSupportsSubmit()

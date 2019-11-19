@@ -11,54 +11,56 @@ using TwinCatAdsTool.Interfaces.Logging;
 
 namespace TwinCatAdsTool.Gui.ViewModels
 {
-	public abstract class ViewModelBase : ReactiveObject, IDisposable, IInitializable
-	{
-		protected CompositeDisposable Disposables = new CompositeDisposable();
-		private bool disposed;
-		private string title;
-		protected ILog Logger { get; private set; } = LoggerFactory.GetLogger();
-		public virtual void Dispose()
-		{
-			Dispose(true);
-		}
+    public abstract class ViewModelBase : ReactiveObject, IDisposable, IInitializable
+    {
+        protected CompositeDisposable Disposables = new CompositeDisposable();
+        private bool disposed;
+        private string title;
 
-		public abstract void Init();
+        public string Title
+        {
+            get => title;
+            set
+            {
+                if (value == title) return;
+                title = value;
+                raisePropertyChanged();
+            }
+        }
 
-		[SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "Disposables")]
-		protected virtual void Dispose(bool disposing)
-		{
+        protected ILog Logger { get; } = LoggerFactory.GetLogger();
+
+        public virtual void Dispose()
+        {
+            Dispose(true);
+        }
+
+        public abstract void Init();
+
+        [SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "Disposables")]
+        protected virtual void Dispose(bool disposing)
+        {
             if (disposed)
             {
                 return;
             }
 
             Disposables?.Dispose();
-			Disposables = null;
+            Disposables = null;
 
-			disposed = true;
-		}
+            disposed = true;
+        }
 
-		[NotifyPropertyChangedInvocator]
-		// ReSharper disable once InconsistentNaming
-		protected void raisePropertyChanged([CallerMemberName] string propertyName = "")
-		{
-			this.RaisePropertyChanged(propertyName);
-		}
+        [NotifyPropertyChangedInvocator]
+        // ReSharper disable once InconsistentNaming
+        protected void raisePropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            this.RaisePropertyChanged(propertyName);
+        }
 
-		public string Title
-		{
-			get => title;
-			set
-			{
-				if (value == title) return;
-				title = value;
-				raisePropertyChanged();
-			}
-		}
-
-		~ViewModelBase()
-		{
-			Dispose(false);
-		}
-	}
+        ~ViewModelBase()
+        {
+            Dispose(false);
+        }
+    }
 }
