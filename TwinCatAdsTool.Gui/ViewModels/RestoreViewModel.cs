@@ -19,6 +19,7 @@ using TwinCAT.JsonExtension;
 using TwinCAT.PlcOpen;
 using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Gui.Extensions;
+using TwinCatAdsTool.Gui.Properties;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
 
@@ -116,7 +117,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public async Task WriteJsonRecursive(TcAdsClient client, string name, JToken token)
         {
-            Logger.Debug($"Trying to write JSON {name} with value {token}");
+            Logger.Debug(string.Format(Resources.TryingToWriteJSON0WithValue1, name, token));
             var symbolInfo = (ITcAdsSymbol5) client.ReadSymbolInfo(name);
             var dataType = symbolInfo.DataType;
             if (dataType.Category == DataTypeCategory.Array)
@@ -233,7 +234,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             if (!FileVariables.HasEqualStructure(LiveVariables))
             {
-                MessageBox.Show("File does not have the same structure as the Plc", "Error", MessageBoxButton.OK);
+                MessageBox.Show(Resources.FileDoesNotHaveTheSameStructureAsThePlc, Resources.Error, MessageBoxButton.OK);
             }
             else
             {
@@ -250,12 +251,12 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             viewModels.Clear();
             AddVariable(json.Properties(), viewModels);
-            Logger.Debug("Updated RestoreView");
+            Logger.Debug(Resources.UpdatedRestoreView);
         }
 
         private async Task<Unit> WriteVariables()
         {
-            MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure you want to overwrite the LiveVariables on the PLC?", "Overwrite Confirmation", MessageBoxButton.YesNo);
+            MessageBoxResult messageBoxResult = MessageBox.Show(Resources.AreYouSureYouWantToOverwriteTheLiveVariablesOnThePLC, Resources.OverwriteConfirmation, MessageBoxButton.YesNo);
             if (messageBoxResult == MessageBoxResult.Yes)
             {
                 foreach (var variable in DisplayVariables.Where(d => LiveVariables.Single(l => l.Name == d.Name).Json != d.Json))

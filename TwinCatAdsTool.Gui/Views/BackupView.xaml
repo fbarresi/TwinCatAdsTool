@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TwinCatAdsTool.Gui.Views"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:properties="clr-namespace:TwinCatAdsTool.Gui.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -17,14 +18,14 @@
             <Button Command="{Binding Read}">
                 <StackPanel Orientation="Horizontal">
                     <fa:ImageAwesome Icon="Microchip" Height="20" Margin="5"/>
-                    <Label Content="Read from PLC" />
+                    <Label Content="{x:Static properties:Resources.ReadFromPLC}" />
                 </StackPanel>
             </Button>
 
             <Button Command="{Binding Save}">
                 <StackPanel Orientation="Horizontal">
                     <fa:ImageAwesome Icon="Save" Height="20" Margin="5"/>
-                    <Label Content="Save to file" />
+                    <Label Content="{x:Static properties:Resources.SaveToFile}" />
                 </StackPanel>
             </Button>
 

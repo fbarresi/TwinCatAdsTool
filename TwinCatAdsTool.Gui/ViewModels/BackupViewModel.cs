@@ -64,7 +64,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
             variableSubject.OnNext(persistentVariables);
-            Logger.Debug(Resources.ReadPersistentVariablesLogging);
+            Logger.Debug(Resources.ReadPersistentVariables);
 
             return Unit.Default;
         }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using ReactiveUI;
 using TwinCAT;
+using TwinCatAdsTool.Gui.Properties;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Models;
 using TwinCatAdsTool.Interfaces.Services;
@@ -116,7 +117,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private async Task ConnectClient()
         {
             await clientService.Connect(SelectedAmsNetId.Address, Port);
-            Logger.Debug($"Client connected to device {SelectedAmsNetId?.Name} with address  {SelectedAmsNetId?.Address} ");
+            Logger.Debug(string.Format(Resources.ClientConnectedToDevice0WithAddress1, SelectedAmsNetId?.Name, SelectedAmsNetId?.Address));
         }
 
         private async Task DisconnectClient()

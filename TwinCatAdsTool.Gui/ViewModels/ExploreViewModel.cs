@@ -13,6 +13,7 @@ using ReactiveUI;
 using TwinCAT;
 using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Gui.Commands;
+using TwinCatAdsTool.Gui.Properties;
 using TwinCatAdsTool.Interfaces.Commons;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
@@ -236,7 +237,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
             catch (Exception ex)
             {
-                Logger.Error($"Could not delete Observer for symbol {model?.Name}", ex);
+                Logger.Error(string.Format(Resources.CouldNotDeleteObserverForSymbol0, model?.Name), ex);
                 MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
             }
 
@@ -253,7 +254,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
             catch (Exception ex)
             {
-                Logger.Error("Error during search", ex);
+                Logger.Error(Resources.ErrorDuringSearch, ex);
                 MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
             }
 
@@ -268,7 +269,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
             catch (Exception ex)
             {
-                Logger.Error("Could not reload variables", ex);
+                Logger.Error(Resources.CouldNotReloadVariables, ex);
                 MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
             }
 
@@ -294,7 +295,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
             catch (Exception ex)
             {
-                Logger.Error($"Could not register Observer for Symbol {symbol?.InstanceName}", ex);
+                Logger.Error(string.Format(Resources.CouldNotRegisterObserverForSymbol0, symbol?.InstanceName), ex);
                 MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
             }
 
@@ -324,7 +325,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
             catch (Exception ex)
             {
-                Logger.Error("Could not update Tree", ex);
+                Logger.Error(Resources.CouldNotUpdateTree, ex);
                 MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
             }
             finally

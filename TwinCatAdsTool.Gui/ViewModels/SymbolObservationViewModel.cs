@@ -8,6 +8,7 @@ using System.Windows;
 using ReactiveUI;
 using TwinCAT.Ads.Reactive;
 using TwinCAT.TypeSystem;
+using TwinCatAdsTool.Gui.Properties;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
 
@@ -125,7 +126,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             if (Model.IsReadOnly)
             {
-                MessageBox.Show("This value is Read Only", "Read Only Value", MessageBoxButton.OK);
+                MessageBox.Show(Resources.ThisValueIsReadOnly, Resources.ReadOnlyValue, MessageBoxButton.OK);
                 return;
             }
 
@@ -133,12 +134,12 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             if (typeof(T) == typeof(string))
             {
-                Logger.Debug($"Trying to write to {Model?.InstancePath} with value {(value as string)}");
+                Logger.Debug(string.Format(Resources.TryingToWriteTo0WithValue1, Model?.InstancePath, (value as string)));
                 ClientService.Client.WriteAnyString(variableHandle, value as string, (value as string).Length, Encoding.Default);
             }
             else
             {
-                Logger.Debug($"Trying to write to {Model?.InstancePath} with value {value}");
+                Logger.Debug(string.Format(Resources.TryingToWriteTo0WithValue1, Model?.InstancePath, value));
                 ClientService.Client.WriteAny(variableHandle, value);
             }
         }

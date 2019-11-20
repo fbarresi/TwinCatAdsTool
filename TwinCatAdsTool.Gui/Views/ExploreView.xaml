@@ -24,7 +24,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate>
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">No items to display</TextBlock>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{x:Static properties:Resources.NoItemsToDisplay}"/>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
@@ -119,13 +119,13 @@
 
         <TabControl Grid.Column="0" Grid.Row="1" Grid.RowSpan="3" TabStripPlacement="Left" Margin="5">
 
-            <TabItem Header="Tree">
+            <TabItem Header="{x:Static properties:Resources.Tree}">
 
                 <TreeView ItemsSource="{Binding TreeNodes}" ItemTemplate="{StaticResource TreeNodeTemplate}" />
 
             </TabItem>
 
-            <TabItem Header="Search">
+            <TabItem Header="{x:Static properties:Resources.Search}">
 
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                     <Grid ScrollViewer.CanContentScroll="True">

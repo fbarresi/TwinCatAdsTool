@@ -70,6 +70,15 @@ namespace TwinCatAdsTool.Gui.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Address:.
+        /// </summary>
+        public static string Address {
+            get {
+                return ResourceManager.GetString("Address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to overwrite the LiveVariables on the PLC?.
         /// </summary>
         public static string AreYouSureYouWantToOverwriteTheLiveVariablesOnThePLC {
@@ -79,11 +88,38 @@ namespace TwinCatAdsTool.Gui.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Backup.
+        /// </summary>
+        public static string Backup {
+            get {
+                return ResourceManager.GetString("Backup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Client connected to device {0} with address  {1} .
         /// </summary>
         public static string ClientConnectedToDevice0WithAddress1 {
             get {
                 return ResourceManager.GetString("ClientConnectedToDevice0WithAddress1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compare.
+        /// </summary>
+        public static string Compare {
+            get {
+                return ResourceManager.GetString("Compare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect.
+        /// </summary>
+        public static string Connect {
+            get {
+                return ResourceManager.GetString("Connect", resourceCulture);
             }
         }
         
@@ -120,6 +156,15 @@ namespace TwinCatAdsTool.Gui.Properties {
         public static string CouldNotUpdateTree {
             get {
                 return ResourceManager.GetString("CouldNotUpdateTree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnect.
+        /// </summary>
+        public static string Disconnect {
+            get {
+                return ResourceManager.GetString("Disconnect", resourceCulture);
             }
         }
         
@@ -165,6 +210,15 @@ namespace TwinCatAdsTool.Gui.Properties {
         public static string ErrorDuringSearch {
             get {
                 return ResourceManager.GetString("ErrorDuringSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Explore.
+        /// </summary>
+        public static string Explore {
+            get {
+                return ResourceManager.GetString("Explore", resourceCulture);
             }
         }
         
@@ -223,11 +277,38 @@ namespace TwinCatAdsTool.Gui.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No items to display.
+        /// </summary>
+        public static string NoItemsToDisplay {
+            get {
+                return ResourceManager.GetString("NoItemsToDisplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Overwrite Confirmation.
         /// </summary>
         public static string OverwriteConfirmation {
             get {
                 return ResourceManager.GetString("OverwriteConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port:.
+        /// </summary>
+        public static string Port {
+            get {
+                return ResourceManager.GetString("Port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Powered by.
+        /// </summary>
+        public static string PoweredBy {
+            get {
+                return ResourceManager.GetString("PoweredBy", resourceCulture);
             }
         }
         
@@ -259,15 +340,6 @@ namespace TwinCatAdsTool.Gui.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Read Persistent Variables.
-        /// </summary>
-        public static string ReadPersistentVariablesLogging {
-            get {
-                return ResourceManager.GetString("ReadPersistentVariablesLogging", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Refresh data from PLC.
         /// </summary>
         public static string RefreshDataFromPLC {
@@ -286,6 +358,15 @@ namespace TwinCatAdsTool.Gui.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restore.
+        /// </summary>
+        public static string Restore {
+            get {
+                return ResourceManager.GetString("Restore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Saved Backup to {0}.
         /// </summary>
         public static string SavedBackupTo0Logging {
@@ -300,6 +381,15 @@ namespace TwinCatAdsTool.Gui.Properties {
         public static string SaveToFile {
             get {
                 return ResourceManager.GetString("SaveToFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string Search {
+            get {
+                return ResourceManager.GetString("Search", resourceCulture);
             }
         }
         
@@ -336,6 +426,15 @@ namespace TwinCatAdsTool.Gui.Properties {
         public static string ThisValueIsReadOnly {
             get {
                 return ResourceManager.GetString("ThisValueIsReadOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tree.
+        /// </summary>
+        public static string Tree {
+            get {
+                return ResourceManager.GetString("Tree", resourceCulture);
             }
         }
         

@@ -4,19 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TwinCatAdsTool.Gui.Views"
+             xmlns:properties="clr-namespace:TwinCatAdsTool.Gui.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <TabControl>
-        <TabItem Header="Backup">
+        <TabItem Header="{x:Static properties:Resources.Backup}">
             <local:BackupView DataContext="{Binding BackupViewModel}"/>
         </TabItem>
-            <TabItem Header="Restore">
+            <TabItem Header="{x:Static properties:Resources.Restore}">
                 <local:RestoreView DataContext="{Binding RestoreViewModel}"/>
         </TabItem>
-            <TabItem Header="Compare">
+            <TabItem Header="{x:Static properties:Resources.Compare}">
                 <local:CompareView DataContext="{Binding CompareViewModel}"/>
             </TabItem>
-            <TabItem Header="Explore">
+            <TabItem Header="{x:Static properties:Resources.Explore}">
                 <local:ExploreView DataContext="{Binding ExploreViewModel}"/>
         </TabItem>
     </TabControl>

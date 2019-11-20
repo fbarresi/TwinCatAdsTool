@@ -15,6 +15,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using TwinCAT;
+using TwinCatAdsTool.Gui.Properties;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
 
@@ -178,13 +179,13 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 if (openFileDialog.ShowDialog() == true)
                 {
                     JObject json = JObject.Parse(File.ReadAllText(openFileDialog.FileName));
-                    Logger.Debug($"Load of File {openFileDialog.FileName} was succesful");
+                    Logger.Debug(string.Format(Resources.LoadOfFile0Wasuccesful, openFileDialog.FileName));
                     return Task.FromResult(json);
                 }
             }
             catch (Exception ex)
             {
-                Logger.Error("Error during load of file");
+                Logger.Error(Resources.ErrorDuringLoadOfFile);
             }
 
             return Task.FromResult<JObject>(null);
@@ -197,7 +198,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             if (json != null)
             {
                 leftTextSubject.OnNext(json.ToString());
-                Logger.Debug("Updated left TextBox");
+                Logger.Debug(Resources.UpdatedLeftTextBox);
             }
 
             return Task.FromResult(Unit.Default);
@@ -209,7 +210,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             if (json != null)
             {
                 rightTextSubject.OnNext(json.ToString());
-                Logger.Debug("Updated right TextBox");
+                Logger.Debug(Resources.UpdatedRightTextBox);
             }
 
 
@@ -221,7 +222,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
             leftTextSubject.OnNext(persistentVariables.ToString());
 
-            Logger.Debug("Read Persistent Variables");
+            Logger.Debug(Resources.ReadPersistentVariables);
             return persistentVariables;
         }
 
@@ -229,14 +230,14 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             var json = await ReadVariables().ConfigureAwait(false);
             leftTextSubject.OnNext(json.ToString());
-            Logger.Debug("Updated left TextBox");
+            Logger.Debug(Resources.UpdatedLeftTextBox);
         }
 
         private async Task ReadVariablesRight()
         {
             var json = await ReadVariables();
             rightTextSubject.OnNext(json.ToString());
-            Logger.Debug("Updated right TextBox");
+            Logger.Debug(Resources.UpdatedRightTextBox);
         }
     }
 }

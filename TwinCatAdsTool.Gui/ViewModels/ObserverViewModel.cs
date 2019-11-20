@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using TwinCAT.PlcOpen;
 using TwinCAT.TypeSystem;
+using TwinCatAdsTool.Gui.Properties;
 using TwinCatAdsTool.Interfaces.Commons;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
@@ -93,14 +94,14 @@ namespace TwinCatAdsTool.Gui.ViewModels
                         }
 
                         ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationDefaultViewModel>(symbol));
-                        var exception = new NotImplementedException("This type is not implemented.");
+                        var exception = new NotImplementedException(Resources.ThisTypeIsNotImplemented);
                         Logger.Error(exception.Message, exception);
                         break;
                 }
             }
             else
             {
-                MessageBox.Show($"The symbol {symbol?.InstanceName} has already been added to the list of observables", "Symbol already observed", MessageBoxButton.OK);
+                MessageBox.Show(string.Format(Resources.TheSymbol0HasAlreadyBeenAddedToTheListOfObservables, symbol?.InstanceName), "Symbol already observed", MessageBoxButton.OK);
             }
         }
     }

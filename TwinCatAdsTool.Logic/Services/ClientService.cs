@@ -19,6 +19,7 @@ using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Models;
 using TwinCatAdsTool.Interfaces.Services;
+using TwinCatAdsTool.Logic.Properties;
 using TwinCatAdsTool.Logic.Router;
 
 namespace TwinCatAdsTool.Logic.Services
@@ -42,7 +43,7 @@ namespace TwinCatAdsTool.Logic.Services
 
             if (!TreeViewSymbols.Any())
             {
-                MessageBox.Show("Symbols could not be loaded. Please ensure that route to PLC is established in TwinCAT configuration and re-connect.");
+                MessageBox.Show(Resources.SymbolsCouldNotBeLoadedPleaseEnsureThatRouteToPLCIsEstablishedInTwinCATConfigurationAndReConnect);
                 Disconnect();
             }
 
