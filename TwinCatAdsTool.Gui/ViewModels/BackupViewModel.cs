@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using TwinCAT;
+using TwinCatAdsTool.Gui.Properties;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
 
@@ -63,7 +64,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
             variableSubject.OnNext(persistentVariables);
-            Logger.Debug("Read Persistent Variables");
+            Logger.Debug(Resources.ReadPersistentVariablesLogging);
 
             return Unit.Default;
         }
@@ -78,7 +79,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             if (result == DialogResult.OK || result == DialogResult.Yes)
             {
                 File.WriteAllText(saveFileDialog1.FileName, BackupText);
-                Logger.Debug($"Saved Backup to {saveFileDialog1.FileName}");
+                Logger.Debug(string.Format(Resources.SavedBackupTo0Logging, saveFileDialog1.FileName));
             }
 
             return Task.FromResult(Unit.Default);

@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:TwinCatAdsTool.Gui.Views"
              xmlns:viewModels="clr-namespace:TwinCatAdsTool.Gui.ViewModels"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:properties="clr-namespace:TwinCatAdsTool.Gui.Properties"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -35,14 +36,14 @@
             <Button Command="{Binding Load}">
                 <StackPanel Orientation="Horizontal">
                     <fa:ImageAwesome Icon="FolderOpen" Height="20" Margin="5" />
-                    <Label Content="Load" />
+                    <Label Content="{x:Static properties:Resources.Load}" />
                 </StackPanel>
             </Button>
 
             <Button Command="{Binding Write}">
                 <StackPanel Orientation="Horizontal">
                     <fa:ImageAwesome Icon="Pencil" Height="20" Margin="5" />
-                    <Label Content="Write" />
+                    <Label Content="{x:Static properties:Resources.Write}" />
                 </StackPanel>
             </Button>
 

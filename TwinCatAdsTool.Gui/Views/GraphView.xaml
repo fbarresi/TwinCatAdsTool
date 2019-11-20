@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:TwinCatAdsTool.Gui.Views"
              xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:properties="clr-namespace:TwinCatAdsTool.Gui.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -23,7 +24,7 @@
                       Model="{Binding PlotModel}" >
         </oxy:PlotView>
 
-        <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Content="Datapoints expire after timespan" />
+        <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Content="{x:Static properties:Resources.DisplayedTimespan}" />
         <xctk:TimeSpanUpDown Grid.Row="1"  Grid.Column="1" Value="{Binding ExpiresAfter}" />
     </Grid>
 </UserControl>

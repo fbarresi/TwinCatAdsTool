@@ -13,6 +13,7 @@ using TwinCAT.TypeSystem;
 using TwinCAT.TypeSystem.Generic;
 using TwinCatAdsTool.Interfaces.Logging;
 using TwinCatAdsTool.Interfaces.Services;
+using TwinCatAdsTool.Logic.Properties;
 
 namespace TwinCatAdsTool.Logic.Services
 {
@@ -43,7 +44,7 @@ namespace TwinCatAdsTool.Logic.Services
                         }
                         catch (Exception e)
                         {
-                            logger.Error($"Error during reading variable {symbol.InstancePath} in json format", e);
+                            logger.Error(string.Format(Resources.ErrorDuringReadingVariable0InJsonFormat, symbol.InstancePath), e);
                         }
 
                     }
@@ -65,7 +66,7 @@ namespace TwinCatAdsTool.Logic.Services
             }
             catch (Exception e)
             {
-                logger.Error("error while reading persistent variables:",e);
+                logger.Error(Resources.ErrorWhileReadingPersistentVariables,e);
             }
 
             return jobj;
