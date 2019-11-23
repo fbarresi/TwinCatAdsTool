@@ -29,6 +29,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         public ReactiveCommand<Unit, Unit> CmdSubmit { get; private set; }
         public ISymbol Model { get; set; }
         public string Name { get; set; }
+        public string FullName { get; set; }
 
         public bool SuportsGraph => GetSupportsGraph();
         public bool SupportsSubmit => GetSupportsSubmit();
@@ -38,6 +39,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         public override void Init()
         {
             Name = Model.InstanceName;
+            FullName = Model.InstancePath;
             var readSymbolInfo = ClientService.Client.ReadSymbolInfo(Model.InstancePath);
             var initialValue = ClientService.Client.ReadSymbol(readSymbolInfo);
             var observable = ((IValueSymbol) Model).WhenValueChanged().StartWith(initialValue);

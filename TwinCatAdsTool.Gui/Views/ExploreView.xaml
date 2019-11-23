@@ -179,7 +179,7 @@
                     <GridViewColumn Header="{x:Static properties:Resources.Name}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type viewModels:SymbolObservationViewModel}">
-                                <Label Content="{Binding Name}" />
+                                <Label Content="{Binding Name}" ToolTip="{Binding FullName}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

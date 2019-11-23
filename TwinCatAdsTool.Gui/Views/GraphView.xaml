@@ -12,7 +12,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -23,8 +23,7 @@
                       Margin="10" 
                       Model="{Binding PlotModel}" >
         </oxy:PlotView>
-
-        <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Content="{x:Static properties:Resources.DisplayedTimespan}" />
-        <xctk:TimeSpanUpDown Grid.Row="1"  Grid.Column="1" Value="{Binding ExpiresAfter}" />
+        <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Content="{x:Static properties:Resources.DisplayedTimespan}" ContentStringFormat="{}{0}:"/>
+        <xctk:TimeSpanUpDown Grid.Row="1"  Grid.Column="1" Value="{Binding ExpiresAfter}" MinWidth="100"/>
     </Grid>
 </UserControl>
