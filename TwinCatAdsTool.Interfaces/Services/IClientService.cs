@@ -12,7 +12,7 @@ namespace TwinCatAdsTool.Interfaces.Services
 {
     public interface IClientService
     {
-        Task Connect(string amsNetId, int port = 851);
+        Task Connect(string amsNetId, int port);
         TcAdsClient Client { get; }
         IObservable<ConnectionState> ConnectionState { get; }
         ReadOnlySymbolCollection TreeViewSymbols { get; }

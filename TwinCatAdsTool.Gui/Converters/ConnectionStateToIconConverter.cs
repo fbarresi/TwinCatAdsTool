@@ -18,7 +18,7 @@ namespace TwinCatAdsTool.Gui.Converters
                 {
                     case ConnectionState.None:
                     case ConnectionState.Lost:
-                        return "circle";
+                        return "minus";
                     case ConnectionState.Disconnected:
                         return "unlink";
                     case ConnectionState.Connected:

@@ -104,7 +104,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private async Task ConnectClient()
         {
-            await clientService.Connect(SelectedAmsNetId.Address, Port);
+            await clientService.Connect(SelectedNetId, Port);
             Logger.Debug(string.Format(Resources.ClientConnectedToDevice0WithAddress1, SelectedAmsNetId?.Name, SelectedAmsNetId?.Address));
         }
 

@@ -34,17 +34,11 @@ namespace TwinCatAdsTool.Logic.Services
         }
 
 
-        public Task Connect(string amsNetId, int port = 851)
+        public Task Connect(string amsNetId, int port)
         {
             if (!Client.IsConnected)
             {
                 Client.Connect(amsNetId, port);
-            }
-
-            if (!TreeViewSymbols.Any())
-            {
-                MessageBox.Show(Resources.SymbolsCouldNotBeLoadedPleaseEnsureThatRouteToPLCIsEstablishedInTwinCATConfigurationAndReConnect);
-                Disconnect();
             }
 
             return Task.FromResult(Unit.Default);
