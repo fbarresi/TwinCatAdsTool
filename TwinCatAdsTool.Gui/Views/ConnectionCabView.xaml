@@ -35,9 +35,8 @@
         <Button Grid.Row="2" Grid.Column="1" Command="{Binding Disconnect}" Content="{x:Static properties:Resources.Disconnect}"/>
 
         <Grid Grid.Row="1" Grid.Column="2" Grid.RowSpan="2">
-        <Label Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Content="{x:Static properties:Resources.PoweredBy}"/>
             <Image Source="../Resources/evopro.png" Width="300" MouseDown="UIElement_OnMouseDown"/>
-            <Label>Powered by</Label>
+            <Label Content="{x:Static properties:Resources.PoweredBy}"/>
         </Grid>
         
     </Grid>

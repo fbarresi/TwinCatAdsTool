@@ -37,7 +37,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
         public ConnectionState ConnectionState => connectionStateHelper.Value;
         public ReactiveCommand<Unit, Unit> Disconnect { get; set; }
 
-        public IObservable<bool> IsConnected { get; set; }
 
         public int Port
         {
@@ -56,11 +55,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             set
             {
-                selectedAmsNetId = value;
                 if (selectedAmsNetId != value)
                 {
                     selectedAmsNetId = value;
                     raisePropertyChanged();
+                }
             }
         }
 
@@ -78,23 +77,12 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
         }
 
-        }
 
         public override void Init()
         {
-            var canConnect = Observable.CombineLatest(clientService.ConnectionState.StartWith(ConnectionState.Disconnected),
-                                                      this.WhenAnyValue(vm => vm.SelectedAmsNetId),
-                                                      (state, amsNetId) => state != ConnectionState.Connected && amsNetId != null)
-                .ObserveOnDispatcher();
-
-            Connect = ReactiveCommand.CreateFromTask(ConnectClient, canExecute: canConnect)
+            Connect = ReactiveCommand.CreateFromTask(ConnectClient, canExecute: clientService.ConnectionState.Select(state => state != ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
-
-            var canDisconnect = clientService.ConnectionState.StartWith(ConnectionState.Disconnected)
-                .Select(state => state == ConnectionState.Connected)
-                .ObserveOnDispatcher();
-            Disconnect = ReactiveCommand.CreateFromTask(DisconnectClient, canExecute:
-                                                        canDisconnect)
+            Disconnect = ReactiveCommand.CreateFromTask(DisconnectClient, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
 
             connectionStateHelper = clientService

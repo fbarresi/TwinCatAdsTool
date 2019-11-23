@@ -34,10 +34,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private ObservableCollection<IValueSymbol> observedSymbols;
 
         private string searchText;
-        private ISymbolLoader searchViewSymbolLoader;
 
         private ObservableCollection<ISymbol> treeNodes;
-        private ISymbolLoader treeViewSymbolLoader;
 
 
         public ExploreViewModel(IClientService clientService,

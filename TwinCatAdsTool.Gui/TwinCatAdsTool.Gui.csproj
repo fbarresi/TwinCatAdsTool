@@ -7,6 +7,7 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
@@ -14,10 +15,9 @@
   <ItemGroup>
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
     <None Remove="Resources\evopro.png" />
-    <None Remove="Views\BackupView.xaml" />
-    <None Remove="Views\ConnectionCabView.xaml" />
-    <None Remove="Views\GraphView.xaml" />
-    <None Remove="Views\TabsView.xaml" />
+    <None Remove="Views\CompareView.xaml" />
+    <None Remove="Views\ExploreView.xaml" />
+    <None Remove="Views\RestoreView.xaml" />
     <Resource Include="Resources\evopro.png" />
     <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="4.3.10" />
     <PackageReference Include="DiffPlex" Version="1.4.4" />
@@ -25,7 +25,7 @@
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Ninject" Version="3.3.4" />
-    <PackageReference Include="OxyPlot.Wpf" Version="2.0.0" />
+    <PackageReference Include="OxyPlot.Wpf" Version="1.0.0" />
     <PackageReference Include="ReactiveUI" Version="9.11.1" />
     <PackageReference Include="ReactiveUI.WPF" Version="9.11.1" />
     <ProjectReference Include="..\TwinCatAdsTool.Interfaces\TwinCatAdsTool.Interfaces.csproj" />
@@ -33,34 +33,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <None Update="Views\CompareView.xaml">
+    <None Update="Views\BackupView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <None Update="Views\ExploreView.xaml">
+    <None Update="Views\ConnectionCabView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\GraphView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <None Update="Views\RestoreView.xaml">
+    <None Update="Views\TabsView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
