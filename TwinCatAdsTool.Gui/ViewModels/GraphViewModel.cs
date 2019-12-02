@@ -22,7 +22,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private readonly SourceCache<SymbolObservationViewModel, string> symbolCache = new SourceCache<SymbolObservationViewModel, string>(x => x.Name);
         private PlotModel plotModel;
         private TimeSpan expiresAfter = TimeSpan.FromMinutes(10);
-        private LineSeries lineSeries;
         private bool pause = false;
 
 
@@ -107,7 +106,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private IDisposable CreateSymbolLineSeries(SymbolObservationViewModel symbol)
         {
-            lineSeries = new LineSeries();
+            var lineSeries = new LineSeries();
             lineSeries.Title = symbol.Name;
 
             var index = PlotModel.Axes.Count - 1;
