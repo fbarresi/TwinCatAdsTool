@@ -213,7 +213,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Json files (*.json)|*.json";
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            openFileDialog.RestoreDirectory = true;
             if (openFileDialog.ShowDialog() == true)
             {
                 JObject json = JObject.Parse(File.ReadAllText(openFileDialog.FileName));

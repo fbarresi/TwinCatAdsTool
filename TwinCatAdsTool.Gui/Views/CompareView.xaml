@@ -41,6 +41,8 @@
                 </StackPanel>
             </Button>
 
+            <Label Content="{Binding SourceLeft}"/>
+
         </StackPanel>
 
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" >
@@ -58,6 +60,8 @@
                     <Label Content="{x:Static properties:Resources.LoadFromFile}" />
                 </StackPanel>
             </Button>
+
+            <Label Content="{Binding SourceRight}"/>
 
         </StackPanel>
 

@@ -75,6 +75,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             saveFileDialog1.Filter = "Json|*.json";
             saveFileDialog1.Title = "Save in a json file";
             saveFileDialog1.FileName = $"Backup_{DateTime.Now:yyy-MM-dd-HHmmss}.json";
+            saveFileDialog1.RestoreDirectory = true;
             var result = saveFileDialog1.ShowDialog();
             if (result == DialogResult.OK || result == DialogResult.Yes)
             {

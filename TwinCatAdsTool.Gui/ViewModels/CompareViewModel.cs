@@ -31,6 +31,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private IEnumerable<ListBoxItem> leftBoxText;
         private readonly IPersistentVariableService persistentVariableService;
         private IEnumerable<ListBoxItem> rightBoxText;
+        private string sourceLeft;
+        private string sourceRight;
 
         public CompareViewModel(IClientService clientService, IPersistentVariableService persistentVariableService)
         {
@@ -57,6 +59,50 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 }
 
                 leftBoxText = value;
+                raisePropertyChanged();
+            }
+        }
+
+        public string SourceLeft
+        {
+            get
+            {
+                if (sourceLeft == null)
+                {
+                    sourceLeft = "";
+                }
+
+                return sourceLeft;
+            } set
+            {
+                if (value == sourceLeft)
+                {
+                    return;
+                }
+
+                sourceLeft = value;
+                raisePropertyChanged();
+            }
+        }
+
+        public string SourceRight
+        {
+            get
+            {
+                if (sourceRight == null)
+                {
+                    sourceRight = "";
+                }
+
+                return sourceRight;
+            } set
+            {
+                if (value == sourceRight)
+                {
+                    return;
+                }
+
+                sourceRight = value;
                 raisePropertyChanged();
             }
         }
@@ -169,18 +215,18 @@ namespace TwinCatAdsTool.Gui.ViewModels
         }
 
 
-        private Task<JObject> LoadJson()
+        private Task<(JObject, string)> LoadJson()
         {
             try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "Json files (*.json)|*.json";
-                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() == true)
                 {
                     JObject json = JObject.Parse(File.ReadAllText(openFileDialog.FileName));
                     Logger.Debug(string.Format(Resources.LoadOfFile0Wasuccesful, openFileDialog.FileName));
-                    return Task.FromResult(json);
+                    return Task.FromResult((json, System.IO.Path.GetFileName(openFileDialog.FileName)));
                 }
             }
             catch (Exception ex)
@@ -188,16 +234,17 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 Logger.Error(Resources.ErrorDuringLoadOfFile);
             }
 
-            return Task.FromResult<JObject>(null);
+            return Task.FromResult<(JObject, string)>((null, ""));
         }
 
 
         private Task LoadJsonLeft()
         {
-            var json = LoadJson().Result;
+            var (json, fileName) = LoadJson().Result;
             if (json != null)
             {
                 leftTextSubject.OnNext(json.ToString());
+                SourceLeft = fileName;
                 Logger.Debug(Resources.UpdatedLeftTextBox);
             }
 
@@ -206,10 +253,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private Task LoadJsonRight()
         {
-            var json = LoadJson()?.Result;
+            var (json, fileName) = LoadJson().Result;
             if (json != null)
             {
                 rightTextSubject.OnNext(json.ToString());
+                SourceRight = fileName;
                 Logger.Debug(Resources.UpdatedRightTextBox);
             }
 
@@ -230,6 +278,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             var json = await ReadVariables().ConfigureAwait(false);
             leftTextSubject.OnNext(json.ToString());
+            SourceLeft = "PLC";
+
             Logger.Debug(Resources.UpdatedLeftTextBox);
         }
 
@@ -237,6 +287,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             var json = await ReadVariables();
             rightTextSubject.OnNext(json.ToString());
+            SourceRight = "PLC";
+
             Logger.Debug(Resources.UpdatedRightTextBox);
         }
     }
