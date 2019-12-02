@@ -6,9 +6,12 @@ using DynamicData;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Threading;
 using ReactiveUI;
 using TwinCAT;
+using TwinCAT.Ads;
+using TwinCatAdsTool.Gui.Extensions;
 using TwinCatAdsTool.Gui.Properties;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Models;
@@ -81,9 +84,9 @@ namespace TwinCatAdsTool.Gui.ViewModels
         public override void Init()
         {
             Connect = ReactiveCommand.CreateFromTask(ConnectClient, canExecute: clientService.ConnectionState.Select(state => state != ConnectionState.Connected))
-                .AddDisposableTo(Disposables);
+                .AddDisposableTo(Disposables).SetupErrorHandling(Logger, Disposables);
             Disconnect = ReactiveCommand.CreateFromTask(DisconnectClient, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
-                .AddDisposableTo(Disposables);
+                .AddDisposableTo(Disposables).SetupErrorHandling(Logger, Disposables);
 
             connectionStateHelper = clientService
                 .ConnectionState
@@ -104,8 +107,17 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private async Task ConnectClient()
         {
-            await clientService.Connect(SelectedNetId, Port);
-            Logger.Debug(string.Format(Resources.ClientConnectedToDevice0WithAddress1, SelectedAmsNetId?.Name, SelectedAmsNetId?.Address));
+            try
+            {
+                await clientService.Connect(SelectedNetId, Port);
+                Logger.Debug(string.Format(Resources.ClientConnectedToDevice0WithAddress1, SelectedAmsNetId?.Name,
+                    SelectedAmsNetId?.Address));
+            }
+            catch (AdsInitializeException ex) when (ex.InnerException is DllNotFoundException && ex.InnerException.Source == "TwinCAT.Ads")
+            {
+                Logger.Error("Dll not found TwinCAT.Ads");
+                MessageBox.Show("Dll for TwinCAT.Ads not found. Have you installed the drivers?");
+            }
         }
 
         private async Task DisconnectClient()

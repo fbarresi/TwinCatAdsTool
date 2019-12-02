@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using log4net;
 using Ninject;
+using TwinCAT.Ads;
 using TwinCatAdsTool.Gui;
 using TwinCatAdsTool.Gui.ViewModels;
 using TwinCatAdsTool.Gui.Views;
@@ -46,7 +47,8 @@ namespace TwinCatAdsTool
 				catch (Exception e)
 				{
 					LoggerFactory.GetLogger().Error("Unhandled exeption", e);
-					throw e;
+
+                    throw e;
 				}
 			}
 		}
