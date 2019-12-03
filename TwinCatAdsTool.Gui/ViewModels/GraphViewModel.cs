@@ -111,7 +111,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private IDisposable CreateSymbolLineSeries(SymbolObservationViewModel symbol)
         {
-            var lineSeries = CreateLineSeriesAndAxis(symbol, out var disposable);
+            var lineSeries = CreateLineSeriesAndAxis(symbol);
+            var disposable = new CompositeDisposable();
 
             RescaleAxisDistances();
 
@@ -170,14 +171,12 @@ namespace TwinCatAdsTool.Gui.ViewModels
             dataPoints[symbol.Name].RemoveAll(point => point.X < expireLimit);
         }
 
-        private LineSeries CreateLineSeriesAndAxis(SymbolObservationViewModel symbol, out CompositeDisposable disposable)
+        private LineSeries CreateLineSeriesAndAxis(SymbolObservationViewModel symbol)
         {
             var lineSeries = new LineSeries();
             lineSeries.Title = symbol.Name;
 
             var index = PlotModel.Axes.Count - 1;
-
-            disposable = new CompositeDisposable();
 
             var axis = new LinearAxis
             {
