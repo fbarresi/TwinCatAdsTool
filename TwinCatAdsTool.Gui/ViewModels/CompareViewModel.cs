@@ -145,14 +145,21 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 .Subscribe()
                 .AddDisposableTo(Disposables);
 
-            ReadLeft = ReactiveCommand.CreateFromTask(ReadVariablesLeft, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
+            AssignCommands();
+        }
+
+        private void AssignCommands()
+        {
+            ReadLeft = ReactiveCommand.CreateFromTask(ReadVariablesLeft,
+                    canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
 
             LoadLeft = ReactiveCommand.CreateFromTask(LoadJsonLeft)
                 .AddDisposableTo(Disposables);
 
 
-            ReadRight = ReactiveCommand.CreateFromTask(ReadVariablesRight, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
+            ReadRight = ReactiveCommand.CreateFromTask(ReadVariablesRight,
+                    canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
 
             LoadRight = ReactiveCommand.CreateFromTask(LoadJsonRight)
@@ -190,25 +197,23 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private SolidColorBrush GetBGColor(DiffPiece diffPiece)
         {
             var fillColor = new SolidColorBrush(Colors.Transparent);
-            if (diffPiece.Type == ChangeType.Deleted)
+            switch (diffPiece.Type)
             {
-                fillColor = new SolidColorBrush(Color.FromArgb(255, 255, 200, 100));
-            }
-            else if (diffPiece.Type == ChangeType.Inserted)
-            {
-                fillColor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 0));
-            }
-            else if (diffPiece.Type == ChangeType.Unchanged)
-            {
-                fillColor = new SolidColorBrush(Colors.White);
-            }
-            else if (diffPiece.Type == ChangeType.Modified)
-            {
-                fillColor = new SolidColorBrush(Color.FromArgb(255, 220, 220, 255));
-            }
-            else if (diffPiece.Type == ChangeType.Imaginary)
-            {
-                fillColor = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
+                case ChangeType.Deleted:
+                    fillColor = new SolidColorBrush(Color.FromArgb(255, 255, 200, 100));
+                    break;
+                case ChangeType.Inserted:
+                    fillColor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 0));
+                    break;
+                case ChangeType.Unchanged:
+                    fillColor = new SolidColorBrush(Colors.White);
+                    break;
+                case ChangeType.Modified:
+                    fillColor = new SolidColorBrush(Color.FromArgb(255, 220, 220, 255));
+                    break;
+                case ChangeType.Imaginary:
+                    fillColor = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
+                    break;
             }
 
             return fillColor;

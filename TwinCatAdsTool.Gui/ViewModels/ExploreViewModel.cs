@@ -153,26 +153,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             connected.ToProperty(this, x => x.IsConnected, out isConnectedHelper);
 
-            // Setup the command for the enter key on the textbox
-            TextBoxEnterCommand = new ReactiveRelayCommand(obj => { });
-
-            AddObserverCmd = ReactiveCommand.CreateFromTask<ISymbol, Unit>(RegisterSymbolObserver)
-                .AddDisposableTo(Disposables);
-
-            CmdDelete = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(DeleteSymbolObserver)
-                .AddDisposableTo(Disposables);
-
-            CmdSubmit = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(SubmitSymbol)
-                .AddDisposableTo(Disposables);
-
-            CmdAddGraph = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(AddGraph)
-                .AddDisposableTo(Disposables);
-
-            CmdRemoveGraph = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(RemoveGraph)
-                .AddDisposableTo(Disposables);
-
-            Read = ReactiveCommand.CreateFromTask(ReadVariables, canExecute: connected)
-                .AddDisposableTo(Disposables);
+            AssignCommands(connected);
 
             GraphViewModel = viewModelFactory.CreateViewModel<GraphViewModel>();
             GraphViewModel.AddDisposableTo(Disposables);
@@ -218,6 +199,30 @@ namespace TwinCatAdsTool.Gui.ViewModels
                         result.Results.ToList().ForEach(item => SearchResults.Add(item));
                     }
                 );
+        }
+
+        private void AssignCommands(IObservable<bool> connected)
+        {
+// Setup the command for the enter key on the textbox
+            TextBoxEnterCommand = new ReactiveRelayCommand(obj => { });
+
+            AddObserverCmd = ReactiveCommand.CreateFromTask<ISymbol, Unit>(RegisterSymbolObserver)
+                .AddDisposableTo(Disposables);
+
+            CmdDelete = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(DeleteSymbolObserver)
+                .AddDisposableTo(Disposables);
+
+            CmdSubmit = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(SubmitSymbol)
+                .AddDisposableTo(Disposables);
+
+            CmdAddGraph = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(AddGraph)
+                .AddDisposableTo(Disposables);
+
+            CmdRemoveGraph = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(RemoveGraph)
+                .AddDisposableTo(Disposables);
+
+            Read = ReactiveCommand.CreateFromTask(ReadVariables, canExecute: connected)
+                .AddDisposableTo(Disposables);
         }
 
         private Task<Unit> AddGraph(SymbolObservationViewModel symbolObservationViewModel)

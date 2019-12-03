@@ -60,13 +60,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public override void Init()
         {
-            PlotModel = new PlotModel
-            {
-                LegendBorder = OxyColor.FromRgb(0x80, 0x80, 0x80),
-                LegendBorderThickness = 1,
-                LegendBackground = OxyColor.FromRgb(0xFF, 0xFF, 0xFF),
-                LegendPosition = LegendPosition.LeftBottom
-            };
+            PlotModel = CreateDefaultPlotModel();
 
             SymbolCache.Connect()
                 .Transform(CreateSymbolLineSeries)
@@ -83,6 +77,17 @@ namespace TwinCatAdsTool.Gui.ViewModels
             };
 
             PlotModel.Axes.Add(axis);
+        }
+
+        private static PlotModel CreateDefaultPlotModel()
+        {
+            return new PlotModel
+            {
+                LegendBorder = OxyColor.FromRgb(0x80, 0x80, 0x80),
+                LegendBorderThickness = 1,
+                LegendBackground = OxyColor.FromRgb(0xFF, 0xFF, 0xFF),
+                LegendPosition = LegendPosition.LeftBottom
+            };
         }
 
         public void RemoveSymbol(SymbolObservationViewModel symbol)
@@ -106,12 +111,73 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private IDisposable CreateSymbolLineSeries(SymbolObservationViewModel symbol)
         {
+            var lineSeries = CreateLineSeriesAndAxis(symbol, out var disposable);
+
+            RescaleAxisDistances();
+
+            dataPoints[symbol.Name] = new List<DataPoint> {DateTimeAxis.CreateDataPoint(DateTime.Now, Convert.ToDouble(symbol.Value))};
+
+
+            Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+                    handler => handler.Invoke,
+                    h => symbol.PropertyChanged += h,
+                    h => symbol.PropertyChanged -= h)
+                .Where(args => args.EventArgs.PropertyName == "Value" && pause == false)
+                .ObserveOnDispatcher()
+                .Subscribe(x => { UpdateDatapoints(symbol); }).AddDisposableTo(disposable);
+
+
+            Observable.Interval(TimeSpan.FromSeconds(1))
+                .Where(x => pause == false)
+                .ObserveOnDispatcher()
+                .Subscribe(x => { UpdateLineseries(symbol, lineSeries); })
+                .AddDisposableTo(disposable);
+
+            raisePropertyChanged("PlotModel");
+
+            // Need to invalidate oxyplot graph after removal of line series in order to have it really removed from UI
+            Disposable.Create(() => PlotModel.InvalidatePlot(true))
+                .AddDisposableTo(disposable);
+
+            return disposable;
+        }
+
+        private void UpdateLineseries(SymbolObservationViewModel symbol, LineSeries lineSeries)
+        {
+            var newPoints = dataPoints[symbol.Name]
+                .Where(point => !lineSeries.Points.Select(oldPoint => oldPoint.X).Contains(point.X));
+            if (!newPoints.Any() && dataPoints[symbol.Name].Any())
+            {
+                var lastPoint = dataPoints[symbol.Name].LastOrDefault();
+                newPoints = new[] {DateTimeAxis.CreateDataPoint(DateTime.Now, lastPoint.Y)};
+            }
+
+            lineSeries.Points.AddRange(newPoints);
+
+            var expireLimit = DateTimeAxis.ToDouble(DateTime.Now.Subtract(ExpiresAfter));
+            lineSeries.Points.RemoveAll(point => point.X < expireLimit);
+
+            PlotModel.InvalidatePlot(true);
+            raisePropertyChanged("PlotModel");
+        }
+
+        private void UpdateDatapoints(SymbolObservationViewModel symbol)
+        {
+            var refreshTime = DateTime.Now;
+            dataPoints[symbol.Name].Add(DateTimeAxis.CreateDataPoint(refreshTime, Convert.ToDouble(symbol.Value)));
+
+            var expireLimit = DateTimeAxis.ToDouble(DateTime.Now.Subtract(ExpiresAfter));
+            dataPoints[symbol.Name].RemoveAll(point => point.X < expireLimit);
+        }
+
+        private LineSeries CreateLineSeriesAndAxis(SymbolObservationViewModel symbol, out CompositeDisposable disposable)
+        {
             var lineSeries = new LineSeries();
             lineSeries.Title = symbol.Name;
 
             var index = PlotModel.Axes.Count - 1;
 
-            var disposable = new CompositeDisposable();
+            disposable = new CompositeDisposable();
 
             var axis = new LinearAxis
             {
@@ -133,59 +199,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
             lineSeries.YAxisKey = symbol.Name;
 
             PlotModel.Axes.Add(axis);
-
-            RescaleAxisDistances();
-
-            dataPoints[symbol.Name] = new List<DataPoint> {DateTimeAxis.CreateDataPoint(DateTime.Now, Convert.ToDouble(symbol.Value))};
-
-            Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
-                    handler => handler.Invoke,
-                    h => symbol.PropertyChanged += h,
-                    h => symbol.PropertyChanged -= h)
-                .Where(args => args.EventArgs.PropertyName == "Value" && pause == false)
-                .ObserveOnDispatcher()
-                .Subscribe(x =>
-                {
-                    var refreshTime = DateTime.Now;
-                    dataPoints[symbol.Name].Add(DateTimeAxis.CreateDataPoint(refreshTime, Convert.ToDouble(symbol.Value)));
-
-                    var expireLimit = DateTimeAxis.ToDouble(DateTime.Now.Subtract(ExpiresAfter));
-                    dataPoints[symbol.Name].RemoveAll(point => point.X < expireLimit);
-                }).AddDisposableTo(disposable);
-
-
-            Observable.Interval(TimeSpan.FromSeconds(1))
-                .Where(x => pause == false)
-                .ObserveOnDispatcher()
-                .Subscribe(x =>
-                {
-
-                    var newPoints = dataPoints[symbol.Name].Where(point => !lineSeries.Points.Select(oldPoint => oldPoint.X).Contains(point.X));
-                    if (!newPoints.Any() && dataPoints[symbol.Name].Any())
-                    {
-                        var lastPoint = dataPoints[symbol.Name].LastOrDefault();
-                        newPoints = new[] {DateTimeAxis.CreateDataPoint(DateTime.Now, lastPoint.Y)};
-                    }
-
-                    lineSeries.Points.AddRange(newPoints);
-
-                    var expireLimit = DateTimeAxis.ToDouble(DateTime.Now.Subtract(ExpiresAfter));
-                    lineSeries.Points.RemoveAll(point => point.X < expireLimit);
-
-                    PlotModel.InvalidatePlot(true);
-                    raisePropertyChanged("PlotModel");
-                })
-                .AddDisposableTo(disposable);
-
             PlotModel.Series.Add(lineSeries);
-
-            raisePropertyChanged("PlotModel");
-
-            // Need to invalidate oxyplot graph after removal of line series in order to have it really removed from UI
-            Disposable.Create(() => PlotModel.InvalidatePlot(true))
-                .AddDisposableTo(disposable);
-
-            return disposable;
+            return lineSeries;
         }
 
         private void RescaleAxisDistances()
