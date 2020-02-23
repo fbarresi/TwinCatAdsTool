@@ -32,7 +32,9 @@ namespace TwinCatAdsTool.Logic.Services
                     var variables = new Dictionary<string, List<JObject>>();
                     foreach (var symbol in iterator)
                     {
-                        var globalName = symbol.InstancePath.Split('.').First();
+                        var splitPath = symbol.InstancePath.Split('.');
+                        var globalName = splitPath.First();
+                        var localName = splitPath.Last();
                         if (!variables.ContainsKey(globalName))
                         {
                             variables.Add(globalName, new List<JObject>());
@@ -40,7 +42,15 @@ namespace TwinCatAdsTool.Logic.Services
 
                         try
                         {
-                            variables[globalName].Add(await client.ReadJson(symbol.InstancePath, force:true));
+                            var json = await client.ReadJson(symbol.InstancePath, force:true);
+                            if(json.ContainsKey(localName))
+                                variables[globalName].Add(json);
+                            else
+                            {
+                                var innerObject = new JObject();
+                                innerObject.Add(localName, json);
+                                variables[globalName].Add(innerObject);
+                            }
                         }
                         catch (Exception e)
                         {
