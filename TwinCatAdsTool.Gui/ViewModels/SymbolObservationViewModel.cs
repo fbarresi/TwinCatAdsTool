@@ -43,6 +43,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
             var readSymbolInfo = ClientService.Client.ReadSymbolInfo(Model.InstancePath);
             var initialValue = ClientService.Client.ReadSymbol(readSymbolInfo);
             var observable = ((IValueSymbol) Model).WhenValueChanged().StartWith(initialValue);
+            
+            observable.Do(value => Logger.Debug($"{FullName} value changed to: '{value}'"))
+                .Subscribe()
+                .AddDisposableTo(Disposables);
+            
             helper = observable.ToProperty(this, m => m.Value);
 
             CmdSubmit = ReactiveCommand.CreateFromTask(_ => SubmitSymbol())
