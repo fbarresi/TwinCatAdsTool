@@ -57,6 +57,7 @@ namespace TwinCatAdsTool
 		{
 			log4net.Config.XmlConfigurator.Configure(new FileInfo("log.config"));
 			LogManager.CreateRepository(Constants.LoggingRepositoryName);
+			LogManager.CreateRepository(Constants.LoggingObservationRepositoryName);
 		}
 
 		private static void LoadModules(IKernel kernel)

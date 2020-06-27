@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="4.3.10" />
+    <PackageReference Include="Humanizer" Version="2.8.26" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Ninject" Version="3.3.4" />
     <PackageReference Include="System.Reactive" Version="4.1.3" />

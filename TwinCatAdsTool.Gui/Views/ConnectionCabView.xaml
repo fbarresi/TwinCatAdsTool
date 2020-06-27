@@ -8,7 +8,8 @@
              xmlns:converters="clr-namespace:TwinCatAdsTool.Gui.Converters"
              xmlns:properties="clr-namespace:TwinCatAdsTool.Gui.Properties"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="350" 
+             d:DesignWidth="1200">
     <UserControl.Resources>
         <converters:ConnectionStateToIconConverter x:Key="ConnectionStateToIconConverter" />
         <converters:ConnectionStateToIsDisconnected x:Key="ConnectionStateToIsDisconnected" />
@@ -18,23 +19,34 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" MinWidth="300"/>
+            <ColumnDefinition Width="Auto" MinWidth="300"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="0" Content="{x:Static properties:Resources.Address}" ContentStringFormat="{}{0}:" HorizontalContentAlignment="Right"/>
-        <Label Grid.Row="1" Grid.Column="0" Content="{x:Static properties:Resources.Port}" ContentStringFormat="{}{0}:" HorizontalContentAlignment="Right"/>
-        <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding SelectedNetId, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Padding="2"/>
-        <fa:ImageAwesome Grid.Row="2" Grid.Column="2" Icon="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIconConverter}}" Width="20" HorizontalAlignment="Left"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="ADS Id:" HorizontalContentAlignment="Right"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="{x:Static properties:Resources.Port}" ContentStringFormat="{}{0}:" HorizontalContentAlignment="Right"/>
+        
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedNetId, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Padding="2"/>
         <ComboBox ItemsSource="{Binding AmsNetIds}" SelectedValue="{Binding SelectedAmsNetId}" Grid.Row="0" Grid.Column="1"  DisplayMemberPath="Name" IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}" />
-        <TextBox Text="{Binding Port}" Grid.Row="1" Grid.Column="1" />
-        <Button Grid.Row="2" Grid.Column="0" Command="{Binding Connect}" Content="{x:Static properties:Resources.Connect}"/>
-        <Button Grid.Row="2" Grid.Column="1" Command="{Binding Disconnect}" Content="{x:Static properties:Resources.Disconnect}"/>
+        <TextBox Text="{Binding Port}" Grid.Row="2" Grid.Column="1" />
+        
+        <Button Grid.Row="3" Grid.Column="0" Command="{Binding Connect}" Content="{x:Static properties:Resources.Connect}"/>
+        <Button Grid.Row="3" Grid.Column="1" Command="{Binding Disconnect}" Content="{x:Static properties:Resources.Disconnect}"/>
 
-        <Grid Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" Grid.ColumnSpan="2">
+        <Grid Grid.Row="3" Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <fa:ImageAwesome Grid.Column="0" Icon="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIconConverter}}" Width="20" HorizontalAlignment="Left"/>
+            <Label Grid.Column="1" Content="{Binding AdsStatus}"/>
+        </Grid>
+        <Grid Grid.Row="0" Grid.Column="2" Grid.RowSpan="3">
             <Image Source="../Resources/evopro.png" Width="300" MouseDown="UIElement_OnMouseDown"/>
             <Label Content="{x:Static properties:Resources.PoweredBy}"/>
         </Grid>

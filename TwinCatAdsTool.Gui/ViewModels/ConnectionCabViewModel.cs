@@ -19,7 +19,6 @@ using TwinCatAdsTool.Interfaces.Services;
 
 namespace TwinCatAdsTool.Gui.ViewModels
 {
-    [SuppressMessage("ReSharper", "InvokeAsExtensionMethod")]
     public class ConnectionCabViewModel : ViewModelBase
     {
         private readonly IClientService clientService;
@@ -27,6 +26,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private int port = 851;
         private string selectedNetId;
         private NetId selectedAmsNetId;
+        private ObservableAsPropertyHelper<string> adsStatusHelper;
 
 
         public ConnectionCabViewModel(IClientService clientService)
@@ -39,7 +39,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public ConnectionState ConnectionState => connectionStateHelper.Value;
         public ReactiveCommand<Unit, Unit> Disconnect { get; set; }
-
 
         public int Port
         {
@@ -87,11 +86,16 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 .AddDisposableTo(Disposables).SetupErrorHandling(Logger, Disposables);
             Disconnect = ReactiveCommand.CreateFromTask(DisconnectClient, canExecute: clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables).SetupErrorHandling(Logger, Disposables);
-
+            
             connectionStateHelper = clientService
                 .ConnectionState
                 .ObserveOnDispatcher()
                 .ToProperty(this, model => model.ConnectionState);
+
+            adsStatusHelper = clientService
+                .AdsState
+                .ObserveOnDispatcher()
+                .ToProperty(this, model => model.AdsStatus);
 
 
             AmsNetIds.AddRange(clientService.AmsNetIds);
@@ -103,7 +107,10 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 .Do(s => SelectedNetId = s.Address)
                 .Subscribe()
                 .AddDisposableTo(Disposables);
+            
         }
+
+        public string AdsStatus => adsStatusHelper.Value;
 
         private async Task ConnectClient()
         {

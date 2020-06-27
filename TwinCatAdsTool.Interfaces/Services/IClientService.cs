@@ -15,6 +15,7 @@ namespace TwinCatAdsTool.Interfaces.Services
         Task Connect(string amsNetId, int port);
         TcAdsClient Client { get; }
         IObservable<ConnectionState> ConnectionState { get; }
+        IObservable<string> AdsState { get; }
         ReadOnlySymbolCollection TreeViewSymbols { get; }
         ReadOnlySymbolCollection FlatViewSymbols { get; }
         List<NetId> AmsNetIds { get; set; }

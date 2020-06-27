@@ -10,5 +10,10 @@ namespace TwinCatAdsTool.Interfaces.Logging
 		{
 			return LogManager.GetLogger(Constants.LoggingRepositoryName);
 		}
+		
+		public static ILog GetObserverLogger()
+		{
+			return LogManager.GetLogger(Constants.LoggingObservationRepositoryName);
+		}
 	}
 }

@@ -10,6 +10,7 @@ using TwinCAT.Ads.Reactive;
 using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Gui.Properties;
 using TwinCatAdsTool.Interfaces.Extensions;
+using TwinCatAdsTool.Interfaces.Logging;
 using TwinCatAdsTool.Interfaces.Services;
 
 
@@ -43,8 +44,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
             var readSymbolInfo = ClientService.Client.ReadSymbolInfo(Model.InstancePath);
             var initialValue = ClientService.Client.ReadSymbol(readSymbolInfo);
             var observable = ((IValueSymbol) Model).WhenValueChanged().StartWith(initialValue);
+
+            var obsLogger = LoggerFactory.GetObserverLogger();
             
-            observable.Do(value => Logger.Debug($"{FullName} value changed to: '{value}'"))
+            observable
+                .Do(value => obsLogger.Debug($"{FullName} value changed to: '{value}'"))
                 .Subscribe()
                 .AddDisposableTo(Disposables);
             
