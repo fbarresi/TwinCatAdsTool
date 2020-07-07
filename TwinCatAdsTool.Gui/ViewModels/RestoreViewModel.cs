@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Reactive.Linq;
 using DynamicData;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -14,11 +13,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using TwinCAT;
-using TwinCAT.Ads;
 using TwinCAT.JsonExtension;
-using TwinCAT.PlcOpen;
-using TwinCAT.TypeSystem;
-using TwinCatAdsTool.Gui.Extensions;
 using TwinCatAdsTool.Gui.Properties;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
@@ -88,14 +83,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public override void Init()
         {
-            liveVariableSubject
-                .ObserveOnDispatcher()
-                .Do(x => UpdateVariables(x, LiveVariables))
-                .Retry()
-                .Subscribe()
-                .AddDisposableTo(Disposables)
-                ;
-
             fileVariableSubject
                 .ObserveOnDispatcher()
                 .Do(x => UpdateVariables(x, FileVariables))
@@ -113,70 +100,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             Write = ReactiveCommand.CreateFromTask(WriteVariables, canWrite.Select(x => x))
                 .AddDisposableTo(Disposables);
-        }
-
-        public async Task WriteJsonRecursive(TcAdsClient client, string name, JToken token)
-        {
-            Logger.Debug(string.Format(Resources.TryingToWriteJSON0WithValue1, name, token));
-            var symbolInfo = (ITcAdsSymbol5) client.ReadSymbolInfo(name);
-            var dataType = symbolInfo.DataType;
-            if (dataType.Category == DataTypeCategory.Array)
-            {
-                var array = token as JArray;
-                var elementCount = array.Count < dataType.Dimensions.ElementCount ? array.Count : dataType.Dimensions.ElementCount;
-                if (dataType.BaseType.ManagedType == typeof(byte))
-                {
-                    byte[] bytes = Convert.FromBase64String(array[0].ToString());
-                    for (int i = 0; i < bytes.Length; i++)
-                    {
-                        await client.WriteAsync(name + $"[{i + dataType.Dimensions.LowerBounds.First()}]", bytes[i]).ConfigureAwait(false);
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < elementCount; i++)
-                    {
-                        if (dataType.BaseType.ManagedType != null)
-                        {
-                            await client.WriteAsync(name + $"[{i + dataType.Dimensions.LowerBounds.First()}]", array[i]).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            await WriteJsonRecursive(client, name + $"[{i + dataType.Dimensions.LowerBounds.First()}]", array[i]).ConfigureAwait(false);
-                        }
-                    }
-                }
-            }
-            else if (dataType.ManagedType == null)
-            {
-                if (dataType.SubItems.Any())
-                {
-                    foreach (var subItem in dataType.SubItems)
-                    {
-                        await WriteJsonRecursive(client, name + "." + subItem.SubItemName, token.SelectToken(subItem.SubItemName)).ConfigureAwait(false);
-                    }
-                }
-            }
-            else if (dataType.ManagedType == typeof(TIME))
-            {
-                await client.WriteAsync(symbolInfo.Name, new TIME(token.ToObject<TimeSpan>())).ConfigureAwait(false);
-            }
-            else if (dataType.ManagedType == typeof(LTIME))
-            {
-                await client.WriteAsync(symbolInfo.Name, new LTIME(token.ToObject<TimeSpan>())).ConfigureAwait(false);
-            }
-            else if (dataType.ManagedType == typeof(DT))
-            {
-                await client.WriteAsync(symbolInfo.Name, new DT(token.ToObject<DateTime>())).ConfigureAwait(false);
-            }
-            else if (dataType.ManagedType == typeof(DATE))
-            {
-                await client.WriteAsync(symbolInfo.Name, new DATE(token.ToObject<DateTime>())).ConfigureAwait(false);
-            }
-            else
-            {
-                await client.WriteAsync(symbolInfo.Name, token).ConfigureAwait(false);
-            }
         }
 
         private void AddVariable(IEnumerable<JProperty> token, ObservableCollection<VariableViewModel> variables)
@@ -203,13 +126,12 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private async Task<Unit> LoadVariables()
         {
-            await ReadVariablesFromPlc();
             await LoadVariablesFromFile();
 
             return Unit.Default;
         }
 
-        private async Task<Unit> LoadVariablesFromFile()
+        private Task<Unit> LoadVariablesFromFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Json files (*.json)|*.json";
@@ -221,30 +143,17 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 canWrite.OnNext(true);
             }
 
-            return Unit.Default;
-        }
-
-        private async Task ReadVariablesFromPlc()
-        {
-            var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
-            liveVariableSubject.OnNext(persistentVariables);
+            return Task.FromResult(Unit.Default);
         }
 
         private void UpdateDisplayIfMatching()
         {
-            if (!FileVariables.HasEqualStructure(LiveVariables))
-            {
-                MessageBox.Show(Resources.FileDoesNotHaveTheSameStructureAsThePlc, Resources.Error, MessageBoxButton.OK);
-            }
-            else
-            {
-                DisplayVariables.Clear();
-                var array = new VariableViewModel[FileVariables.Count];
-                FileVariables.CopyTo(array, 0);
-                DisplayVariables.AddRange(array);
+            DisplayVariables.Clear();
+            var array = new VariableViewModel[FileVariables.Count];
+            FileVariables.CopyTo(array, 0);
+            DisplayVariables.AddRange(array);
 
-                raisePropertyChanged("DisplayVariables");
-            }
+            raisePropertyChanged("DisplayVariables");
         }
 
         private void UpdateVariables(JObject json, ObservableCollection<VariableViewModel> viewModels)
@@ -259,16 +168,19 @@ namespace TwinCatAdsTool.Gui.ViewModels
             MessageBoxResult messageBoxResult = MessageBox.Show(Resources.AreYouSureYouWantToOverwriteTheLiveVariablesOnThePLC, Resources.OverwriteConfirmation, MessageBoxButton.YesNo);
             if (messageBoxResult == MessageBoxResult.Yes)
             {
-                foreach (var variable in DisplayVariables.Where(d => LiveVariables.Single(l => l.Name == d.Name).Json != d.Json))
+                foreach (var variable in DisplayVariables)
                 {
                     try
                     {
                         var jobject = JObject.Load(new JsonTextReader(new StringReader(variable.Json)));
                         foreach (var p in jobject.Properties())
                         {
-                            var o = new JObject();
-                            o.Add(p.Name, p.Value);
-                            await WriteJsonRecursive(clientService.Client, variable.Name + "." + p.Name, p.Value).ConfigureAwait(false);
+                            if(p.Value is JObject)
+                                await clientService.Client.WriteJson(variable.Name + "." + p.Name, (JObject) p.Value, force: true);
+                            if(p.Value is JArray)
+                                await clientService.Client.WriteJson(variable.Name + "." + p.Name, (JArray) p.Value, force: true);
+
+                         //   await WriteJsonRecursive(clientService.Client, variable.Name + "." + p.Name, p.Value).ConfigureAwait(false);
                         }
                     }
                     catch (Exception ex)
