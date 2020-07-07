@@ -31,7 +31,11 @@ namespace TwinCatAdsTool
 				try
 				{
 					CreateLogger();
+					LoggerFactory.GetLogger().Info(string.Join("", Enumerable.Repeat("#",80)));
+					LoggerFactory.GetLogger().Info("Application starts!");
+					LoggerFactory.GetLogger().Info("Loading kernel modules... ");
 					LoadModules(kernel);
+					LoggerFactory.GetLogger().Info("Kernel modules loaded");
 
 					var viewModelFactory = kernel.Get<ViewModelLocator>();
 					var application = CreateApplication(viewModelFactory);
@@ -41,12 +45,16 @@ namespace TwinCatAdsTool
 					var mainWindow = kernel.Get<MainWindow>();
 					mainWindow.DataContext = mainWindowViewModel;
 
+					LoggerFactory.GetLogger().Info(string.Join("", Enumerable.Repeat("#",80)));
+
 					application.Run(mainWindow);
 					application.Shutdown();
+					LoggerFactory.GetLogger().Info("Application ended...");
+					LoggerFactory.GetLogger().Info("\n\n\n\n");
 				}
 				catch (Exception e)
 				{
-					LoggerFactory.GetLogger().Error("Unhandled exeption", e);
+					LoggerFactory.GetLogger().Error("Unhandled exception", e);
 
                     throw e;
 				}

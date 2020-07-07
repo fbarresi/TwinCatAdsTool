@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using ReactiveUI;
 using TwinCAT;
+using TwinCAT.Ads.TypeSystem;
 using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Gui.Commands;
 using TwinCatAdsTool.Gui.Properties;

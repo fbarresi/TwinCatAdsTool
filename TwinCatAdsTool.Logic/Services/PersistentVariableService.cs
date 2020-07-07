@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using log4net;
 using log4net.Core;
@@ -20,6 +22,7 @@ namespace TwinCatAdsTool.Logic.Services
     public class PersistentVariableService : IPersistentVariableService
     {
         private readonly ILog logger =LoggerFactory.GetLogger();
+        private readonly Subject<string> currentTaskSubject = new Subject<string>();
         public async Task<JObject> ReadPersistentVariables(TcAdsClient client, IInstanceCollection<ISymbol> symbols)
         {
             var jobj = new JObject();
@@ -42,6 +45,9 @@ namespace TwinCatAdsTool.Logic.Services
 
                         try
                         {
+                            logger.Debug($"reading symbol '{symbol.InstancePath}' in json format...");
+                            currentTaskSubject.OnNext($"Reading {symbol.InstancePath}...");
+
                             var json = await client.ReadJson(symbol.InstancePath, force:true);
                             if(json.ContainsKey(localName))
                                 variables[globalName].Add(json);
@@ -78,8 +84,13 @@ namespace TwinCatAdsTool.Logic.Services
             {
                 logger.Error(Resources.ErrorWhileReadingPersistentVariables,e);
             }
+            
+            currentTaskSubject.OnNext(string.Empty);
+            logger.Debug($"Persistent variable successfully downloaded!");
 
             return jobj;
         }
+
+        public IObservable<string> CurrentTask => currentTaskSubject.AsObservable();
     }
 }

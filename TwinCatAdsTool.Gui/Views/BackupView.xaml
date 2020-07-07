@@ -28,6 +28,8 @@
                     <Label Content="{x:Static properties:Resources.SaveToFile}" />
                 </StackPanel>
             </Button>
+            
+            <Label Margin="24,8,0,8" Content="{Binding CurrentTask}"/>
 
         </StackPanel>
 

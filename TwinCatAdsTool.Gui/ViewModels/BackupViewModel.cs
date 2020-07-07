@@ -22,6 +22,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private readonly IPersistentVariableService persistentVariableService;
         private readonly Subject<JObject> variableSubject = new Subject<JObject>();
         private string backupText;
+        private ObservableAsPropertyHelper<string> currentTaskHelper;
 
         public BackupViewModel(IClientService clientService, IPersistentVariableService persistentVariableService)
         {
@@ -58,7 +59,11 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
             Save = ReactiveCommand.CreateFromTask(SaveVariables, clientService.ConnectionState.Select(state => state == ConnectionState.Connected))
                 .AddDisposableTo(Disposables);
+
+            currentTaskHelper = persistentVariableService.CurrentTask.ToProperty(this, vm => vm.CurrentTask);
         }
+
+        public string CurrentTask => currentTaskHelper.Value;
 
         private async Task<Unit> ReadVariables()
         {
