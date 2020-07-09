@@ -175,17 +175,16 @@ namespace TwinCatAdsTool.Gui.ViewModels
                         var jobject = JObject.Load(new JsonTextReader(new StringReader(variable.Json)));
                         foreach (var p in jobject.Properties())
                         {
+                            Logger.Debug($"Restoring variable variable{p.Name}.{p.Name} from backup...");
                             if(p.Value is JObject)
                                 await clientService.Client.WriteJson(variable.Name + "." + p.Name, (JObject) p.Value, force: true);
                             if(p.Value is JArray)
                                 await clientService.Client.WriteJson(variable.Name + "." + p.Name, (JArray) p.Value, force: true);
-
-                         //   await WriteJsonRecursive(clientService.Client, variable.Name + "." + p.Name, p.Value).ConfigureAwait(false);
                         }
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
+                        MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
