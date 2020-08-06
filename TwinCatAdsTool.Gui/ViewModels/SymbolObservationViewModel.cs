@@ -48,7 +48,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             var obsLogger = LoggerFactory.GetObserverLogger();
             
             observable
-                .Do(value => obsLogger.Debug($"{FullName} value changed to: '{value}'"))
+                .Do(value => obsLogger.Debug($"{FullName} value changed to: '{value.ToString()}'"))
                 .Subscribe()
                 .AddDisposableTo(Disposables);
             
