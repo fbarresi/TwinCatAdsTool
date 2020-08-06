@@ -19,7 +19,7 @@
     <None Remove="Views\ExploreView.xaml" />
     <None Remove="Views\RestoreView.xaml" />
     <Resource Include="Resources\evopro.png" />
-    <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="4.3.10" />
+    <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="4.4.7" />
     <PackageReference Include="DiffPlex" Version="1.4.4" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="3.6.0" />
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
