@@ -18,7 +18,7 @@ namespace TwinCatAdsTool.Interfaces.Services
         IObservable<string> AdsState { get; }
         ReadOnlySymbolCollection TreeViewSymbols { get; }
         ReadOnlySymbolCollection FlatViewSymbols { get; }
-        List<NetId> AmsNetIds { get; set; }
+        IObservable<IEnumerable<NetId>> DevicesFound { get; }
         Task Reload();
         Task Disconnect();
     }

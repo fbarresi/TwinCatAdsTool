@@ -9,38 +9,37 @@ using TwinCatAdsTool.Logic.Router;
 
 namespace TwinCatAdsTool.Logic.Services
 {
-    // https://github.com/nikvoronin/AdsRemote
+    //see https://github.com/nikvoronin/AdsRemote
     public static class DeviceFinder
     {
-        #region Device Finder
-        public static async Task<List<RemotePlcInfo>> BroadcastSearchAsync(IPAddress localhost)
+        public static async Task<IEnumerable<RemotePlcInfo>> BroadcastSearchAsync(IPAddress localhost)
         {
             var devices = await BroadcastSearchAsync(localhost, Request.DEFAULT_UDP_PORT);
             return devices;
         }
 
-        public static async Task<List<RemotePlcInfo>> BroadcastSearchAsync(IPAddress localhost, int adsUdpPort)
+        public static async Task<IEnumerable<RemotePlcInfo>> BroadcastSearchAsync(IPAddress localhost, int adsUdpPort)
         {
             var devices =  await BroadcastSearchAsync(localhost, timeout: 1000, adsUdpPort);
             return devices;
         }
 
-        public static async Task<List<RemotePlcInfo>> BroadcastSearchAsync(IPAddress localhost, int timeout, int adsUdpPort)
+        public static async Task<IEnumerable<RemotePlcInfo>> BroadcastSearchAsync(IPAddress localhost, int timeout, int adsUdpPort)
         {
-            Request request = CreateSearchRequest(localhost, timeout);
+            var request = CreateSearchRequest(localhost, timeout);
 
-            IPEndPoint broadcast =
+            var broadcast =
                 new IPEndPoint(
                     IPHelper.GetBroadcastAddress(localhost),
                     adsUdpPort);
 
-            Response response = await request.SendAsync(broadcast);
+            var response = await request.SendAsync(broadcast);
             var responses = new List<ResponseResult>(await response.ReceiveMultipleAsync());
 
-            List<RemotePlcInfo> devices = new List<RemotePlcInfo>();
+            var devices = new List<RemotePlcInfo>();
             foreach (var r in responses)
             {
-                RemotePlcInfo device = ParseBroadcastSearchResponse(r);
+                var device = ParseBroadcastSearchResponse(r);
                 devices.Add(device);
             }
 
@@ -49,9 +48,9 @@ namespace TwinCatAdsTool.Logic.Services
 
         private static Request CreateSearchRequest(IPAddress localhost, int timeout = 10000)
         {
-            Request request = new Request(timeout);
+            var request = new Request(timeout);
 
-            byte[] Segment_AMSNETID = Segment.AMSNETID;
+            var Segment_AMSNETID = Segment.AMSNETID;
             localhost.GetAddressBytes().CopyTo(Segment_AMSNETID, 0);
 
             request.Add(Segment.HEADER);
@@ -66,7 +65,7 @@ namespace TwinCatAdsTool.Logic.Services
 
         private static RemotePlcInfo ParseBroadcastSearchResponse(ResponseResult rr)
         {
-            RemotePlcInfo device = new RemotePlcInfo();
+            var device = new RemotePlcInfo();
 
             device.Address = rr.RemoteHost;
 
@@ -89,21 +88,21 @@ namespace TwinCatAdsTool.Logic.Services
 
             // AmsNetId
             // then skip 2 bytes of PORT + 4 bytes of ROUTE_TYPE
-            byte[] amsNetId = rr.NextChunk(Segment.AMSNETID.Length, add: Segment.PORT.Length + Segment.ROUTETYPE_STATIC.Length);
+            var amsNetId = rr.NextChunk(Segment.AMSNETID.Length, add: Segment.PORT.Length + Segment.ROUTETYPE_STATIC.Length);
             device.AmsNetId = new AmsNetId(amsNetId);
 
             // PLC NameLength
-            byte[] bNameLen = rr.NextChunk(Segment.L_NAMELENGTH);
-            int nameLen =
+            var bNameLen = rr.NextChunk(Segment.L_NAMELENGTH);
+            var nameLen =
                 bNameLen[0] == 5 && bNameLen[1] == 0 ?
                     bNameLen[2] + bNameLen[3] * 256 :
                     0;
 
-            byte[] bName = rr.NextChunk(nameLen - 1, add: 1);
+            var bName = rr.NextChunk(nameLen - 1, add: 1);
             device.Name = System.Text.ASCIIEncoding.Default.GetString(bName);
 
             // TCat type
-            byte[] tcatType = rr.NextChunk(Segment.TCATTYPE_RUNTIME.Length);
+            var tcatType = rr.NextChunk(Segment.TCATTYPE_RUNTIME.Length);
             if (tcatType[0] == Segment.TCATTYPE_RUNTIME[0])
             {
                 if (tcatType[2] == Segment.TCATTYPE_RUNTIME[2])
@@ -113,17 +112,17 @@ namespace TwinCatAdsTool.Logic.Services
             }
 
             // OS version
-            byte[] osVer = rr.NextChunk(Segment.L_OSVERSION);
-            ushort osKey = (ushort)(osVer[0] * 256 + osVer[4]);
+            var osVer = rr.NextChunk(Segment.L_OSVERSION);
+            var osKey = (ushort)(osVer[0] * 256 + osVer[4]);
             device.OsVersion = OS_IDS.ContainsKey(osKey) ? OS_IDS[osKey] : osKey.ToString("X2");
 
-            bool isUnicode = false;
+            var isUnicode = false;
 
             // looking for packet with tcat version; usually it is in the end of the packet
-            byte[] tail = rr.NextChunk(rr.Buffer.Length - rr.Shift, true);
+            var tail = rr.NextChunk(rr.Buffer.Length - rr.Shift, true);
 
-            int ci = tail.Length - 4;
-            for (int i = ci; i > 0; i -= 4)
+            var ci = tail.Length - 4;
+            for (var i = ci; i > 0; i -= 4)
             {
                 if (tail[i + 0] == 3 &&
                     tail[i + 2] == 4)
@@ -138,14 +137,14 @@ namespace TwinCatAdsTool.Logic.Services
             }
 
             // Comment
-            byte[] descMarker = rr.NextChunk(Segment.L_DESCRIPTIONMARKER);
-            int len = 0;
-            int c = rr.Buffer.Length;
+            var descMarker = rr.NextChunk(Segment.L_DESCRIPTIONMARKER);
+            var len = 0;
+            var c = rr.Buffer.Length;
             if (descMarker[0] == 2)
             {
                 if (isUnicode)
                 {
-                    for (int i = 0; i < c; i += 2)
+                    for (var i = 0; i < c; i += 2)
                     {
                         if (rr.Buffer[rr.Shift + i] == 0 &&
                             rr.Buffer[rr.Shift + i + 1] == 0)
@@ -155,7 +154,7 @@ namespace TwinCatAdsTool.Logic.Services
                 }
                 else
                 {
-                    for (int i = 0; i < c; i++)
+                    for (var i = 0; i < c; i++)
                     {
                         if (rr.Buffer[rr.Shift + i] == 0)
                         {
@@ -168,7 +167,7 @@ namespace TwinCatAdsTool.Logic.Services
 
                 if (len > 0)
                 {
-                    byte[] description = rr.NextChunk(len);
+                    var description = rr.NextChunk(len);
 
                     if (!isUnicode)
                     {
@@ -176,8 +175,8 @@ namespace TwinCatAdsTool.Logic.Services
                     }
                     else
                     {
-                        byte[] asciiBytes = Encoding.Convert(Encoding.Unicode, Encoding.ASCII, description);
-                        char[] asciiChars = new char[Encoding.ASCII.GetCharCount(asciiBytes, 0, asciiBytes.Length)];
+                        var asciiBytes = Encoding.Convert(Encoding.Unicode, Encoding.ASCII, description);
+                        var asciiChars = new char[Encoding.ASCII.GetCharCount(asciiBytes, 0, asciiBytes.Length)];
                         Encoding.ASCII.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
                         device.Comment = new string(asciiChars);
                     }
@@ -197,6 +196,5 @@ namespace TwinCatAdsTool.Logic.Services
                 {0x0500, "Windows CE 5"},
                 {0x0501, "Windows XP"}
             };
-        #endregion
     }
 }

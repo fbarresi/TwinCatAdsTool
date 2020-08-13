@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -10,48 +11,29 @@ namespace TwinCatAdsTool.Logic.Router
     internal class Response
     {
         readonly UdpClient client;
-        public UdpClient Client { get { return client; } }
-        public int Timeout;
+        private int timeout;
 
         public Response(UdpClient client, int timeout = 10000)
         {
             this.client = client;
-            Timeout = timeout;
-        }
-
-        public async Task<ResponseResult> ReceiveAsync()
-        {
-            ResponseResult result = null;
-
-            var worker = client.ReceiveAsync();
-            var task = await Task.WhenAny(worker, Task.Delay(Timeout));
-
-            if (task == worker)
-            {
-                UdpReceiveResult udpResult = await worker;
-                result = new ResponseResult(udpResult);
-            }
-            else
-            {
-                client.Close();
-            }
-
-            return result;
+            this.timeout = timeout;
         }
 
         public async Task<List<ResponseResult>> ReceiveMultipleAsync()
         {
-            List<ResponseResult> results = new List<ResponseResult>();
-            int start = Environment.TickCount;
+            var results = new List<ResponseResult>();
+            var stopwatch = new Stopwatch();
             while (true)
             {
+                stopwatch.Reset();
+                stopwatch.Start();
+                
                 var worker = client.ReceiveAsync();
-                var task = await Task.WhenAny(worker, Task.Delay(Timeout));
+                var task = await Task.WhenAny(worker, Task.Delay(timeout));
 
-                long interval = (long)TimeSpan.FromTicks(Environment.TickCount - start).TotalMilliseconds - start;
-                if ((interval < Timeout) && (task == worker))
+                if (stopwatch.ElapsedMilliseconds < timeout && (task == worker))
                 {
-                    UdpReceiveResult udpResult = await worker;
+                    var udpResult = worker.Result;
                     results.Add(new ResponseResult(udpResult));
                 }
                 else

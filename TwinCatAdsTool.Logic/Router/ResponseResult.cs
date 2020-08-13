@@ -24,7 +24,7 @@ namespace TwinCatAdsTool.Logic.Router
 
         public byte[] NextChunk(int length, bool dontShift = false, int add = 0)
         {
-            byte[] to = new byte[length];
+            var to = new byte[length];
             Array.Copy(result.Buffer, Shift, to, 0, length);
 
             if (!dontShift)

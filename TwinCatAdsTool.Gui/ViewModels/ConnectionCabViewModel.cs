@@ -98,7 +98,13 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 .ToProperty(this, model => model.AdsStatus);
 
 
-            AmsNetIds.AddRange(clientService.AmsNetIds);
+            clientService.DevicesFound
+                .Where(d => d != null)
+                .ObserveOnDispatcher()
+                .Do(devices => AmsNetIds.AddRange(devices))
+                .Subscribe()
+                .AddDisposableTo(Disposables);
+            
             AmsNetIds.Add(new NetId(){Address = "", Name = "*"});
             SelectedAmsNetId = AmsNetIds.FirstOrDefault();
 

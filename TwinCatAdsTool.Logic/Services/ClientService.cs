@@ -30,6 +30,7 @@ namespace TwinCatAdsTool.Logic.Services
     public class ClientService : IClientService, IInitializable, IDisposable
     {
         private readonly BehaviorSubject<ConnectionState> connectionStateSubject = new BehaviorSubject<ConnectionState>(TwinCAT.ConnectionState.Unknown);
+        private readonly BehaviorSubject<IEnumerable<NetId>> foundNetIdSubject = new BehaviorSubject<IEnumerable<NetId>>(null);
         private readonly CompositeDisposable disposables = new CompositeDisposable();
         private readonly BehaviorSubject<string> adsStateSubject = new BehaviorSubject<string>(TwinCAT.Ads.AdsState.Idle.ToString());
         private readonly ILog logger = LoggerFactory.GetLogger();
@@ -62,7 +63,7 @@ namespace TwinCatAdsTool.Logic.Services
         public IObservable<string> AdsState => adsStateSubject.AsObservable();
         public ReadOnlySymbolCollection TreeViewSymbols { get; set; }
         public ReadOnlySymbolCollection FlatViewSymbols { get; set; }
-        public List<NetId> AmsNetIds { get; set; }
+        public IObservable<IEnumerable<NetId>> DevicesFound => foundNetIdSubject.AsObservable();
         public Task Reload()
         {
             return Task.Run(() => UpdateSymbols(connectionStateSubject.Value));
@@ -102,7 +103,14 @@ namespace TwinCatAdsTool.Logic.Services
             var localhost = host
                 .AddressList
                 .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
-            AmsNetIds = DeviceFinder.BroadcastSearchAsync(localhost).Result.Select(x => new NetId{Name = x.Name, Address = x.AmsNetId.ToString()}).ToList();
+            
+            Observable.Return(Unit.Default)
+                .SelectMany(_ => DeviceFinder.BroadcastSearchAsync(localhost))
+                .Select(x => x.Select(d => new NetId{Name = d.Name, Address = d.AmsNetId.ToString()}))
+                .Subscribe(foundNetIdSubject.OnNext)
+                .AddDisposableTo(disposables)
+                ;
+                
         }
 
         private void UpdateSymbols(ConnectionState state)
