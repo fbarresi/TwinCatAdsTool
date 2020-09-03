@@ -8,7 +8,7 @@ using System.Reactive;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows;
-using Microsoft.Win32;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
@@ -17,6 +17,8 @@ using TwinCAT.JsonExtension;
 using TwinCatAdsTool.Gui.Properties;
 using TwinCatAdsTool.Interfaces.Extensions;
 using TwinCatAdsTool.Interfaces.Services;
+using MessageBox = System.Windows.MessageBox;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace TwinCatAdsTool.Gui.ViewModels
 {
@@ -175,11 +177,15 @@ namespace TwinCatAdsTool.Gui.ViewModels
                         var jobject = JObject.Load(new JsonTextReader(new StringReader(variable.Json)));
                         foreach (var p in jobject.Properties())
                         {
-                            Logger.Debug($"Restoring variable variable{p.Name}.{p.Name} from backup...");
+                            Logger.Debug($"Restoring variable '{variable.Name}.{p.Name}' from backup...");
                             if(p.Value is JObject)
                                 await clientService.Client.WriteJson(variable.Name + "." + p.Name, (JObject) p.Value, force: true);
-                            if(p.Value is JArray)
+                            else if(p.Value is JArray)
                                 await clientService.Client.WriteJson(variable.Name + "." + p.Name, (JArray) p.Value, force: true);
+                            else if (p.Value is JValue)
+                                await clientService.Client.WriteAsync(variable.Name + "." + p.Name, p.Value);
+                            else
+                                Logger.Error($"Unable to write variable '{variable.Name}.{p.Name}' from backup: no type case match!");
                         }
                     }
                     catch (Exception ex)
