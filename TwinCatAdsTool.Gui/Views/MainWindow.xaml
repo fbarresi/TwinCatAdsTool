@@ -28,6 +28,9 @@
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
             <StackPanel Orientation="Horizontal">
+                
+                <TextBlock VerticalAlignment="Top" Margin="0,0,16,0">sponsored by <Image Source="../Resources/evopro.png" Height="24" Margin="2" VerticalAlignment="Top"/></TextBlock>
+                
                 <TextBlock
                     VerticalAlignment="Center"
                     Opacity="0.6"
@@ -36,29 +39,13 @@
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
     
-    <mah:MetroWindow.LeftWindowCommands>
-        <mah:WindowCommands>
-            <StackPanel Orientation="Horizontal">
-
-                <ToggleButton
-                    x:Name="MenuToggleButton"
-                    Width="32"
-                    Height="32"
-                    fa:Awesome.Content="Plug" 
-                    TextElement.FontFamily="pack://application:,,,/FontAwesome.WPF;component/#FontAwesome"
-                    IsChecked="{Binding MenuIsOpen}"
-                />
-
-                <Button Command="{Binding ShowInGitHubCommand}" ToolTip="show on GitHub"
-                        fa:Awesome.Content="Github" 
-                        TextElement.FontFamily="pack://application:,,,/FontAwesome.WPF;component/#FontAwesome"
-                />
-
-                
-            </StackPanel>
-
-        </mah:WindowCommands>
-    </mah:MetroWindow.LeftWindowCommands>
+    <!-- <mah:MetroWindow.LeftWindowCommands> -->
+    <!--     <mah:WindowCommands> -->
+    <!--         <StackPanel Orientation="Horizontal"> -->
+    <!--         </StackPanel> -->
+    <!-- -->
+    <!--     </mah:WindowCommands> -->
+    <!-- </mah:MetroWindow.LeftWindowCommands> -->
     
     <Grid>
         <Grid.RowDefinitions>
