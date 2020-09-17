@@ -1,55 +1,89 @@
 ﻿<UserControl x:Class="TwinCatAdsTool.Gui.Views.ConnectionCabView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:TwinCatAdsTool.Gui.Views"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:converters="clr-namespace:TwinCatAdsTool.Gui.Converters"
-             xmlns:properties="clr-namespace:TwinCatAdsTool.Gui.Properties"
-             mc:Ignorable="d" 
-             d:DesignHeight="350" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             d:DesignHeight="350"
              d:DesignWidth="1200">
     <UserControl.Resources>
         <converters:ConnectionStateToIconConverter x:Key="ConnectionStateToIconConverter" />
-        <converters:ConnectionStateToBoolConverter x:Key="ConnectionStateToIsDisconnected" IfDisconnected="True" IfConnected="False"/>
+        <converters:ConnectionStateToBoolConverter x:Key="ConnectionStateToIsDisconnected" IfDisconnected="True"
+                                                   IfConnected="False" />
+        <converters:ConnectionStateToVisibilityConverter x:Key="VisibleIfDisconnected" IfConnected="Collapsed"
+                                                         IfDisconnected="Visible" />
+        <converters:ConnectionStateToVisibilityConverter x:Key="VisibleIfConnected" IfConnected="Visible"
+                                                         IfDisconnected="Collapsed" />
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MinWidth="300"/>
-            <ColumnDefinition Width="Auto" MinWidth="300"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" MinWidth="350" />
+            <ColumnDefinition Width="Auto" MinWidth="350" />
         </Grid.ColumnDefinitions>
-        <Label Grid.Row="0" Grid.Column="0" Content="{x:Static properties:Resources.Address}" ContentStringFormat="{}{0}:" HorizontalContentAlignment="Right"/>
-        <Label Grid.Row="1" Grid.Column="0" Content="ADS Id:" HorizontalContentAlignment="Right"/>
-        <Label Grid.Row="2" Grid.Column="0" Content="{x:Static properties:Resources.Port}" ContentStringFormat="{}{0}:" HorizontalContentAlignment="Right"/>
-        
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedNetId, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Padding="2" IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}"/>
-        <ComboBox ItemsSource="{Binding AmsNetIds}" SelectedValue="{Binding SelectedAmsNetId}" Grid.Row="0" Grid.Column="1"  DisplayMemberPath="Name" IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}" />
-        <TextBox Text="{Binding Port}" Grid.Row="2" Grid.Column="1" VerticalContentAlignment="Center" Padding="2" IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}" />
-        
-        <Button Grid.Row="3" Grid.Column="0" Command="{Binding Connect}" Content="{x:Static properties:Resources.Connect}"/>
-        <Button Grid.Row="3" Grid.Column="1" Command="{Binding Disconnect}" Content="{x:Static properties:Resources.Disconnect}"/>
 
-        <Grid Grid.Row="3" Grid.Column="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <fa:ImageAwesome Grid.Column="0" Icon="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIconConverter}}" Width="20" HorizontalAlignment="Left"/>
-            <Label Grid.Column="1" Content="{Binding AdsStatus}"/>
-        </Grid>
-        <Grid Grid.Row="0" Grid.Column="2" Grid.RowSpan="3">
-            <Image Source="../Resources/evopro.png" Width="300" MouseDown="UIElement_OnMouseDown"/>
-            <Label Content="{x:Static properties:Resources.PoweredBy}"/>
-        </Grid>
+        <StackPanel Orientation="Vertical" Grid.Column="0">
+            <ComboBox ItemsSource="{Binding AmsNetIds}"
+                      SelectedValue="{Binding SelectedAmsNetId}"
+                      DisplayMemberPath="Name"
+                      IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}"
+                      materialDesign:HintAssist.HelperText="Select a connection"
+                      Margin="16" 
+                      Width="300"
+                      HorizontalAlignment="Left"
+                      />
+            <TextBox Text="{Binding SelectedNetId, UpdateSourceTrigger=PropertyChanged}"
+                     VerticalContentAlignment="Center"
+                     Padding="2"
+                     IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}"
+                     materialDesign:HintAssist.Hint="ADS Id"
+                     materialDesign:HintAssist.HelperText="ADS Id"
+                     Width="300"
+                     HorizontalAlignment="Left"
+                     Margin="16" />
+
+            <TextBox Text="{Binding Port}"
+                     VerticalContentAlignment="Center"
+                     Padding="2"
+                     Width="300"
+                     HorizontalAlignment="Left"
+                     IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}"
+                     materialDesign:HintAssist.Hint="ADS Port"
+                     materialDesign:HintAssist.HelperText="ADS Port"
+                     Margin="16" 
+                     />
+        </StackPanel>
         
+        <StackPanel Grid.Column="1" Orientation="Vertical">
+
+            <Button Command="{Binding Connect}"
+                    Visibility="{Binding ConnectionState, Converter={StaticResource VisibleIfDisconnected}}"
+                    Margin="16"
+                    HorizontalAlignment="Left"
+                    Width="100">
+                <materialDesign:PackIcon Kind="LanConnect" />
+            </Button>
+            <Button Command="{Binding Disconnect}"
+                    Visibility="{Binding ConnectionState, Converter={StaticResource VisibleIfConnected}}"
+                    HorizontalAlignment="Left"
+                    Margin="16"
+                    Width="100">
+                <materialDesign:PackIcon Kind="LanDisconnect" />
+            </Button>
+
+            <Grid Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <fa:ImageAwesome Grid.Column="0"
+                                 Icon="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIconConverter}}"
+                                 Width="20" HorizontalAlignment="Left" />
+                <Label Grid.Column="1" Content="{Binding AdsStatus}" />
+            </Grid>
+        </StackPanel>
+
     </Grid>
 </UserControl>
