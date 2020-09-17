@@ -236,7 +236,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
             catch (Exception ex)
             {
-                Logger.Error(Resources.ErrorDuringLoadOfFile);
+                Logger.Error(Resources.ErrorDuringLoadOfFile, ex);
             }
 
             return Task.FromResult<(JObject, string)>((null, ""));

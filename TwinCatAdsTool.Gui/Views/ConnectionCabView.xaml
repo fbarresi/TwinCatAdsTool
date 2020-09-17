@@ -12,7 +12,7 @@
              d:DesignWidth="1200">
     <UserControl.Resources>
         <converters:ConnectionStateToIconConverter x:Key="ConnectionStateToIconConverter" />
-        <converters:ConnectionStateToIsDisconnected x:Key="ConnectionStateToIsDisconnected" />
+        <converters:ConnectionStateToBoolConverter x:Key="ConnectionStateToIsDisconnected" IfDisconnected="True" IfConnected="False"/>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -31,9 +31,9 @@
         <Label Grid.Row="1" Grid.Column="0" Content="ADS Id:" HorizontalContentAlignment="Right"/>
         <Label Grid.Row="2" Grid.Column="0" Content="{x:Static properties:Resources.Port}" ContentStringFormat="{}{0}:" HorizontalContentAlignment="Right"/>
         
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedNetId, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Padding="2"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedNetId, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Padding="2" IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}"/>
         <ComboBox ItemsSource="{Binding AmsNetIds}" SelectedValue="{Binding SelectedAmsNetId}" Grid.Row="0" Grid.Column="1"  DisplayMemberPath="Name" IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}" />
-        <TextBox Text="{Binding Port}" Grid.Row="2" Grid.Column="1" />
+        <TextBox Text="{Binding Port}" Grid.Row="2" Grid.Column="1" VerticalContentAlignment="Center" Padding="2" IsEnabled="{Binding ConnectionState, Converter={StaticResource ConnectionStateToIsDisconnected}}" />
         
         <Button Grid.Row="3" Grid.Column="0" Command="{Binding Connect}" Content="{x:Static properties:Resources.Connect}"/>
         <Button Grid.Row="3" Grid.Column="1" Command="{Binding Disconnect}" Content="{x:Static properties:Resources.Disconnect}"/>

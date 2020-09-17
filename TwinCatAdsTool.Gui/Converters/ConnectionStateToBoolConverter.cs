@@ -10,8 +10,11 @@ using TwinCAT;
 
 namespace TwinCatAdsTool.Gui.Converters
 {
-    public class ConnectionStateToIsDisconnected : IValueConverter
+    public class ConnectionStateToBoolConverter : IValueConverter
     {
+        public bool IfDisconnected { get; set; } = true;
+        public bool IfConnected { get; set; } = false;
+        
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is ConnectionState)
@@ -21,11 +24,10 @@ namespace TwinCatAdsTool.Gui.Converters
                 {
                     case ConnectionState.None:
                     case ConnectionState.Lost:
-                        return true;
                     case ConnectionState.Disconnected:
-                        return true;
+                        return IfDisconnected;
                     case ConnectionState.Connected:
-                        return false;
+                        return IfConnected;
                     default:
                         return DependencyProperty.UnsetValue;
 

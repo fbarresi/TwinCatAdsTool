@@ -24,12 +24,15 @@
     <PackageReference Include="Extended.Wpf.Toolkit" Version="3.6.0" />
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="MahApps.Metro" Version="2.2.0" />
     <PackageReference Include="Ninject" Version="3.3.4" />
     <PackageReference Include="OxyPlot.Wpf" Version="1.0.0" />
     <PackageReference Include="ReactiveUI" Version="9.11.1" />
     <PackageReference Include="ReactiveUI.WPF" Version="9.11.1" />
     <ProjectReference Include="..\TwinCatAdsTool.Interfaces\TwinCatAdsTool.Interfaces.csproj" />
     <Compile Update="**\*.xaml.cs" SubType="Designer" DependentUpon="%(Filename)" />
+    <None Remove="Resources\twincat.png" />
+    <Resource Include="Resources\twincat.png" />
   </ItemGroup>
 
   <ItemGroup>
