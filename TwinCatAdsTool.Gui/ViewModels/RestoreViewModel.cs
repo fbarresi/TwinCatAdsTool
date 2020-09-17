@@ -174,8 +174,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 {
                     try
                     {
-                        var jobject = JObject.Load(new JsonTextReader(new StringReader(variable.Json)));
-                        foreach (var p in jobject.Properties())
+                        var jObject = JObject.Load(new JsonTextReader(new StringReader(variable.Json)));
+                        foreach (var p in jObject.Properties())
                         {
                             Logger.Debug($"Restoring variable '{variable.Name}.{p.Name}' from backup...");
                             if(p.Value is JObject)
