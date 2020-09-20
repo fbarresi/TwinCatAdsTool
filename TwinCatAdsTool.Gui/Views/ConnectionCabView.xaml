@@ -6,6 +6,7 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:converters="clr-namespace:TwinCatAdsTool.Gui.Converters"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:TwinCatAdsTool.Gui.Properties"
              mc:Ignorable="d"
              d:DesignHeight="350"
              d:DesignWidth="1200">
@@ -22,6 +23,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" MinWidth="350" />
             <ColumnDefinition Width="Auto" MinWidth="350" />
+            <ColumnDefinition  Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Vertical" Grid.Column="0">
@@ -44,6 +46,10 @@
                      HorizontalAlignment="Left"
                      Margin="16" />
 
+            
+        </StackPanel>
+        
+        <StackPanel Grid.Column="1" Orientation="Vertical">
             <TextBox Text="{Binding Port}"
                      VerticalContentAlignment="Center"
                      Padding="2"
@@ -53,26 +59,8 @@
                      materialDesign:HintAssist.Hint="ADS Port"
                      materialDesign:HintAssist.HelperText="ADS Port"
                      Margin="16" 
-                     />
-        </StackPanel>
-        
-        <StackPanel Grid.Column="1" Orientation="Vertical">
-
-            <Button Command="{Binding Connect}"
-                    Visibility="{Binding ConnectionState, Converter={StaticResource VisibleIfDisconnected}}"
-                    Margin="16"
-                    HorizontalAlignment="Left"
-                    Width="100">
-                <materialDesign:PackIcon Kind="LanConnect" />
-            </Button>
-            <Button Command="{Binding Disconnect}"
-                    Visibility="{Binding ConnectionState, Converter={StaticResource VisibleIfConnected}}"
-                    HorizontalAlignment="Left"
-                    Margin="16"
-                    Width="100">
-                <materialDesign:PackIcon Kind="LanDisconnect" />
-            </Button>
-
+            />
+            
             <Grid Margin="16">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -83,6 +71,30 @@
                                  Width="20" HorizontalAlignment="Left" />
                 <Label Grid.Column="1" Content="{Binding AdsStatus}" />
             </Grid>
+        </StackPanel>
+        
+        <StackPanel Grid.Column="2" Orientation="Vertical">
+
+            <Button Command="{Binding Connect}"
+                    Visibility="{Binding ConnectionState, Converter={StaticResource VisibleIfDisconnected}}"
+                    Margin="16"
+                    HorizontalAlignment="Left"
+                    ToolTip="{x:Static properties:Resources.Connect}"
+                    Style="{StaticResource MaterialDesignFloatingActionButton}"
+                    >
+                <materialDesign:PackIcon Kind="LanConnect" Height="24" Width="24" />
+            </Button>
+            <Button Command="{Binding Disconnect}"
+                    Visibility="{Binding ConnectionState, Converter={StaticResource VisibleIfConnected}}"
+                    HorizontalAlignment="Left"
+                    Margin="16"
+                    Style="{StaticResource MaterialDesignFloatingActionButton}"
+                    ToolTip="{x:Static properties:Resources.Disconnect}"
+                    >
+                <materialDesign:PackIcon Kind="LanDisconnect" Height="24" Width="24" />
+            </Button>
+
+            
         </StackPanel>
 
     </Grid>
