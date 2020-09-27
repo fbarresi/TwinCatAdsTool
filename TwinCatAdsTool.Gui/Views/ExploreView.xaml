@@ -17,6 +17,7 @@
              FocusManager.FocusedElement="{Binding ElementName=SearchBox}">
     <UserControl.Resources>
 
+        <BooleanToVisibilityConverter x:Key="VisibilityConverter"></BooleanToVisibilityConverter>
         <Style TargetType="TreeView" x:Key="TreeViewStyle" BasedOn="{StaticResource {x:Type TreeView}}">
             <Style.Triggers>
                 <DataTrigger
@@ -49,7 +50,7 @@
         <converters:DtToDateTimeConverter x:Key="DtToDateTimeConverter" />
 
         <DataTemplate x:Key="StringTemplate" DataType="{x:Type viewModels:SymbolObservationViewModel}">
-            <TextBox Text="{Binding NewValue}" />
+            <TextBox Text="{Binding NewValue}" materialDesign:HintAssist.HelperText="Input string" MinWidth="150"/>
         </DataTemplate>
 
         <DataTemplate x:Key="IntTemplate">
@@ -69,7 +70,7 @@
         </DataTemplate>
 
         <DataTemplate x:Key="BoolTemplate">
-            <CheckBox IsChecked="{Binding NewValue}" VerticalAlignment="Center" />
+            <CheckBox IsChecked="{Binding NewValue}" />
         </DataTemplate>
 
         <DataTemplate x:Key="SingleTemplate">
@@ -168,37 +169,56 @@
         <ListView Grid.Column="2" Grid.Row="1" 
                   DataContext="{Binding ObserverViewModel}"
                   ItemsSource="{Binding ViewModels}">
+
             <ListView.Resources>
                 <Style TargetType="{x:Type UserControl}">
                     <Setter Property="Margin" Value="3" />
                     <Setter Property="Padding" Value="3" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
                 </Style>
             </ListView.Resources>
             <ListView.View>
+
                 <GridView>
 
-                    <GridViewColumn Header="{x:Static properties:Resources.Name}">
+                    
+                    <GridViewColumn Header="{x:Static properties:Resources.Name}" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type viewModels:SymbolObservationViewModel}">
-                                <Label Content="{Binding Name}" ToolTip="{Binding FullName}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" 
+                                            CommandParameter="{Binding}" 
+                                            Style="{StaticResource MaterialDesignIconForegroundButton}"
+                                    >
+                                        <materialDesign:PackIcon Kind="MinusCircleOutline" Foreground="Red"/>
+                                    </Button>
+                                    <Label Content="{Binding Name}" ToolTip="{Binding FullName}" VerticalContentAlignment="Center"/>
+                                </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="{x:Static properties:Resources.Value}" Width="200">
+                    <GridViewColumn Header="{x:Static properties:Resources.Value}" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type viewModels:SymbolObservationViewModel}">
-                                <Label Content="{Binding Value}" />
+                                <Label Content="{Binding Value}" VerticalContentAlignment="Center"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="{x:Static properties:Resources.NewValue}" CellTemplateSelector="{StaticResource SymbolObservationTemplateSelector}" Width="300"/>
+                    <GridViewColumn Header="{x:Static properties:Resources.NewValue}" 
+                                    CellTemplateSelector="{StaticResource SymbolObservationTemplateSelector}" Width="Auto"/>
 
                     <GridViewColumn>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type viewModels:SymbolObservationViewModel}">
-                                <Button Command="{Binding CmdSubmit}" Content="{x:Static properties:Resources.Submit}" IsEnabled="{Binding SupportsSubmit}" />
+                                <Button 
+                                    Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                    Command="{Binding CmdSubmit}" 
+                                    ToolTip="{x:Static properties:Resources.Submit}" 
+                                    IsEnabled="{Binding SupportsSubmit}" >
+                                    <materialDesign:PackIcon Kind="Send" />
+                                </Button>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -208,8 +228,11 @@
                             <DataTemplate DataType="{x:Type viewModels:SymbolObservationViewModel}">
                                 <Button Command="{Binding  Path=DataContext.CmdAddGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" 
                                         CommandParameter="{Binding}" 
-                                        Content="{x:Static properties:Resources.AddGraph}" 
-                                        IsEnabled="{Binding SuportsGraph}"/>
+                                        ToolTip="{x:Static properties:Resources.AddGraph}" 
+                                        Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                        Visibility="{Binding SuportsGraph, Converter={StaticResource VisibilityConverter}}">
+                                    <materialDesign:PackIcon Kind="ChartLine" />
+                                </Button>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -219,19 +242,17 @@
                             <DataTemplate DataType="{x:Type viewModels:SymbolObservationViewModel}">
                                 <Button Command="{Binding  Path=DataContext.CmdRemoveGraph, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" 
                                         CommandParameter="{Binding}" 
-                                        Content="{x:Static properties:Resources.RemoveGraph}" 
-                                        IsEnabled="{Binding SuportsGraph}"/>
+                                        ToolTip="{x:Static properties:Resources.RemoveGraph}" 
+                                        Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                        Visibility="{Binding SuportsGraph, Converter={StaticResource VisibilityConverter}}">
+                                    <materialDesign:PackIcon Kind="TrayRemove" />
+                                </Button>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type viewModels:SymbolObservationViewModel}">
-                                <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" Content="X" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                    
+
                 </GridView>
             </ListView.View>
         </ListView>

@@ -37,7 +37,7 @@
                     Margin="16"
                     Content="{x:Static properties:Resources.LoadFromFile}"/>
 
-            <Label Content="{Binding SourceLeft}"/>
+            <Label Content="{Binding SourceLeft}" VerticalContentAlignment="Center"/>
 
         </StackPanel>
 
@@ -54,8 +54,8 @@
                     Margin="16"
                     Content="{x:Static properties:Resources.LoadFromFile}"
                     />
-            
-            <Label Content="{Binding SourceRight}"/>
+
+            <Label Content="{Binding SourceRight}" VerticalContentAlignment="Center"/>
 
         </StackPanel>
 
