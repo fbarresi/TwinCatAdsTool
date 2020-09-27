@@ -35,11 +35,21 @@
         </Style>
 
         <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type typeSystem:ISymbol}" ItemsSource="{Binding SubSymbols}">
-            <Button Content="{Binding InstancePath}"
-                    CommandParameter="{Binding}"
-                    Command="{Binding  Path=DataContext.AddObserverCmd, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}"
-                    Margin="0"
-                    Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" />
+
+            <TreeViewItem>
+                <TreeViewItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding InstancePath}" VerticalContentAlignment="Center"/>
+                        <Button Style="{StaticResource MaterialDesignIconForegroundButton}" Width="24" Height="24"
+                                CommandParameter="{Binding}"
+                                Command="{Binding  Path=DataContext.AddObserverCmd, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}"
+                                
+                                >
+                            <materialDesign:PackIcon Kind="PlusCircleOutline" Width="16" Height="16" Foreground="CornflowerBlue"/>
+                        </Button>
+                    </StackPanel>
+                </TreeViewItem.Header>
+            </TreeViewItem>
         </HierarchicalDataTemplate>
 
         <Style TargetType="{x:Type ListViewItem}">
@@ -50,35 +60,35 @@
         <converters:DtToDateTimeConverter x:Key="DtToDateTimeConverter" />
 
         <DataTemplate x:Key="StringTemplate" DataType="{x:Type viewModels:SymbolObservationViewModel}">
-            <TextBox Text="{Binding NewValue}" materialDesign:HintAssist.HelperText="Input string" MinWidth="150"/>
+            <TextBox Text="{Binding NewValue}" materialDesign:HintAssist.HelperText="Input string" MinWidth="150" Padding="0,16"/>
         </DataTemplate>
 
         <DataTemplate x:Key="IntTemplate">
-            <xctk:IntegerUpDown Value="{Binding NewValue}" />
+            <xctk:IntegerUpDown Value="{Binding NewValue}" Padding="0,16"/>
         </DataTemplate>
 
         <DataTemplate x:Key="TimeSpanTemplate">
-            <xctk:TimeSpanUpDown Value="{Binding NewValue, Converter={StaticResource LTimeToTimeSpanConverter}}" />
+            <xctk:TimeSpanUpDown Value="{Binding NewValue, Converter={StaticResource LTimeToTimeSpanConverter}}" Padding="0,16"/>
         </DataTemplate>
 
         <DataTemplate x:Key="ByteTemplate">
-            <xctk:ByteUpDown Value="{Binding NewValue}"/>
+            <xctk:ByteUpDown Value="{Binding NewValue}" Padding="0,16"/>
         </DataTemplate>
 
         <DataTemplate x:Key="DateTimeTemplate">
-            <xctk:DateTimePicker Value="{Binding NewValue, Converter={StaticResource DtToDateTimeConverter}}" />
+            <xctk:DateTimePicker Value="{Binding NewValue, Converter={StaticResource DtToDateTimeConverter}}" Padding="0,16"/>
         </DataTemplate>
 
         <DataTemplate x:Key="BoolTemplate">
-            <CheckBox IsChecked="{Binding NewValue}" />
+            <CheckBox IsChecked="{Binding NewValue}" Padding="0,16"/>
         </DataTemplate>
 
         <DataTemplate x:Key="SingleTemplate">
-            <xctk:SingleUpDown Value="{Binding NewValue}" />
+            <xctk:SingleUpDown Value="{Binding NewValue}" Padding="0,16"/>
         </DataTemplate>
 
         <DataTemplate x:Key="DoubleTemplate">
-            <xctk:DoubleUpDown Value="{Binding NewValue}" />
+            <xctk:DoubleUpDown Value="{Binding NewValue}" Padding="0,16"/>
         </DataTemplate>
 
         <DataTemplate x:Key="DefaultTemplate">
@@ -170,13 +180,6 @@
                   DataContext="{Binding ObserverViewModel}"
                   ItemsSource="{Binding ViewModels}">
 
-            <ListView.Resources>
-                <Style TargetType="{x:Type UserControl}">
-                    <Setter Property="Margin" Value="3" />
-                    <Setter Property="Padding" Value="3" />
-                    <Setter Property="VerticalContentAlignment" Value="Center" />
-                </Style>
-            </ListView.Resources>
             <ListView.View>
 
                 <GridView>
@@ -201,7 +204,7 @@
                     <GridViewColumn Header="{x:Static properties:Resources.Value}" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type viewModels:SymbolObservationViewModel}">
-                                <Label Content="{Binding Value}" VerticalContentAlignment="Center"/>
+                                <Label Content="{Binding Value}" VerticalContentAlignment="Center" Padding="0,16"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
