@@ -33,19 +33,16 @@
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
 
-            <Button Command="{Binding Load}">
-                <StackPanel Orientation="Horizontal">
-                    <fa:ImageAwesome Icon="FolderOpen" Height="20" Margin="5" />
-                    <Label Content="{x:Static properties:Resources.Load}" />
-                </StackPanel>
-            </Button>
-
-            <Button Command="{Binding Write}">
-                <StackPanel Orientation="Horizontal">
-                    <fa:ImageAwesome Icon="Pencil" Height="20" Margin="5" />
-                    <Label Content="{x:Static properties:Resources.Write}" />
-                </StackPanel>
-            </Button>
+            <Button Command="{Binding Load}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Margin="16"
+                    Content="{x:Static properties:Resources.Load}"
+                    />
+            <Button Command="{Binding Write}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Margin="16"
+                    Content="{x:Static properties:Resources.Write}"
+                    />
 
         </StackPanel>
 

@@ -27,19 +27,15 @@
         <StackPanel Grid.Row="0" Grid.Column=" 0" Orientation="Horizontal" >
 
 
-                <Button Command="{Binding ReadLeft}">
-                <StackPanel Orientation="Horizontal">
-                    <fa:ImageAwesome Icon="Microchip" Height="20" Margin="5" />
-                    <Label Content="{x:Static properties:Resources.ReadFromPLC}" />
-                </StackPanel>
-            </Button>
+                <Button Command="{Binding ReadLeft}"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Margin="16"
+                        Content="{x:Static properties:Resources.ReadFromPLC}"/>
 
-            <Button Command="{Binding LoadLeft}">
-                <StackPanel Orientation="Horizontal">
-                    <fa:ImageAwesome Icon="FolderOpen" Height="20" Margin="5" />
-                    <Label Content="{x:Static properties:Resources.LoadFromFile}" />
-                </StackPanel>
-            </Button>
+            <Button Command="{Binding LoadLeft}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Margin="16"
+                    Content="{x:Static properties:Resources.LoadFromFile}"/>
 
             <Label Content="{Binding SourceLeft}"/>
 
@@ -47,20 +43,18 @@
 
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" >
 
-            <Button Command="{Binding ReadRight}">
-                <StackPanel Orientation="Horizontal">
-                    <fa:ImageAwesome Icon="Microchip" Height="20" Margin="5" />
-                    <Label Content="{x:Static properties:Resources.ReadFromPLC}" />
-                </StackPanel>
-            </Button>
+            <Button Command="{Binding ReadRight}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Margin="16"
+                    Content="{x:Static properties:Resources.ReadFromPLC}"
+                    />
 
-            <Button Command="{Binding LoadRight}">
-                <StackPanel Orientation="Horizontal">
-                    <fa:ImageAwesome Icon="FolderOpen" Height="20" Margin="5" />
-                    <Label Content="{x:Static properties:Resources.LoadFromFile}" />
-                </StackPanel>
-            </Button>
-
+            <Button Command="{Binding LoadRight}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Margin="16"
+                    Content="{x:Static properties:Resources.LoadFromFile}"
+                    />
+            
             <Label Content="{Binding SourceRight}"/>
 
         </StackPanel>
