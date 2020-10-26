@@ -17,39 +17,22 @@
              FocusManager.FocusedElement="{Binding ElementName=SearchBox}">
     <UserControl.Resources>
 
-        <BooleanToVisibilityConverter x:Key="VisibilityConverter"></BooleanToVisibilityConverter>
-        <Style TargetType="TreeView" x:Key="TreeViewStyle" BasedOn="{StaticResource {x:Type TreeView}}">
-            <Style.Triggers>
-                <DataTrigger
-                    Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}"
-                    Value="0">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate>
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{x:Static properties:Resources.NoItemsToDisplay}"/>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
+        <converters:BoolToVisibilityConverter x:Key="VisibileIfFalse" IfTrue="Collapsed" IfFalse="Visible"></converters:BoolToVisibilityConverter>
+        
 
         <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type typeSystem:ISymbol}" ItemsSource="{Binding SubSymbols}">
-
-            <TreeViewItem>
-                <TreeViewItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding InstancePath}" VerticalContentAlignment="Center"/>
-                        <Button Style="{StaticResource MaterialDesignIconForegroundButton}" Width="24" Height="24"
-                                CommandParameter="{Binding}"
-                                Command="{Binding  Path=DataContext.AddObserverCmd, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}"
-                                
-                                >
-                            <materialDesign:PackIcon Kind="PlusCircleOutline" Width="16" Height="16" Foreground="CornflowerBlue"/>
-                        </Button>
-                    </StackPanel>
-                </TreeViewItem.Header>
-            </TreeViewItem>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="{Binding InstancePath}" VerticalContentAlignment="Center"/>
+                <Button Style="{StaticResource MaterialDesignIconForegroundButton}" 
+                        Visibility="{Binding IsContainerType, Converter={StaticResource VisibileIfFalse}}"
+                        Width="24" Height="24"
+                        CommandParameter="{Binding}"
+                        Command="{Binding  Path=DataContext.AddObserverCmd, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}"
+                        
+                        >
+                    <materialDesign:PackIcon Kind="PlusCircleOutline" Width="16" Height="16" Foreground="CornflowerBlue"/>
+                </Button>
+            </StackPanel>
         </HierarchicalDataTemplate>
 
         <Style TargetType="{x:Type ListViewItem}">
@@ -166,7 +149,7 @@
                         <TreeView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5"
                                   ItemsSource="{Binding SearchResults}"
                                   ItemTemplate="{StaticResource TreeNodeTemplate}"
-                                  Style="{StaticResource TreeViewStyle}" />
+                                   />
                     </Grid>
                 </ScrollViewer>
 
@@ -233,7 +216,7 @@
                                         CommandParameter="{Binding}" 
                                         ToolTip="{x:Static properties:Resources.AddGraph}" 
                                         Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                                        Visibility="{Binding SuportsGraph, Converter={StaticResource VisibilityConverter}}">
+                                        Visibility="{Binding SuportsGraph, Converter={StaticResource VisibileIfFalse}}">
                                     <materialDesign:PackIcon Kind="ChartLine" />
                                 </Button>
                             </DataTemplate>
@@ -247,7 +230,7 @@
                                         CommandParameter="{Binding}" 
                                         ToolTip="{x:Static properties:Resources.RemoveGraph}" 
                                         Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                                        Visibility="{Binding SuportsGraph, Converter={StaticResource VisibilityConverter}}">
+                                        Visibility="{Binding SuportsGraph, Converter={StaticResource VisibileIfFalse}}">
                                     <materialDesign:PackIcon Kind="TrayRemove" />
                                 </Button>
                             </DataTemplate>
