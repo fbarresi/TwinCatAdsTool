@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using TwinCatAdsTool.Interfaces;
 using TwinCatAdsTool.Interfaces.Commons;
 using TwinCatAdsTool.Interfaces.Extensions;
 
@@ -35,8 +36,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             Logger.Debug("Initialize main window view model");
 
 
-            var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            Version = $"v {currentVersion.Major}.{currentVersion.Minor} ";
+            Version = $"v{Constants.Version}";
 
             ConnectionCabViewModel = viewModelFactory.CreateViewModel<ConnectionCabViewModel>();
             ConnectionCabViewModel.AddDisposableTo(Disposables);
