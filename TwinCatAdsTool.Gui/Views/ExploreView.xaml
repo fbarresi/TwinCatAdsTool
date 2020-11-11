@@ -18,6 +18,7 @@
     <UserControl.Resources>
 
         <converters:BoolToVisibilityConverter x:Key="VisibileIfFalse" IfTrue="Collapsed" IfFalse="Visible"></converters:BoolToVisibilityConverter>
+        <converters:BoolToVisibilityConverter x:Key="VisibileIfTrue" IfTrue="Visible" IfFalse="Collapsed"></converters:BoolToVisibilityConverter>
         
 
         <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type typeSystem:ISymbol}" ItemsSource="{Binding SubSymbols}">
@@ -216,7 +217,7 @@
                                         CommandParameter="{Binding}" 
                                         ToolTip="{x:Static properties:Resources.AddGraph}" 
                                         Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                                        Visibility="{Binding SuportsGraph, Converter={StaticResource VisibileIfFalse}}">
+                                        Visibility="{Binding SuportsGraph, Converter={StaticResource VisibileIfTrue}}">
                                     <materialDesign:PackIcon Kind="ChartLine" />
                                 </Button>
                             </DataTemplate>
@@ -230,7 +231,7 @@
                                         CommandParameter="{Binding}" 
                                         ToolTip="{x:Static properties:Resources.RemoveGraph}" 
                                         Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                                        Visibility="{Binding SuportsGraph, Converter={StaticResource VisibileIfFalse}}">
+                                        Visibility="{Binding SuportsGraph, Converter={StaticResource VisibileIfTrue}}">
                                     <materialDesign:PackIcon Kind="TrayRemove" />
                                 </Button>
                             </DataTemplate>
