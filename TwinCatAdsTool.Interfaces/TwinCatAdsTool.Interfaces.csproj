@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="log4net" Version="2.0.10" />
     <PackageReference Include="Ninject" Version="3.3.4" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
     <PackageReference Include="TwinCAT.JsonExtension" Version="1.0.50" />
