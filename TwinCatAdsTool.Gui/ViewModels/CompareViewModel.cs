@@ -179,13 +179,15 @@ namespace TwinCatAdsTool.Gui.ViewModels
             {
                 Content = x.Text,
                 Background = GetBGColor(x),
-                Height = 20
+                Height = 20,
+                Padding = new System.Windows.Thickness(0.0)
             });
             RightBoxText = rightBox.Select(x => new ListBoxItem
             {
                 Content = x.Text,
                 Background = GetBGColor(x),
-                Height = 20
+                Height = 20,
+                Padding = new System.Windows.Thickness(0.0)
             });
 
             Logger.Debug("Generated Comparison Model");
