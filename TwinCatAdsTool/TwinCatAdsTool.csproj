@@ -4,9 +4,12 @@
     <TargetFramework>net5.0-windows10.0.19041</TargetFramework>
     <OutputType>WinExe</OutputType>
     <ApplicationIcon>twincat.ico</ApplicationIcon>
-    <Version>1.0.0</Version>
+    <Version>1.2.0</Version>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
 
   <ItemGroup>
