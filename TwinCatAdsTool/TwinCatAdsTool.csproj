@@ -6,7 +6,7 @@
     <ApplicationIcon>twincat.ico</ApplicationIcon>
     <Version>1.0.0</Version>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>

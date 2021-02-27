@@ -26,7 +26,7 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Publish
-      run: dotnet publish TwinCatAdsTool\TwinCatAdsTool.csproj -r win-x64 -c Release /p:PublishSingleFile=true /p:AssemblyVersion=1.2.${{ github.run_number }} /p:FileVersion=1.2.${{ github.run_number }} /p:InformationalVersion=${{ steps.gitversion.outputs.Sha }} -o out
+      run: dotnet publish TwinCatAdsTool\TwinCatAdsTool.csproj -r win10-x64 -c Release /p:PublishSingleFile=true /p:AssemblyVersion=1.2.${{ github.run_number }} /p:FileVersion=1.2.${{ github.run_number }} /p:InformationalVersion=${{ steps.gitversion.outputs.Sha }} -o out
     - name: Compress
       run: Compress-Archive out\TwinCatAdsTool.exe TwinCatAdsTool_v1.2.${{ github.run_number }}.zip
     - name: Create Release
