@@ -21,7 +21,7 @@ namespace TwinCatAdsTool.Logic.Router
 
         public string Comment { get; set; } = "";
 
-        public AdsVersion TcVersion  = new AdsVersion();
+        public AdsVersion TcVersion  = new AdsVersion(3,1,4024);
 
 
         public bool IsRuntime { get; set; } = false;

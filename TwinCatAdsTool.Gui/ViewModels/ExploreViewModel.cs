@@ -26,7 +26,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private readonly IClientService clientService;
         private readonly ISelectionService<ISymbol> symbolSelection;
 
-        private readonly Subject<ReadOnlySymbolCollection> variableSubject = new Subject<ReadOnlySymbolCollection>();
+        private readonly Subject<ISymbolCollection<ISymbol>> variableSubject = new Subject<ISymbolCollection<ISymbol>>();
 
         private readonly IViewModelFactory viewModelFactory;
         private bool isConnected;
@@ -317,7 +317,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             return Task.FromResult(Unit.Default);
         }
 
-        private void UpdateTree(ReadOnlySymbolCollection symbolList)
+        private void UpdateTree(ISymbolCollection<ISymbol> symbolList)
         {
             try
             {

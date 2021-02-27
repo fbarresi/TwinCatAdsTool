@@ -41,8 +41,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             Name = Model.InstanceName;
             FullName = Model.InstancePath;
-            var readSymbolInfo = ClientService.Client.ReadSymbolInfo(Model.InstancePath);
-            var initialValue = ClientService.Client.ReadSymbol(readSymbolInfo);
+            var readSymbolInfo = ClientService.Client.ReadSymbol(Model.InstancePath);
+            var initialValue = ClientService.Client.ReadValue(readSymbolInfo);
             var observable = ((IValueSymbol) Model).WhenValueChanged().StartWith(initialValue);
 
             var obsLogger = LoggerFactory.GetObserverLogger();

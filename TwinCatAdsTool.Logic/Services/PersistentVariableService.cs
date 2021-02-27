@@ -23,7 +23,7 @@ namespace TwinCatAdsTool.Logic.Services
     {
         private readonly ILog logger =LoggerFactory.GetLogger();
         private readonly Subject<string> currentTaskSubject = new Subject<string>();
-        public async Task<JObject> ReadPersistentVariables(TcAdsClient client, IInstanceCollection<ISymbol> symbols)
+        public async Task<JObject> ReadPersistentVariables(AdsClient client, IInstanceCollection<ISymbol> symbols)
         {
             var jobj = new JObject();
             try

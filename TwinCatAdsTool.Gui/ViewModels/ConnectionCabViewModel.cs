@@ -126,7 +126,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
                 Logger.Debug(string.Format(Resources.ClientConnectedToDevice0WithAddress1, SelectedAmsNetId?.Name,
                     SelectedAmsNetId?.Address));
             }
-            catch (AdsInitializeException ex) when (ex.InnerException is DllNotFoundException && ex.InnerException.Source == "TwinCAT.Ads")
+            catch (Exception ex) when (ex.InnerException is DllNotFoundException && ex.InnerException.Source == "TwinCAT.Ads")
             {
                 Logger.Error("Dll not found TwinCAT.Ads");
                 MessageBox.Show("Dll for TwinCAT.Ads not found. Have you installed the drivers?");

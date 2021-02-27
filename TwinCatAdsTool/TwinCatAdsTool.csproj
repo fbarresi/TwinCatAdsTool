@@ -1,27 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>net5.0-windows10.0.19041</TargetFramework>
     <OutputType>WinExe</OutputType>
     <ApplicationIcon>twincat.ico</ApplicationIcon>
     <Version>1.0.0</Version>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
-    <PackageReference Include="Costura.Fody" Version="3.3.2" />
-    <PackageReference Include="Ninject" Version="3.3.4" />
     <ProjectReference Include="..\TwinCatAdsTool.Gui\TwinCatAdsTool.Gui.csproj" />
     <ProjectReference Include="..\TwinCatAdsTool.Interfaces\TwinCatAdsTool.Interfaces.csproj" />
     <ProjectReference Include="..\TwinCatAdsTool.Logic\TwinCatAdsTool.Logic.csproj" />
-    <Compile Update="**\*.xaml.cs" SubType="Designer" DependentUpon="%(Filename)" />
   </ItemGroup>
 
   <ItemGroup>

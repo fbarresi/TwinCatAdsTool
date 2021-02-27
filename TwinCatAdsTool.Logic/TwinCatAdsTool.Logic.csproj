@@ -1,15 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="4.4.7" />
+    <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="5.0.327" />
     <PackageReference Include="Humanizer" Version="2.8.26" />
     <PackageReference Include="Ninject" Version="3.3.4" />
-    <PackageReference Include="System.Reactive" Version="4.4.1" />
-    <PackageReference Include="TwinCAT.JsonExtension" Version="1.0.50" />
+    <PackageReference Include="TwinCAT.JsonExtension" Version="1.1.0-beta59" />
   </ItemGroup>
 
   <ItemGroup>

@@ -12,6 +12,7 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:properties="clr-namespace:TwinCatAdsTool.Gui.Properties"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:typeSystem1="clr-namespace:TwinCAT.TypeSystem;assembly=TwinCAT.Ads.Abstractions"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              FocusManager.FocusedElement="{Binding ElementName=SearchBox}">
@@ -21,7 +22,7 @@
         <converters:BoolToVisibilityConverter x:Key="VisibileIfTrue" IfTrue="Visible" IfFalse="Collapsed"></converters:BoolToVisibilityConverter>
         
 
-        <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type typeSystem:ISymbol}" ItemsSource="{Binding SubSymbols}">
+        <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type typeSystem1:ISymbol}" ItemsSource="{Binding SubSymbols}">
             <StackPanel Orientation="Horizontal">
                 <Label Content="{Binding InstancePath}" VerticalContentAlignment="Center"/>
                 <Button Style="{StaticResource MaterialDesignIconForegroundButton}" 

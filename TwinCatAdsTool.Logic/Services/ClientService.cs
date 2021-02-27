@@ -10,7 +10,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Humanizer;
 using log4net;
 using Ninject;
@@ -29,14 +28,14 @@ namespace TwinCatAdsTool.Logic.Services
 {
     public class ClientService : IClientService, IInitializable, IDisposable
     {
-        private readonly BehaviorSubject<ConnectionState> connectionStateSubject = new BehaviorSubject<ConnectionState>(TwinCAT.ConnectionState.Unknown);
+        private readonly BehaviorSubject<ConnectionState> connectionStateSubject = new BehaviorSubject<ConnectionState>(TwinCAT.ConnectionState.None);
         private readonly BehaviorSubject<IEnumerable<NetId>> foundNetIdSubject = new BehaviorSubject<IEnumerable<NetId>>(null);
         private readonly CompositeDisposable disposables = new CompositeDisposable();
         private readonly BehaviorSubject<string> adsStateSubject = new BehaviorSubject<string>(TwinCAT.Ads.AdsState.Idle.ToString());
         private readonly ILog logger = LoggerFactory.GetLogger();
         public ClientService()
         {
-            Client = new TcAdsClient();
+            Client = new AdsClient();
             
         }
 
@@ -58,11 +57,11 @@ namespace TwinCatAdsTool.Logic.Services
             return Task.FromResult(Unit.Default);
         }
 
-        public TcAdsClient Client { get; }
+        public AdsClient Client { get; }
         public IObservable<ConnectionState> ConnectionState => connectionStateSubject.AsObservable();
         public IObservable<string> AdsState => adsStateSubject.AsObservable();
-        public ReadOnlySymbolCollection TreeViewSymbols { get; set; }
-        public ReadOnlySymbolCollection FlatViewSymbols { get; set; }
+        public ISymbolCollection<ISymbol> TreeViewSymbols { get; set; }
+        public ISymbolCollection<ISymbol> FlatViewSymbols { get; set; }
         public IObservable<IEnumerable<NetId>> DevicesFound => foundNetIdSubject.AsObservable();
         public Task Reload()
         {
@@ -93,7 +92,6 @@ namespace TwinCatAdsTool.Logic.Services
                 .AddDisposableTo(disposables);
   
             Observable.Interval(TimeSpan.FromSeconds(1))
-                .ObserveOnDispatcher()
                 .Do(_ => CheckConnectionHealth())
                 .Subscribe()
                 .AddDisposableTo(disposables);
