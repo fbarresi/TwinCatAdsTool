@@ -50,7 +50,14 @@ namespace TwinCatAdsTool.Logic.Services
             CurrentAmsNetId = amsNetId;
             if (!Client.IsConnected)
             {
-                Client.Connect(amsNetId, port);
+                if (string.IsNullOrEmpty(CurrentAmsNetId))
+                {
+                    Client.Connect(port);
+                }
+                else
+                {
+                    Client.Connect(amsNetId, port);
+                }
             }
 
             ConnectionStarted = true;
