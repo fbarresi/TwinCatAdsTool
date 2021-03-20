@@ -244,4 +244,7 @@
 	<data name="PoweredBy" xml:space="preserve">
 		<value>Eine Software von</value>
 	</data>
+	<data name="UseFlatSymbolList" xml:space="preserve">
+		<value>Symbolliste in flat Format nutzen</value>
+	</data>
 </root>

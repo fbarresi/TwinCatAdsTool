@@ -23,6 +23,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private readonly Subject<JObject> variableSubject = new Subject<JObject>();
         private string backupText;
         private ObservableAsPropertyHelper<string> currentTaskHelper;
+        private bool useFlatSymbolList;
 
         public BackupViewModel(IClientService clientService, IPersistentVariableService persistentVariableService)
         {
@@ -43,6 +44,17 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public ReactiveCommand<Unit, Unit> Read { get; set; }
         public ReactiveCommand<Unit, Unit> Save { get; set; }
+
+        public bool UseFlatSymbolList
+        {
+            get => useFlatSymbolList;
+            set
+            {
+                if (value == useFlatSymbolList) return;
+                useFlatSymbolList = value;
+                raisePropertyChanged();
+            }
+        }
 
         public override void Init()
         {
@@ -67,7 +79,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private async Task<Unit> ReadVariables()
         {
-            var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
+            var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client, 
+                UseFlatSymbolList ? clientService.FlatViewSymbols : clientService.TreeViewSymbols);
             variableSubject.OnNext(persistentVariables);
             Logger.Debug(Resources.ReadPersistentVariables);
 

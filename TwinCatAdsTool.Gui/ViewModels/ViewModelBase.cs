@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Runtime.CompilerServices;
-using DynamicData.Annotations;
+using JetBrains.Annotations;
 using log4net;
 using ReactiveUI;
 using TwinCatAdsTool.Interfaces.Commons;

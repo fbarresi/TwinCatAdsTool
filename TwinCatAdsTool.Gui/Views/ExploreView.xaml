@@ -176,11 +176,12 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Button Command="{Binding  Path=DataContext.CmdDelete, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" 
                                             CommandParameter="{Binding}" 
-                                            Style="{StaticResource MaterialDesignIconForegroundButton}"
-                                    >
+                                            Style="{StaticResource MaterialDesignIconForegroundButton}">
                                         <materialDesign:PackIcon Kind="MinusCircleOutline" Foreground="Red"/>
                                     </Button>
-                                    <Label Content="{Binding Name}" ToolTip="{Binding FullName}" VerticalContentAlignment="Center"/>
+                                    <Label Content="{Binding Name}" 
+                                           ToolTip="{Binding FullName}" 
+                                           VerticalContentAlignment="Center"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

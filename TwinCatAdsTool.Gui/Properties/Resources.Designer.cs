@@ -500,5 +500,12 @@ namespace TwinCatAdsTool.Gui.Properties {
                 return ResourceManager.GetString("Write", resourceCulture);
             }
         }
+
+        public static string UseFlatSymbolList
+        {
+            get {
+                return ResourceManager.GetString("UseFlatSymbolList", resourceCulture);
+            }
+        }
     }
 }

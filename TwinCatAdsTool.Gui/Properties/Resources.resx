@@ -270,4 +270,7 @@
   <data name="ConnectionCabViewModel_ConnectClient_Dll_for_TwinCAT_Ads_not_found__Have_you_installed_the_drivers_" xml:space="preserve">
     <value>Dll for TwinCAT.Ads not found. Have you installed the drivers?</value>
   </data>
+	<data name="UseFlatSymbolList" xml:space="preserve">
+		<value>Use flat symbol list</value>
+	</data>
 </root>
