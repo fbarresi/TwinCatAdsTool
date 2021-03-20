@@ -274,7 +274,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private async Task<JObject> ReadVariables()
         {
-            var persistentVariables = await persistentVariableService.ReadPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
+            var persistentVariables = await persistentVariableService.ReadGlobalPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
             leftTextSubject.OnNext(persistentVariables.ToString());
 
             Logger.Debug(Resources.ReadPersistentVariables);
