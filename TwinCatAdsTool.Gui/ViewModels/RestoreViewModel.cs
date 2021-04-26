@@ -172,26 +172,39 @@ namespace TwinCatAdsTool.Gui.ViewModels
             {
                 foreach (var variable in DisplayVariables)
                 {
-                    try
+                    var jObject = await JObject.LoadAsync(new JsonTextReader(new StringReader(variable.Json)));
+
+                    foreach (var p in jObject.Properties())
                     {
-                        var jObject = JObject.Load(new JsonTextReader(new StringReader(variable.Json)));
-                        foreach (var p in jObject.Properties())
+                        try
                         {
                             Logger.Debug($"Restoring variable '{variable.Name}.{p.Name}' from backup...");
-                            if(p.Value is JObject)
-                                await clientService.Client.WriteJson(variable.Name + "." + p.Name, (JObject) p.Value, force: true);
-                            else if(p.Value is JArray)
-                                await clientService.Client.WriteJson(variable.Name + "." + p.Name, (JArray) p.Value, force: true);
-                            else if (p.Value is JValue)
-                                await clientService.Client.WriteAsync(variable.Name + "." + p.Name, p.Value);
-                            else
-                                Logger.Error($"Unable to write variable '{variable.Name}.{p.Name}' from backup: no type case match!");
+                            switch (p.Value)
+                            {
+                                case JObject value:
+                                    await clientService.Client.WriteJson(variable.Name + "." + p.Name, value,
+                                        force: true);
+                                    break;
+                                case JArray array:
+                                    await clientService.Client.WriteJson(variable.Name + "." + p.Name, array,
+                                        force: true);
+                                    break;
+                                case JValue:
+                                    await clientService.Client.WriteAsync(variable.Name + "." + p.Name, p.Value);
+                                    break;
+                                default:
+                                    Logger.Error(
+                                        $"Unable to write variable '{variable.Name}.{p.Name} := {p.Value.ToString(Formatting.None)}' from backup: no type case match!");
+                                    break;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error($"Unable to write variable '{variable.Name}.{p.Name} := {p.Value.ToString(Formatting.None)}' from backup!", ex);
+                            MessageBox.Show($"{variable.Name}.{p.Name} := {p.Value.ToString(Formatting.None)} \n {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+
                 }
             }
 

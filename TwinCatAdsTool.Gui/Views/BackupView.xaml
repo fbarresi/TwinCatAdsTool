@@ -29,7 +29,6 @@
                     >
             </Button>
             
-            <CheckBox IsChecked="{Binding UseFlatSymbolList, UpdateSourceTrigger=PropertyChanged}" Margin="16" Content="{x:Static properties:Resources.UseFlatSymbolList}"/>
             <Label Margin="24,16,0,16" Content="{Binding CurrentTask}"/>
             
 

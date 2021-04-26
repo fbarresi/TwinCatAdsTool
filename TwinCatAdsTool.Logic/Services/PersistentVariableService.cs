@@ -30,14 +30,20 @@ namespace TwinCatAdsTool.Logic.Services
             {
                 if (client.IsConnected)
                 {
-                    var iterator = new SymbolIterator(symbols, s => s.IsPersistent && s.InstancePath.Split('.').Length == 2 && !s.InstancePath.Contains("["));
+                    var iterator = new SymbolIterator(symbols,
+                            s => s.IsPersistent && s.InstancePath.Split('.').Length >= 2 &&
+                                 !s.InstancePath.Contains("["))
+                        ;
+
+                    var peristentSymbols = iterator.Where(s => s.Parent != null ? !iterator.Contains(s.Parent) : true);
 
                     var variables = new Dictionary<string, List<JObject>>();
-                    foreach (var symbol in iterator)
+                    foreach (var symbol in peristentSymbols)
                     {
                         var splitPath = symbol.InstancePath.Split('.');
-                        var globalName = splitPath.First();
                         var localName = splitPath.Last();
+                        var globalName = symbol.InstancePath.Replace($".{localName}", string.Empty);
+                        
                         if (!variables.ContainsKey(globalName))
                         {
                             variables.Add(globalName, new List<JObject>());
