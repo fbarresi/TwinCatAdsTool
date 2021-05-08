@@ -81,9 +81,47 @@ namespace TwinCatAdsTool.Logic.Services
                                 uo.Add(up);
                             }
                         }
-                        jobj.Add(element.Key, uo);
+                        var path = element.Key.Split(".");
+                        if (path.Count() == 1)
+                        {
+                            jobj.Add(element.Key, uo);
+                        }
+                        else
+                        {
+                            for(var i = 0; i < path.Length-1; i++)
+                            {
+                                if ((jobj.SelectToken(string.Join(".", path.Take(i+1))) as JObject) == null)
+                                {
+                                    if (i > 1)
+                                    {
+                                        (jobj.SelectToken(string.Join(".", path.Take(i))) as JObject).Add(path[i], new JObject());
+                                    }
+                                    else
+                                    {
+                                        jobj.Add(path[i], new JObject());
+                                    }
+                                }
+                            }
 
+                            try
+                            {
+                                (jobj.SelectToken(string.Join(".", path.Take(path.Length - 1))) as JObject).Add(path.Last(), uo);
+                            }
+                            catch(ArgumentException)
+                            {
+                                var token = (jobj.SelectToken(string.Join(".", path)) as JObject);
+                                if(token != null)
+                                {
+                                    foreach (var prop in uo.Properties())
+                                    {
+                                        token.Add(prop.Name, prop.Value);
+                                    }
+                                }
+                            }
+                        }
+	
                     }
+
                 }
             }
             catch (Exception e)
