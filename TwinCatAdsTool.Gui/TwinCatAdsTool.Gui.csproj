@@ -19,7 +19,6 @@
     <PackageReference Include="MahApps.Metro" Version="2.2.0" />
     <PackageReference Include="MaterialDesignExtensions" Version="3.2.0" />
     <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.4" />
-    <PackageReference Include="Ninject" Version="3.3.4" />
     <PackageReference Include="OxyPlot.Wpf" Version="1.0.0" />
     <PackageReference Include="ReactiveUI" Version="9.11.1" />
     <PackageReference Include="ReactiveUI.WPF" Version="9.11.1" />

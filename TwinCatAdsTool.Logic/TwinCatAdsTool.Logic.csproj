@@ -5,10 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Beckhoff.TwinCAT.Ads.Reactive" Version="5.0.327" />
     <PackageReference Include="Humanizer" Version="2.8.26" />
-    <PackageReference Include="Ninject" Version="3.3.4" />
-    <PackageReference Include="TwinCAT.JsonExtension" Version="1.1.0-beta59" />
   </ItemGroup>
 
   <ItemGroup>
