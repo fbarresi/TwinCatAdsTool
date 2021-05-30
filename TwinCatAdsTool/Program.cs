@@ -55,7 +55,7 @@ namespace TwinCatAdsTool
 				{
 					LoggerFactory.GetLogger().Error("Unhandled exception", e);
 
-                    throw e;
+                    throw;
 				}
 			}
 		}
