@@ -53,7 +53,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
             set
             {
-                if (value == leftBoxText)
+                if (Equals(value, leftBoxText))
                 {
                     return;
                 }
@@ -109,11 +109,8 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         public ReactiveCommand<Unit, Unit> LoadLeft { get; set; }
         public ReactiveCommand<Unit, Unit> LoadRight { get; set; }
-
         public ReactiveCommand<Unit, Unit> ReadLeft { get; set; }
-
         public ReactiveCommand<Unit, Unit> ReadRight { get; set; }
-
         public IEnumerable<ListBoxItem> RightBoxText
         {
             get
@@ -127,7 +124,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
             }
             set
             {
-                if (value == rightBoxText) return;
+                if (Equals(value, rightBoxText)) return;
                 rightBoxText = value;
                 raisePropertyChanged();
             }
@@ -275,7 +272,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private async Task<JObject> ReadVariables()
         {
             var persistentVariables = await persistentVariableService.ReadGlobalPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
-            leftTextSubject.OnNext(persistentVariables.ToString());
 
             Logger.Debug(Resources.ReadPersistentVariables);
             return persistentVariables;
@@ -292,7 +288,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
 
         private async Task ReadVariablesRight()
         {
-            var json = await ReadVariables();
+            var json = await ReadVariables().ConfigureAwait(false);
             rightTextSubject.OnNext(json.ToString());
             SourceRight = "PLC";
 
