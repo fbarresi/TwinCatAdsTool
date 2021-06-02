@@ -71,7 +71,7 @@ namespace TwinCatAdsTool.Logic.Services
 
                     }
 
-                    foreach (var element in variables)
+                    foreach (var element in variables.OrderBy(pair => pair.Key.Length))
                     {
                         var uo = new JObject();
                         foreach (var p in element.Value)
@@ -92,7 +92,7 @@ namespace TwinCatAdsTool.Logic.Services
                             {
                                 if ((jobj.SelectToken(string.Join(".", path.Take(i+1))) as JObject) == null)
                                 {
-                                    if (i > 1)
+                                    if (i > 0)
                                     {
                                         (jobj.SelectToken(string.Join(".", path.Take(i))) as JObject).Add(path[i], new JObject());
                                     }
