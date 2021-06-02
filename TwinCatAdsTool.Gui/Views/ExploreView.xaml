@@ -53,15 +53,15 @@
         </DataTemplate>
 
         <DataTemplate x:Key="TimeSpanTemplate">
-            <xctk:TimeSpanUpDown Value="{Binding NewValue, Converter={StaticResource LTimeToTimeSpanConverter}}" Padding="0,16"/>
+            <xctk:TimeSpanUpDown Value="{Binding NewValue, Converter={StaticResource LTimeToTimeSpanConverter}}" Padding="0,16" Width="150"/>
         </DataTemplate>
 
         <DataTemplate x:Key="ByteTemplate">
-            <xctk:ByteUpDown Value="{Binding NewValue}" Padding="0,16"/>
+            <xctk:ByteUpDown Value="{Binding NewValue}" Padding="0,16" Width="100"/>
         </DataTemplate>
 
         <DataTemplate x:Key="DateTimeTemplate">
-            <xctk:DateTimePicker Value="{Binding NewValue, Converter={StaticResource DtToDateTimeConverter}}" Padding="0,16"/>
+            <xctk:DateTimePicker Value="{Binding NewValue, Converter={StaticResource DtToDateTimeConverter}}" Padding="0,16" Width="150"/>
         </DataTemplate>
 
         <DataTemplate x:Key="BoolTemplate">
@@ -69,11 +69,11 @@
         </DataTemplate>
 
         <DataTemplate x:Key="SingleTemplate">
-            <xctk:SingleUpDown Value="{Binding NewValue}" Padding="0,16"/>
+            <xctk:SingleUpDown Value="{Binding NewValue}" Padding="0,16" Width="100"/>
         </DataTemplate>
 
         <DataTemplate x:Key="DoubleTemplate">
-            <xctk:DoubleUpDown Value="{Binding NewValue}" Padding="0,16"/>
+            <xctk:DoubleUpDown Value="{Binding NewValue}" Padding="0,16" Width="100"/>
         </DataTemplate>
 
         <DataTemplate x:Key="DefaultTemplate">

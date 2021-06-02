@@ -182,12 +182,10 @@ namespace TwinCatAdsTool.Gui.ViewModels
                             switch (p.Value)
                             {
                                 case JObject value:
-                                    await clientService.Client.WriteJson(variable.Name + "." + p.Name, value,
-                                        force: true);
+                                    await clientService.Client.WriteJson(variable.Name + "." + p.Name, value, force: true);
                                     break;
                                 case JArray array:
-                                    await clientService.Client.WriteJson(variable.Name + "." + p.Name, array,
-                                        force: true);
+                                    await clientService.Client.WriteJson(variable.Name + "." + p.Name, array, force: true);
                                     break;
                                 case JValue:
                                     await clientService.Client.WriteAsync(variable.Name + "." + p.Name, p.Value);
