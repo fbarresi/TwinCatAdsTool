@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <GVL Name="GVL" Id="{463a7058-6776-4464-b578-e6b5af271e49}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL PERSISTENT
+	PersVarGlobalArray: ARRAY [0..3] OF INT := [6,7,8];  //Global variable, Persistent, Array 0..3 of INT
+	PersVarGlobalBool1:BOOL:=TRUE;  //Global variable, Persistent, BOOL
+	PersVarGlobalBool2:BOOL:=FALSE; //Global variable, Persistent, BOOL
+	PersVarGlobalTime1:TIME:=T#300MS; //Global variable, Persistent, TIME
+	PersVarGlobalUser1_1:User1DUT; //Global variable, Top element Persistent, User data type "User1DUT", 2 level nested structure, Non of the children defined explicitly as persistent, but should inherit Persistent status from Top Element/Parent
+	DatetimeUTC : DT;
+	Datetime : DT;
+	ActualDate : DATE;
+	ActualTime : TIME;
+	ActualLTime : LTIME;
+END_VAR
+
+VAR_GLOBAL
+	NonPersVarGlobalBool3:BOOL:=TRUE;  //Global variable Non Persistent BOOL
+	NonPersVarGlobalBool4:BOOL:=FALSE; //Global variable Non Persistent BOOL
+	NonPersVarGlobalUser1_2:User1DUT; //Global variable, Top element Non Persistent, User data type "User1DUT", 2 level nested structure, None of the children defined explicitly as persistent
+	MixedPersVarGlobalUser1_3:User2DUT;  //User defined data type, Top element Non Persistent, User data type "User2DUT", 2 level nested structure, Some children devined as persistent - mixed status 
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

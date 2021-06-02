@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <POU Name="MAIN" Id="{257901d8-cca3-4506-9fdf-a810e9ab7fed}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	NonPersMainVarBool1:BOOL:=TRUE;
+	NonPersMainVarBool2:BOOL:=FALSE;
+	TestFB1_DB1:TestFB1;
+	
+	fbToLocal 		: FB_FileTimeToTzSpecificLocalTime;
+	fileTime        : T_FILETIME;
+	fbGetSystemTime : GETSYSTEMTIME;
+END_VAR
+VAR PERSISTENT
+	PersMainVarBool3:BOOL:=TRUE;
+	PersMainVarBool4:BOOL:=FALSE;
+	PersMainVarInt1:INT:=0;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+PersMainVarInt1:=PersMainVarInt1+1;
+TestFB1_DB1(I_Run:=TRUE);
+
+fbGetSystemTime(timeLoDW=>fileTime.dwLowDateTime, timeHiDW=>fileTime.dwHighDateTime );
+GVL.DatetimeUTC := FILETIME_TO_DT(fileTime);
+fbToLocal( in := fileTime, tzInfo := WEST_EUROPE_TZI );
+GVL.Datetime := FILETIME_TO_DT( fbToLocal.out );
+GVL.ActualDate := DT_TO_DATE(GVL.Datetime);
+GVL.ActualTime := DT_TO_TIME(GVL.Datetime);
+GVL.ActualLTime := TIME_TO_LTIME(GVL.ActualTime);]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="2" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="37" Count="4" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="46" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

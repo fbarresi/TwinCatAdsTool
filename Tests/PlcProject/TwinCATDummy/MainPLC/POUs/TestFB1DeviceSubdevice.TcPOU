@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="TestFB1DeviceSubdevice" Id="{0cf00b96-6a2b-4955-8ad2-9f608065162c}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TestFB1DeviceSubdevice
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	NonPerstInt1:INT:=9;
+	NonPerstInt2:INT:=10;
+END_VAR
+VAR PERSISTENT
+	PersInt1:INT:=435;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[PersInt1:=PersInt1+1;]]></ST>
+    </Implementation>
+    <LineIds Name="TestFB1DeviceSubdevice">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

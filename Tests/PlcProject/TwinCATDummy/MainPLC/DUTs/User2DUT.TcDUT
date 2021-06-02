@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <DUT Name="User2DUT" Id="{8b87ef34-f86b-43c0-a477-5ae2e7b04b23}">
+    <Declaration><![CDATA[TYPE User2DUT :
+STRUCT
+	Int1:INT:=157;
+	Int2:INT:=168;
+	Bool1:BOOL:=TRUE;
+	InInVar:UserInnerInnerDUTPersistent;
+	Bool2:BOOL:=TRUE;
+	Bool3:BOOL:=FALSE;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

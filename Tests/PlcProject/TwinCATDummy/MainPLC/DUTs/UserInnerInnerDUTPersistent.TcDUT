@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <DUT Name="UserInnerInnerDUTPersistent" Id="{0bd410d7-5a65-4af9-b642-34de7d2b60aa}">
+    <Declaration><![CDATA[TYPE UserInnerInnerDUTPersistent :
+STRUCT PERSISTENT
+	IntInIn1_Pers:INT:=321;
+	RealInIn1_Pers:REAL:=321.9;	
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

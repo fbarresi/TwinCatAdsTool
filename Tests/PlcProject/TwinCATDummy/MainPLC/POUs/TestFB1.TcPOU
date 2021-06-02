@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="TestFB1" Id="{30ef80de-9276-47a4-806f-9a0dfc6c3f36}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TestFB1
+VAR_INPUT
+	I_Run:BOOL;
+END_VAR
+VAR_OUTPUT PERSISTENT
+	O_Number:INT;
+END_VAR
+VAR
+	Inst_TestFB1Device:TestFB1Device;
+	FB_Internal:INT;
+	FB_InternalStatic:INT:=123;
+END_VAR
+VAR PERSISTENT
+	BP_tSetup:TIME:=T#300MS;
+	BP_iSetup:INT:=67;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF I_Run THEN
+	O_Number:=O_Number +1;
+	FB_Internal:=Fb_Internal+3;
+END_IF
+Inst_TestFB1Device();
+]]></ST>
+    </Implementation>
+    <LineIds Name="TestFB1">
+      <LineId Id="9" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="32" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
