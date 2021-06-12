@@ -1,6 +1,6 @@
 # <img src="https://github.com/fbarresi/TwinCatAdsTool/raw/master/docs/images/twincat.png" height=100/> TwinCatAdsTool
 
-[![Build status](https://ci.appveyor.com/api/projects/status/2ddq0r736xlqhgly?svg=true)](https://ci.appveyor.com/project/fbarresi/twincatadstool)
+[![.NET Core Build](https://github.com/fbarresi/TwinCatAdsTool/actions/workflows/dotnet-core.yml/badge.svg)](https://github.com/fbarresi/TwinCatAdsTool/actions/workflows/dotnet-core.yml)
 
 The TwinCAT Tool you ever wanted and your lite alternative to visual studio
 
