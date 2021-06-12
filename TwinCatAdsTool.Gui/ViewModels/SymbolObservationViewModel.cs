@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ReactiveUI;
+using TwinCAT;
 using TwinCAT.Ads.Reactive;
 using TwinCAT.TypeSystem;
 using TwinCatAdsTool.Gui.Properties;
@@ -32,7 +33,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         public string Name { get; set; }
         public string FullName { get; set; }
 
-        public bool SuportsGraph => GetSupportsGraph();
+        public bool SupportsGraph => GetSupportsGraph();
         public bool SupportsSubmit => GetSupportsSubmit();
 
         public object Value => helper.Value;
@@ -41,21 +42,29 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             Name = Model.InstanceName;
             FullName = Model.InstancePath;
-            var readSymbolInfo = ClientService.Client.ReadSymbol(Model.InstancePath);
-            var initialValue = ClientService.Client.ReadValue(readSymbolInfo);
-            var observable = ((IValueSymbol) Model).WhenValueChanged().StartWith(initialValue);
+            try
+            {
+                var readSymbolInfo = ClientService.Client.ReadSymbol(Model.InstancePath);
+                var initialValue = ClientService.Client.ReadValue(readSymbolInfo);
+                var observable = ((IValueSymbol) Model).WhenValueChanged().StartWith(initialValue);
 
-            var obsLogger = LoggerFactory.GetObserverLogger();
+                var obsLogger = LoggerFactory.GetObserverLogger();
             
-            observable
-                .Do(value => obsLogger.Debug($"{FullName} value changed to: '{value.ToString()}'"))
-                .Subscribe()
-                .AddDisposableTo(Disposables);
+                observable
+                    .Do(value => obsLogger.Debug($"{FullName} value changed to: '{value.ToString()}'"))
+                    .Subscribe()
+                    .AddDisposableTo(Disposables);
             
-            helper = observable.ToProperty(this, m => m.Value);
+                helper = observable.ToProperty(this, m => m.Value);
 
-            CmdSubmit = ReactiveCommand.CreateFromTask(_ => SubmitSymbol())
-                .AddDisposableTo(Disposables);
+                CmdSubmit = ReactiveCommand.CreateFromTask(_ => SubmitSymbol(), 
+                        ClientService.ConnectionState.Select(s => s == ConnectionState.Connected))
+                    .AddDisposableTo(Disposables);
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Error while initializing vm for {Model.InstanceName}. Control will not be usable.", e);
+            }
         }
 
         protected abstract bool GetSupportsGraph();

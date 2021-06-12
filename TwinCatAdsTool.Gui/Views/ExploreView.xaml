@@ -233,7 +233,7 @@
                                         CommandParameter="{Binding}" 
                                         ToolTip="{x:Static properties:Resources.AddGraph}" 
                                         Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                                        Visibility="{Binding SuportsGraph, Converter={StaticResource VisibileIfTrue}}">
+                                        Visibility="{Binding SupportsGraph, Converter={StaticResource VisibileIfTrue}}">
                                     <materialDesign:PackIcon Kind="ChartLine" />
                                 </Button>
                             </DataTemplate>
@@ -247,7 +247,7 @@
                                         CommandParameter="{Binding}" 
                                         ToolTip="{x:Static properties:Resources.RemoveGraph}" 
                                         Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                                        Visibility="{Binding SuportsGraph, Converter={StaticResource VisibileIfTrue}}">
+                                        Visibility="{Binding SupportsGraph, Converter={StaticResource VisibileIfTrue}}">
                                     <materialDesign:PackIcon Kind="TrayRemove" />
                                 </Button>
                             </DataTemplate>

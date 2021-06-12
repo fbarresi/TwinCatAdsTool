@@ -53,7 +53,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
         public ReactiveCommand<SymbolObservationViewModel, Unit> CmdDelete { get; set; }
 
         public ReactiveCommand<SymbolObservationViewModel, Unit> CmdRemoveGraph { get; set; }
-        public ReactiveCommand<SymbolObservationViewModel, Unit> CmdSubmit { get; set; }
 
         public GraphViewModel GraphViewModel { get; set; }
 
@@ -207,13 +206,10 @@ namespace TwinCatAdsTool.Gui.ViewModels
 // Setup the command for the enter key on the textbox
             TextBoxEnterCommand = new ReactiveRelayCommand(obj => { });
 
-            AddObserverCmd = ReactiveCommand.CreateFromTask<ISymbol, Unit>(RegisterSymbolObserver)
+            AddObserverCmd = ReactiveCommand.CreateFromTask<ISymbol, Unit>(RegisterSymbolObserver, canExecute: connected)
                 .AddDisposableTo(Disposables);
 
             CmdDelete = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(DeleteSymbolObserver)
-                .AddDisposableTo(Disposables);
-
-            CmdSubmit = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(SubmitSymbol)
                 .AddDisposableTo(Disposables);
 
             CmdAddGraph = ReactiveCommand.CreateFromTask<SymbolObservationViewModel, Unit>(AddGraph)
@@ -309,11 +305,6 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private Task<Unit> RemoveGraph(SymbolObservationViewModel symbolObservationViewModel)
         {
             GraphViewModel.RemoveSymbol(symbolObservationViewModel);
-            return Task.FromResult(Unit.Default);
-        }
-
-        private Task<Unit> SubmitSymbol(SymbolObservationViewModel model)
-        {
             return Task.FromResult(Unit.Default);
         }
 
