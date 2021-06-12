@@ -11,7 +11,8 @@
                   Title="TwinCAT ADS Tool"
                   WindowStartupLocation="CenterScreen"
                   AllowDrop="True"
-                  MinWidth="1024" MinHeight="800"
+                  MinWidth="800" MinHeight="600"
+                  Width="950" Height="800"
                   GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
                   d:DesignHeight="450" d:DesignWidth="800">
 
