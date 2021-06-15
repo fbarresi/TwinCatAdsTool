@@ -1,7 +1,6 @@
 # <img src="https://github.com/fbarresi/TwinCatAdsTool/raw/master/docs/images/twincat.png" height=100/> TwinCatAdsTool
 
-[![.NET Core Build](https://github.com/fbarresi/TwinCatAdsTool/actions/workflows/dotnet-core.yml/badge.svg)](https://github.com/fbarresi/TwinCatAdsTool/actions/workflows/dotnet-core.yml)
-
+[![.NET Core Build](https://github.com/fbarresi/TwinCatAdsTool/actions/workflows/dotnet-core.yml/badge.svg?branch=develop)](https://github.com/fbarresi/TwinCatAdsTool/actions/workflows/dotnet-core.yml)
 The TwinCAT Tool you ever wanted and your lite alternative to visual studio
 
 ### [Download it now](https://github.com/fbarresi/TwinCatAdsTool/releases/latest)
@@ -11,6 +10,8 @@ The TwinCAT Tool you ever wanted and your lite alternative to visual studio
 - View, save and restore a Backup of all persistent variable
 - Compare different backup
 - Search, explore or observe the symbols of a plc
+
+<img src="https://github.com/fbarresi/TwinCatAdsTool/raw/master/docs/images/screenshot2.png" height=500/>
 
 ## Requirements
 
