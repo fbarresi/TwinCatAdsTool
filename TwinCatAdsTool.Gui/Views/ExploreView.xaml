@@ -39,6 +39,7 @@
         </HierarchicalDataTemplate>
         
         <converters:LTimeToTimeSpanConverter x:Key="LTimeToTimeSpanConverter" />
+        <converters:TimeToTimeSpanConverter x:Key="TimeToTimeSpanConverter" />
         <converters:DtToDateTimeConverter x:Key="DtToDateTimeConverter" />
 
         <DataTemplate x:Key="StringTemplate" DataType="{x:Type viewModels:SymbolObservationViewModel}">
@@ -52,6 +53,10 @@
             <xctk:IntegerUpDown Value="{Binding NewValue, UpdateSourceTrigger=PropertyChanged}" />
         </DataTemplate>
 
+        <DataTemplate x:Key="LTimeSpanTemplate">
+            <xctk:TimeSpanUpDown Value="{Binding NewValue, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource LTimeToTimeSpanConverter}}" Width="150"/>
+        </DataTemplate>
+        
         <DataTemplate x:Key="TimeSpanTemplate">
             <xctk:TimeSpanUpDown Value="{Binding NewValue, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource LTimeToTimeSpanConverter}}" Width="150"/>
         </DataTemplate>
@@ -88,6 +93,7 @@
                                                  ByteTemplate="{StaticResource ByteTemplate}"
                                                  BoolTemplate="{StaticResource BoolTemplate}"
                                                  DateTimeTemplate="{StaticResource DateTimeTemplate}"
+                                                 LTimeSpanTemplate="{StaticResource LTimeSpanTemplate}"
                                                  TimeSpanTemplate="{StaticResource TimeSpanTemplate}"
                                                  DoubleTemplate="{StaticResource DoubleTemplate}" />
         

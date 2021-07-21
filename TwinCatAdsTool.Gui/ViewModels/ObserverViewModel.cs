@@ -86,6 +86,9 @@ namespace TwinCatAdsTool.Gui.ViewModels
                     case "LTIME":
                         ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<LTIME>>(symbol));
                         break;
+                    case "TIME":
+                        ViewModels.Add(viewModelFactory.CreateViewModel<ISymbol, SymbolObservationViewModel<TIME>>(symbol));
+                        break;
                     default:
                         if (symbol.TypeName.ToUpper().StartsWith("STRING"))
                         {

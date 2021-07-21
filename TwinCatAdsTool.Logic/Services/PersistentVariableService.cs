@@ -35,10 +35,10 @@ namespace TwinCatAdsTool.Logic.Services
                                  !s.InstancePath.Contains("["))
                         ;
 
-                    var peristentSymbols = iterator.Where(s => s.Parent != null ? !iterator.Contains(s.Parent) : true);
+                    var persistentSymbols = iterator.Where(s => s.Parent != null ? !iterator.Contains(s.Parent) : true);
 
                     var variables = new Dictionary<string, List<JObject>>();
-                    foreach (var symbol in peristentSymbols)
+                    foreach (var symbol in persistentSymbols)
                     {
                         var splitPath = symbol.InstancePath.Split('.');
                         var localName = splitPath.Last();

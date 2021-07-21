@@ -12,17 +12,13 @@ namespace TwinCatAdsTool.Gui.Views
     {
         public DataTemplate DefaultTemplate { get; set; }
         public DataTemplate IntTemplate { get; set; }
-
         public DataTemplate SingleTemplate { get; set; }
-
         public DataTemplate DoubleTemplate { get; set; }
-
         public DataTemplate ByteTemplate { get; set; }
-
         public DataTemplate StringTemplate { get; set; }
         public DataTemplate DateTimeTemplate { get; set; }
         public DataTemplate BoolTemplate { get; set; }
-
+        public DataTemplate LTimeSpanTemplate { get; set; }
         public DataTemplate TimeSpanTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
@@ -58,6 +54,11 @@ namespace TwinCatAdsTool.Gui.Views
             }
 
             if (item is SymbolObservationViewModel<LTIME>)
+            {
+                return LTimeSpanTemplate;
+            }
+            
+            if (item is SymbolObservationViewModel<TIME>)
             {
                 return TimeSpanTemplate;
             }
