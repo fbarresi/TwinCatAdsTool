@@ -29,6 +29,8 @@
                     >
             </Button>
             
+            <CheckBox Margin="16" IsChecked="{Binding GlobalOnly}">global only</CheckBox>
+            
             <Label Margin="24,16,0,16" Content="{Binding CurrentTask}"/>
             
 

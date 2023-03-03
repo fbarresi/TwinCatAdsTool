@@ -23,7 +23,8 @@ namespace TwinCatAdsTool.Logic.Services
     {
         private readonly ILog logger =LoggerFactory.GetLogger();
         private readonly Subject<string> currentTaskSubject = new Subject<string>();
-        public async Task<JObject> ReadGlobalPersistentVariables(AdsClient client, IInstanceCollection<ISymbol> symbols)
+        public async Task<JObject> ReadGlobalPersistentVariables(AdsClient client, IInstanceCollection<ISymbol> symbols,
+            bool globalOnly)
         {
             var jobj = new JObject();
             try
@@ -31,7 +32,8 @@ namespace TwinCatAdsTool.Logic.Services
                 if (client.IsConnected)
                 {
                     var iterator = new SymbolIterator(symbols,
-                            s => s.IsPersistent && s.InstancePath.Split('.').Length >= 2 &&
+                            s => s.IsPersistent && 
+                                 (globalOnly ? s.InstancePath.Split('.').Length == 2 : s.InstancePath.Split('.').Length >= 2) &&
                                  !s.InstancePath.Contains("["))
                         ;
 

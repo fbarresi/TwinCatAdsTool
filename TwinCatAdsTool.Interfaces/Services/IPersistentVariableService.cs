@@ -9,7 +9,8 @@ namespace TwinCatAdsTool.Interfaces.Services
 {
     public interface IPersistentVariableService
     {
-        Task<JObject> ReadGlobalPersistentVariables(AdsClient client, IInstanceCollection<ISymbol> symbols);
+        Task<JObject> ReadGlobalPersistentVariables(AdsClient client, IInstanceCollection<ISymbol> symbols,
+            bool globalOnly);
         IObservable<string> CurrentTask { get; }
     }
 }

@@ -23,6 +23,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private readonly Subject<JObject> variableSubject = new Subject<JObject>();
         private string backupText;
         private ObservableAsPropertyHelper<string> currentTaskHelper;
+        private bool globalOnly;
 
         public BackupViewModel(IClientService clientService, IPersistentVariableService persistentVariableService)
         {
@@ -37,6 +38,17 @@ namespace TwinCatAdsTool.Gui.ViewModels
             {
                 if (value == backupText) return;
                 backupText = value;
+                raisePropertyChanged();
+            }
+        }
+
+        public bool GlobalOnly
+        {
+            get => globalOnly;
+            set
+            {
+                if (value == globalOnly) return;
+                globalOnly = value;
                 raisePropertyChanged();
             }
         }
@@ -69,7 +81,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         {
             var persistentVariables = await persistentVariableService.ReadGlobalPersistentVariables(
                 clientService.Client, 
-                clientService.TreeViewSymbols);
+                clientService.TreeViewSymbols, globalOnly);
             variableSubject.OnNext(persistentVariables);
             Logger.Debug(Resources.ReadPersistentVariables);
 

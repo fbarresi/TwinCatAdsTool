@@ -33,6 +33,7 @@ namespace TwinCatAdsTool.Gui.ViewModels
         private IEnumerable<ListBoxItem> rightBoxText;
         private string sourceLeft;
         private string sourceRight;
+        private bool globalOnly = true;
 
         public CompareViewModel(IClientService clientService, IPersistentVariableService persistentVariableService)
         {
@@ -269,9 +270,20 @@ namespace TwinCatAdsTool.Gui.ViewModels
             return Task.FromResult(Unit.Default);
         }
 
+        public bool GlobalOnly
+        {
+            get => globalOnly;
+            set
+            {
+                if (value == globalOnly) return;
+                globalOnly = value;
+                raisePropertyChanged();
+            }
+        }
+
         private async Task<JObject> ReadVariables()
         {
-            var persistentVariables = await persistentVariableService.ReadGlobalPersistentVariables(clientService.Client, clientService.TreeViewSymbols);
+            var persistentVariables = await persistentVariableService.ReadGlobalPersistentVariables(clientService.Client, clientService.TreeViewSymbols, globalOnly);
 
             Logger.Debug(Resources.ReadPersistentVariables);
             return persistentVariables;
